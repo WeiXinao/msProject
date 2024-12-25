@@ -1,0 +1,19 @@
+syntax = "v1"
+
+type GetCaptchaReq {
+	Mobile string `form:"mobile"`
+}
+
+type GetCaptchaResp {
+	Captcha string
+}
+
+@server (
+	prefix: /project
+	group:  user
+)
+service user {
+	@handler GetCaptcha
+	post /login/getCaptcha (GetCaptchaReq) returns (GetCaptchaResp)
+}
+

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package api.proto.user.v1;
+option go_package = "./api/proto/gen/user/v1;userv1";
+
+message CaptchaRequest {
+  string mobile = 1;
+}
+
+message CaptchaResponse {
+  string code = 1;
+}
+
+service LoginService {
+  rpc GetCaptcha(CaptchaRequest) returns (CaptchaResponse);
+}

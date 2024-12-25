@@ -1,0 +1,15 @@
+Name: bff
+Host: 0.0.0.0
+Port: 80
+logConfig:
+  debugFileName: "..\\logs\\debug\\project-debug.log"
+  infoFileName:  "..\\logs\\info\\project-info.log"
+  warnFileName:  "..\\logs\\error\\project-error.log"
+  maxSize:       500
+  maxAge:        28
+  maxBackups:    3
+UserRpcClient:
+  Etcd:
+    Hosts:
+      - 192.168.5.4:2379
+    Key: user.rpc
