@@ -1,0 +1,19 @@
+Name: user.rpc
+ListenOn: 0.0.0.0:8080
+Etcd:
+  Hosts:
+    - etcd1:2379
+  Key: user.rpc
+RedisConfig:
+  Host: "myredis7:6379"
+  Type: "node"
+  Tls: false
+  NonBlock: false
+  PingTimeout: 1s
+logConfig:
+  debugFileName: "..\\logs\\debug\\project-debug.log"
+  infoFileName:  "..\\logs\\info\\project-info.log"
+  warnFileName:  "..\\logs\\error\\project-error.log"
+  maxSize:       500
+  maxAge:        28
+  maxBackups:    3

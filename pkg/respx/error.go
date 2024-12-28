@@ -2,8 +2,6 @@ package respx
 
 import (
 	"fmt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Error struct {
@@ -13,10 +11,6 @@ type Error struct {
 
 func (e *Error) Error() string {
 	return fmt.Sprintf("code: %v, msg: %v", e.Code, e.Msg)
-}
-
-func (e *Error) AsStatusErr() error {
-	return status.Error(codes.Code(e.Code), e.Msg)
 }
 
 func NewError(code int, msg string) *Error {

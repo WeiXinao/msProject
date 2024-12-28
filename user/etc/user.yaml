@@ -10,6 +10,9 @@ RedisConfig:
   Tls: false
   NonBlock: false
   PingTimeout: 1s
+MySQLConfig:
+  DriverName: mysql
+  Dsn: root:123456@tcp(192.168.5.4:3307)/ms_project?charset=utf8
 logConfig:
   debugFileName: "..\\logs\\debug\\project-debug.log"
   infoFileName:  "..\\logs\\info\\project-info.log"

@@ -5,15 +5,69 @@ type GetCaptchaReq {
 }
 
 type GetCaptchaResp {
-	Captcha string
+	Captcha string `json:"captcha"`
+}
+
+type RegisterReq {
+	Email     string `form:"email"`
+	Name      string `form:"name"`
+	Password  string `form:"password"`
+	Password2 string `form:"password2"`
+	Mobile    string `form:"mobile"`
+	Captcha   string `form:"captcha"`
+}
+
+type RegisterResp {}
+
+type LoginReq {
+	Account  string `form:"account"`
+	Password string `form:"password"`
+}
+
+type LoginRsp {
+	Member           Member             `json:"member"`
+	TokenList        TokenList          `json:"tokenList"`
+	OrganizationList []OrganizationList `json:"organizationList"`
+}
+type Member {
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
+	Mobile string `json:"mobile"`
+	Status int    `json:"status"`
+}
+
+type TokenList {
+	AccessToken    string `json:"accessToken"`
+	RefreshToken   string `json:"refreshToken"`
+	TokenType      string `json:"tokenType"`
+	AccessTokenExp int64  `json:"accessTokenExp"`
+}
+
+type OrganizationList {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Avatar      string `json:"avatar"`
+	Description string `json:"description"`
+	MemberId    int64  `json:"memberId"`
+	CreateTime  int64  `json:"createTime"`
+	Personal    int32  `json:"personal"`
+	Address     string `json:"address"`
+	Province    int32  `json:"province"`
+	City        int32  `json:"city"`
+	Area        int32  `json:"area"`
 }
 
 @server (
 	prefix: /project
 	group:  user
 )
-service user {
+service bff {
 	@handler GetCaptcha
 	post /login/getCaptcha (GetCaptchaReq) returns (GetCaptchaResp)
-}
 
+	@handler Register
+	post /login/register (RegisterReq) returns (RegisterResp)
+
+	@handler Login
+	post /login (LoginReq) returns (LoginRsp)
+}
