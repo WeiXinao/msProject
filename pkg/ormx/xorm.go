@@ -3,11 +3,11 @@ package ormx
 import "xorm.io/xorm"
 
 type TxSession struct {
-	engine *xorm.Engine
+	session *xorm.Session
 }
 
 func (t *TxSession) Tx(fn func(session any) error) error {
-	session := t.engine.NewSession()
+	session := t.session
 	defer session.Close()
 
 	if err := session.Begin(); err != nil {
@@ -24,8 +24,8 @@ func (t *TxSession) Tx(fn func(session any) error) error {
 	return session.Commit()
 }
 
-func NewTxSession(engine *xorm.Engine) Transaction {
+func NewTxSession(engine *xorm.Session) Transaction {
 	return &TxSession{
-		engine: engine,
+		session: engine,
 	}
 }

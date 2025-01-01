@@ -7,7 +7,9 @@ import (
 	"github.com/WeiXinao/msProject/user/internal/domain"
 	"github.com/WeiXinao/msProject/user/internal/repo/cache"
 	"github.com/WeiXinao/msProject/user/internal/repo/dao"
+	"github.com/WeiXinao/xkit/slice"
 	"github.com/jinzhu/copier"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"time"
 )
@@ -21,12 +23,41 @@ type UserRepo interface {
 	CreateMember(ctx context.Context, member domain.Member) (int64, error)
 	CreateOrganization(ctx context.Context, organization domain.Organization) (int64, error)
 	CreateMemberAndOrganization(ctx context.Context, member domain.Member, organization domain.Organization) error
+	GetMemberByAccountAndPwd(ctx context.Context, account string, pwd string) (domain.Member, error)
+	GetOrganizationByMemId(ctx context.Context, memId int64) ([]domain.Organization, error)
 }
 
 type userRepo struct {
 	cache     cachex.Cache
 	userCache *cache.UserCache
 	userDao   dao.UserDao
+}
+
+func (u *userRepo) GetOrganizationByMemId(ctx context.Context, memId int64) ([]domain.Organization, error) {
+	orgs, err := u.userDao.GetOrganizationByMemId(ctx, memId)
+	if err != nil {
+		return nil, err
+	}
+	return slice.Map(orgs, func(idx int, src dao.Organization) domain.Organization {
+		org := domain.Organization{}
+		er := copier.Copy(&org, &src)
+		if er != nil {
+			logx.WithContext(ctx).Errorf("[GetOrganizationByMemId] repo: %w", ErrTypeConvert)
+		}
+		return org
+	}), nil
+}
+
+func (u *userRepo) GetMemberByAccountAndPwd(ctx context.Context, account string, pwd string) (domain.Member, error) {
+	memEntity, err := u.userDao.GetMemberByAccountAndPwd(ctx, account, pwd)
+	if err != nil {
+		return domain.Member{}, err
+	}
+	memDomain, err := u.ToDomain(memEntity)
+	if err != nil {
+		return domain.Member{}, err
+	}
+	return memDomain, nil
 }
 
 func (u *userRepo) CreateMemberAndOrganization(ctx context.Context, member domain.Member, organization domain.Organization) error {

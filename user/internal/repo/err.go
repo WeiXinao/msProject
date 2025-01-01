@@ -8,4 +8,5 @@ import (
 var (
 	ErrVerifyCaptchaFail = errors.New("校验验证码失败")
 	ErrRecordNotFound    = dao.ErrRecordNotFound
+	ErrTypeConvert       = dao.ErrTypeConvert
 )

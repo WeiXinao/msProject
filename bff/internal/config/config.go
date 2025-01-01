@@ -8,6 +8,15 @@ import (
 
 type Config struct {
 	rest.RestConf
-	LogConfig     lx.LogConfig
-	UserRpcClient zrpc.RpcClientConf
+	LogConfig        lx.LogConfig
+	UserRpcClient    zrpc.RpcClientConf
+	ProjectRpcClient zrpc.RpcClientConf
+	Jwt              Jwt
+}
+
+type Jwt struct {
+	AccessExp  string
+	RefreshExp string
+	AtKey      string
+	RtKey      string
 }

@@ -1,0 +1,10 @@
+
+type {{ .Name }} struct {
+    {{- range .Fields }}
+    {{ .Field }} {{.Type}} `xorm:"{{.Column}}{{LeadingSpace .DBType}}{{LeadingSpace .Extra}}{{LeadingSpace .Key}}{{LeadingSpace .Null}}{{LeadingSpace .Default}}{{LeadingSpace .Comment }}"`
+    {{- end }}
+}
+
+func (*{{ .Name }}) TableName() string {
+    return "{{ .TableName }}"
+}

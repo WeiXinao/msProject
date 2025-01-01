@@ -29,11 +29,12 @@ type LoginRsp {
 	TokenList        TokenList          `json:"tokenList"`
 	OrganizationList []OrganizationList `json:"organizationList"`
 }
+
 type Member {
-	Id     int64  `json:"id"`
 	Name   string `json:"name"`
 	Mobile string `json:"mobile"`
 	Status int    `json:"status"`
+	Code   string `json:"code"`
 }
 
 type TokenList {
@@ -44,7 +45,6 @@ type TokenList {
 }
 
 type OrganizationList {
-	Id          int64  `json:"id"`
 	Name        string `json:"name"`
 	Avatar      string `json:"avatar"`
 	Description string `json:"description"`
@@ -55,6 +55,7 @@ type OrganizationList {
 	Province    int32  `json:"province"`
 	City        int32  `json:"city"`
 	Area        int32  `json:"area"`
+	Code        string `json:"code"`
 }
 
 @server (
@@ -71,3 +72,40 @@ service bff {
 	@handler Login
 	post /login (LoginReq) returns (LoginRsp)
 }
+
+type IndexReq {
+	Token string `header:"Authorization,optional"`
+}
+
+type MenuMessage {
+	Id         int64          `json:"id"`
+	Pid        int64          `json:"pid"`
+	Title      string         `json:"title"`
+	Icon       string         `json:"icon"`
+	Url        string         `json:"url"`
+	FilePath   string         `json:"filePath"`
+	Params     string         `json:"params"`
+	Node       string         `json:"node"`
+	Sort       int32          `json:"sort"`
+	Status     int32          `json:"status"`
+	CreateBy   int64          `json:"createBy"`
+	IsInner    int32          `json:"isInner"`
+	Values     string         `json:"values"`
+	ShowSlider int32          `json:"showSlider"`
+	Children   []*MenuMessage `json:"children"`
+}
+
+type IndexRsp {
+	Menus []*MenuMessage `json:"menus"`
+}
+
+@server (
+	prefix:     /project
+	group:      project
+	middleware: AuthMiddleware
+)
+service bff {
+	@handler Index
+	post /index (IndexReq) returns (IndexRsp)
+}
+

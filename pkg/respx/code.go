@@ -1,12 +1,14 @@
 package respx
 
 var (
-	OK                        = NewError(200, "success")
-	IllegalMobile             = NewError(201001, "手机号不合法")
-	IllegalEmail              = NewError(201002, "邮箱不合法")
-	InconsistentPwdAndConfirm = NewError(201003, "两次输入密码不一致")
-	ErrEmailDuplicated        = NewError(201004, "邮箱已存在")
-	ErrAccountDuplicated      = NewError(201005, "账号已存在")
-	ErrMobileDuplicated       = NewError(201006, "手机号已存在")
-	ErrVerifyCaptchaFail      = NewError(201007, "验证码错误")
+	OK                            = NewError(200, "success")
+	ErrIllegalInput               = NewError(400, "非法输入")
+	IllegalMobile                 = NewError(401001, "手机号不合法")
+	IllegalEmail                  = NewError(401002, "邮箱不合法")
+	InconsistentPwdAndConfirm     = NewError(401003, "两次输入密码不一致")
+	ErrEmailDuplicated            = NewError(401004, "邮箱已存在")
+	ErrAccountDuplicated          = NewError(401005, "账号已存在")
+	ErrMobileDuplicated           = NewError(401006, "手机号已存在")
+	ErrVerifyCaptchaFail          = NewError(401007, "验证码错误")
+	ErrAccountOrPasswordIncorrect = NewError(401008, "用户名或密码错误")
 )

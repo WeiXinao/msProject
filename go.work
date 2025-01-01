@@ -4,5 +4,6 @@ use (
 	./api
 	./bff
 	./pkg
+	./project
 	./user
 )

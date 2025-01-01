@@ -13,3 +13,15 @@ UserRpcClient:
     Hosts:
     - 192.168.5.4:2379
     Key: user.rpc
+ProjectRpcClient:
+  Etcd:
+    Hosts:
+    - 192.168.5.4:2379
+    Key: project.rpc
+Jwt:
+  # 7天
+  AccessExp:  "168h"
+  # 14天
+  RefreshExp: "336h"
+  AtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvf0"
+  RtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvfx"

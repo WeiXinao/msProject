@@ -11,6 +11,15 @@ type Config struct {
 	RedisConfig redis.RedisConf
 	LogConfig   lx.LogConfig
 	MySQLConfig MySQLConfig
+	Jwt         Jwt
+	AESKey      string
+}
+
+type Jwt struct {
+	AccessExp  string
+	RefreshExp string
+	AtKey      string
+	RtKey      string
 }
 
 type MySQLConfig struct {

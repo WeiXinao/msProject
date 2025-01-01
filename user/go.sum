@@ -8,6 +8,8 @@ github.com/WeiXinao/msProject/api v0.0.0-20241225163447-358ec12984e0 h1:cPzbrLNs
 github.com/WeiXinao/msProject/api v0.0.0-20241225163447-358ec12984e0/go.mod h1:h/4dHUjEQ9c3OpTbfYD/fiK83FWNVucUXRdMKvQeUYo=
 github.com/WeiXinao/msProject/pkg v0.0.0-20241225163447-358ec12984e0 h1:Zr77ohKV/G7M1GdnC9SfHMocPQO6PPMrF2ieIq6PzB8=
 github.com/WeiXinao/msProject/pkg v0.0.0-20241225163447-358ec12984e0/go.mod h1:w5rLPwjIPAozKdbJBSDNs+jVEkHR5mEK2mKZQf7QXxo=
+github.com/WeiXinao/xkit v0.0.0-20241112141343-6bda9e2f43e5 h1:5sx2xjZ+HF1QOcaFyJVZ1+4+X1LclP9Ty5PlVHNcYns=
+github.com/WeiXinao/xkit v0.0.0-20241112141343-6bda9e2f43e5/go.mod h1:PJdBLMbXzh0HcMAXZCbZOeJCW/hghSdjl04Pgn8opTA=
 github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 h1:uvdUDbHQHO85qeSydJtItA4T55Pw6BtAejd0APRJOCE=
 github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302/go.mod h1:SGnFV6hVsYE877CKEZ6tDNTjaSXYUk6QqoIK6PrAtcc=
 github.com/alicebob/miniredis/v2 v2.33.0 h1:uvTF0EDeu9RLnUEG27Db5I68ESoIxTiXbNUiji6lZrA=

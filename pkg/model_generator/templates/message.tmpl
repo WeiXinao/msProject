@@ -1,0 +1,6 @@
+
+message {{ .Name }} {
+    {{- range $index, $value := .Fields }}
+    {{.Type}} {{ .Field }} = {{AddOne $index}};
+    {{- end }}
+}
