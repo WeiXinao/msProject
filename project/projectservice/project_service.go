@@ -14,12 +14,16 @@ import (
 )
 
 type (
-	IndexRequest  = v1.IndexRequest
-	IndexResponse = v1.IndexResponse
-	MenuMessage   = v1.MenuMessage
+	IndexRequest    = v1.IndexRequest
+	IndexResponse   = v1.IndexResponse
+	MenuMessage     = v1.MenuMessage
+	ProjectMessage  = v1.ProjectMessage
+	ProjectRequest  = v1.ProjectRequest
+	ProjectResponse = v1.ProjectResponse
 
 	ProjectService interface {
 		Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
+		FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
 	}
 
 	defaultProjectService struct {
@@ -36,4 +40,9 @@ func NewProjectService(cli zrpc.Client) ProjectService {
 func (m *defaultProjectService) Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error) {
 	client := v1.NewProjectServiceClient(m.cli.Conn())
 	return client.Index(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.FindProjectByMemId(ctx, in, opts...)
 }

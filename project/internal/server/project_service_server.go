@@ -27,3 +27,8 @@ func (s *ProjectServiceServer) Index(ctx context.Context, in *v1.IndexRequest) (
 	l := logic.NewIndexLogic(ctx, s.svcCtx)
 	return l.Index(in)
 }
+
+func (s *ProjectServiceServer) FindProjectByMemId(ctx context.Context, in *v1.ProjectRequest) (*v1.ProjectResponse, error) {
+	l := logic.NewFindProjectByMemIdLogic(ctx, s.svcCtx)
+	return l.FindProjectByMemId(in)
+}

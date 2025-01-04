@@ -69,6 +69,51 @@ type OrganizationList struct {
 	Code        string `json:"code"`
 }
 
+type Project struct {
+	Cover              string  `json:"cover"`
+	Name               string  `json:"name"`
+	Description        string  `json:"description"`
+	AccessControlType  int     `json:"accessControlType"`
+	WhiteList          string  `json:"whiteList"`
+	Order              int     `json:"order"`
+	Deleted            int     `json:"deleted"`
+	TemplateCode       string  `json:"templateCode"`
+	Schedule           float64 `json:"schedule"`
+	CreateTime         string  `json:"createTime"`
+	OrganizationCode   int64   `json:"organizationCode"`
+	DeletedTime        string  `json:"deletedTime"`
+	Private            int     `json:"private"`
+	Prefix             string  `json:"prefix"`
+	OpenPrefix         int     `json:"openPrefix"`
+	Archive            int     `json:"archive"`
+	ArchiveTime        int64   `json:"archiveTime"`
+	OpenBeginTime      int     `json:"openBeginTime"`
+	OpenTaskPrivate    int     `json:"openTaskPrivate"`
+	TaskBoardTheme     string  `json:"taskBoardTheme"`
+	BeginTime          int64   `json:"beginTime"`
+	EndTime            int64   `json:"endTime"`
+	AutoUpdateSchedule int     `json:"autoUpdateSchedule"`
+	Code               string  `json:"code"`
+}
+
+type ProjectAndMember struct {
+	Project
+	ProjectCode int64  `json:"projectCode"`
+	MemberCode  int64  `json:"memberCode"`
+	JoinTime    int64  `json:"joinTime"`
+	IsOwner     int64  `json:"isOwner"`
+	Authorize   string `json:"authorize"`
+}
+
+type ProjectMember struct {
+	Id          int64  `json:"id"`
+	ProjectCode int64  `json:"projectCode"`
+	MemberCode  int64  `json:"memberCode"`
+	JoinTime    int64  `json:"joinTime"`
+	IsOwner     int64  `json:"isOwner"`
+	Authorize   string `json:"authorize"`
+}
+
 type RegisterReq struct {
 	Email     string `form:"email"`
 	Name      string `form:"name"`
@@ -79,6 +124,16 @@ type RegisterReq struct {
 }
 
 type RegisterResp struct {
+}
+
+type SelfListReq struct {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+}
+
+type SelfListRsp struct {
+	List  []*ProjectAndMember `json:"list"`
+	Total int64               `json:"total"`
 }
 
 type TokenList struct {

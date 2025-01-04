@@ -29,6 +29,51 @@ message MenuMessage {
   repeated MenuMessage children = 15;
 }
 
+message ProjectMessage {
+    int64 id = 1;
+    string cover = 2;
+    string name = 3;
+    string description = 4;
+    int32 accessControlType = 5;
+    string whiteList = 6;
+    int32 order = 7;
+    int32 deleted = 8;
+    string templateCode = 9;
+    double schedule = 10;
+    string createTime = 11;
+    int64 organizationCode = 12;
+    string deletedTime = 13;
+    int32 private = 14;
+    string prefix = 15;
+    int32 openPrefix = 16;
+    int32 archive = 17;
+    int64 archiveTime = 18;
+    int32 openBeginTime = 19;
+    int32 openTaskPrivate = 20;
+    string taskBoardTheme = 21;
+    int64 beginTime = 22;
+    int64 endTime = 23;
+    int32 autoUpdateSchedule = 24;
+    int64 projectCode = 25;
+    int64 memberCode = 26;
+    int64 joinTime = 27;
+    int64 isOwner = 28;
+    string authorize = 29;
+    string code = 30;
+}
+
+message ProjectRequest {
+  int64 memberId = 1;
+  int64 page = 2;
+  int64 pageSize = 3;
+}
+
+message ProjectResponse {
+  repeated ProjectMessage pm = 1;
+  int64 total = 2;
+}
+
 service ProjectService {
   rpc Index(IndexRequest) returns (IndexResponse);
+  rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
 }

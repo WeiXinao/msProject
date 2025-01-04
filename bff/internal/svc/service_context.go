@@ -2,7 +2,7 @@ package svc
 
 import (
 	"github.com/WeiXinao/msProject/bff/internal/config"
-	"github.com/WeiXinao/msProject/bff/internal/middlewares"
+	"github.com/WeiXinao/msProject/bff/internal/middleware"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/projectservice"
 	"github.com/WeiXinao/msProject/user/loginservice"
@@ -22,7 +22,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	jwter := InitJwter(c)
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
-	authMiddleware := middlewares.NewAuthMiddlewareBuilder(jwter)
+	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter)
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,

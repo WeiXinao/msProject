@@ -23,6 +23,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/index",
 					Handler: project.IndexHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project/selfList",
+					Handler: project.MyProjectListHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/project"),
