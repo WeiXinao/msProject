@@ -70,6 +70,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/project_collect/collect",
+					Handler: project.CollectProjectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/project_template",
 					Handler: project.ProjectTemplateHandler(serverCtx),
 				},

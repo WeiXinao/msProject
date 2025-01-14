@@ -15,6 +15,34 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
+func (p *projectRepo) DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error {
+	return p.dao.DeleteProjectCollection(ctx, memberId, projectCode)
+}
+
+func (p *projectRepo) FindCollectProjectByMemId(ctx context.Context, memId int64, page int64, size int64) (map[int64]*domain.ProjectAndMember, int64, error) {
+	pams, total, err := p.dao.FindCollectProjectByMemId(ctx, memId, page, size)
+	IdToProjectAndMemberMap := make(map[int64]*domain.ProjectAndMember)
+	for _, pam := range pams {
+		pa := &domain.ProjectAndMember{}
+		err = copier.Copy(pa, &pam)
+		if err != nil {
+			logx.WithContext(ctx).Error("[repo FindCollectProjectByMemId]", err)
+			return nil, 0, err
+		}
+		IdToProjectAndMemberMap[pam.Project.Id] = pa
+	}
+	return IdToProjectAndMemberMap, total, nil
+}
+
+func (p *projectRepo) SaveProjectCollection(ctx context.Context, projectCollection domain.ProjectCollection) error {
+	pc := dao.ProjectCollection{}
+	err := copier.Copy(&pc, projectCollection)
+	if err != nil {
+		return err
+	}
+	return p.dao.SaveProjectCollection(ctx, pc)
+}
+
 func (p *projectRepo) DeleteProject(ctx context.Context, projectId int64, deleted bool) error {
 	return p.dao.DeleteProject(ctx, projectId, deleted)
 }

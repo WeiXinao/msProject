@@ -178,6 +178,14 @@ message RecycleProjectRequest {
 message RecycleProjectResponse {
 }
 
+message UpdateCollectProjectRequest {
+  string projectCode = 1;
+  string collectType = 2;
+  int64 memberId = 3;
+}
+message UpdateCollectProjectResponse {
+}
+
 service ProjectService {
   rpc Index(IndexRequest) returns (IndexResponse);
   rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
@@ -185,4 +193,5 @@ service ProjectService {
   rpc SaveProject(SaveProjectReq) returns (SaveProjectRsp);
   rpc ProjectDetail(ProjectDetailRequest) returns (ProjectDetailResponse);
   rpc RecycleOrRecoverProject(RecycleProjectRequest) returns (RecycleProjectResponse);
+  rpc UpdateCollectProject(UpdateCollectProjectRequest) returns (UpdateCollectProjectResponse);
 }

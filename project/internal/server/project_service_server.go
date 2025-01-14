@@ -52,3 +52,8 @@ func (s *ProjectServiceServer) RecycleOrRecoverProject(ctx context.Context, in *
 	l := logic.NewRecycleOrRecoverProjectLogic(ctx, s.svcCtx)
 	return l.RecycleOrRecoverProject(in)
 }
+
+func (s *ProjectServiceServer) UpdateCollectProject(ctx context.Context, in *v1.UpdateCollectProjectRequest) (*v1.UpdateCollectProjectResponse, error) {
+	l := logic.NewUpdateCollectProjectLogic(ctx, s.svcCtx)
+	return l.UpdateCollectProject(in)
+}

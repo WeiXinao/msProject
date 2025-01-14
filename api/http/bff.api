@@ -252,6 +252,15 @@ type RecycleProjectRsp {
 	ProjectList []*Project
 }
 
+type CollectProjectReq {
+	ProjectCode string `form:"projectCode"`
+	Type        string `form:"type"`
+}
+
+type CollectProjectRsp {
+	ProjectList []*Project
+}
+
 @server (
 	prefix:     /project
 	group:      project
@@ -281,6 +290,9 @@ service bff {
 
 	@handler RecoverProject
 	post /project/recovery (RecycleProjectReq) returns (RecycleProjectRsp)
+
+	@handler CollectProject
+	post /project_collect/collect (CollectProjectReq) returns (CollectProjectRsp)
 }
 
 type GetOrgListReq {}

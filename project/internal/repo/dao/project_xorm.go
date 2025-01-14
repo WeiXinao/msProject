@@ -11,6 +11,19 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+func (p *projectXormDao) DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error {
+	_, err := p.db.Context(ctx).Delete(&ProjectCollection{
+		ProjectCode: projectCode,
+		MemberCode:  memberId,
+	})
+	return err
+}
+
+func (p *projectXormDao) SaveProjectCollection(ctx context.Context, projectCollection ProjectCollection) error {
+	_, err := p.db.InsertOne(&projectCollection)
+	return err
+}
+
 func (p *projectXormDao) DeleteProject(ctx context.Context, projectId int64, deleted bool) error {
 	isDel := 0
 	if deleted {

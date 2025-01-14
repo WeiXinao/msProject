@@ -3,6 +3,15 @@
 
 package types
 
+type CollectProjectReq struct {
+	ProjectCode string `form:"projectCode"`
+	Type        string `form:"type"`
+}
+
+type CollectProjectRsp struct {
+	ProjectList []*Project
+}
+
 type GetCaptchaReq struct {
 	Mobile string `form:"mobile"`
 }

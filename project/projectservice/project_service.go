@@ -14,22 +14,24 @@ import (
 )
 
 type (
-	FindProjectTemplateRequest  = v1.FindProjectTemplateRequest
-	FindProjectTemplateResponse = v1.FindProjectTemplateResponse
-	IndexRequest                = v1.IndexRequest
-	IndexResponse               = v1.IndexResponse
-	MenuMessage                 = v1.MenuMessage
-	ProjectDetailRequest        = v1.ProjectDetailRequest
-	ProjectDetailResponse       = v1.ProjectDetailResponse
-	ProjectMessage              = v1.ProjectMessage
-	ProjectRequest              = v1.ProjectRequest
-	ProjectResponse             = v1.ProjectResponse
-	ProjectTemplateMessage      = v1.ProjectTemplateMessage
-	RecycleProjectRequest       = v1.RecycleProjectRequest
-	RecycleProjectResponse      = v1.RecycleProjectResponse
-	SaveProjectReq              = v1.SaveProjectReq
-	SaveProjectRsp              = v1.SaveProjectRsp
-	TaskStages                  = v1.TaskStages
+	FindProjectTemplateRequest   = v1.FindProjectTemplateRequest
+	FindProjectTemplateResponse  = v1.FindProjectTemplateResponse
+	IndexRequest                 = v1.IndexRequest
+	IndexResponse                = v1.IndexResponse
+	MenuMessage                  = v1.MenuMessage
+	ProjectDetailRequest         = v1.ProjectDetailRequest
+	ProjectDetailResponse        = v1.ProjectDetailResponse
+	ProjectMessage               = v1.ProjectMessage
+	ProjectRequest               = v1.ProjectRequest
+	ProjectResponse              = v1.ProjectResponse
+	ProjectTemplateMessage       = v1.ProjectTemplateMessage
+	RecycleProjectRequest        = v1.RecycleProjectRequest
+	RecycleProjectResponse       = v1.RecycleProjectResponse
+	SaveProjectReq               = v1.SaveProjectReq
+	SaveProjectRsp               = v1.SaveProjectRsp
+	TaskStages                   = v1.TaskStages
+	UpdateCollectProjectRequest  = v1.UpdateCollectProjectRequest
+	UpdateCollectProjectResponse = v1.UpdateCollectProjectResponse
 
 	ProjectService interface {
 		Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
@@ -38,6 +40,7 @@ type (
 		SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error)
 		ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error)
 		RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error)
+		UpdateCollectProject(ctx context.Context, in *UpdateCollectProjectRequest, opts ...grpc.CallOption) (*UpdateCollectProjectResponse, error)
 	}
 
 	defaultProjectService struct {
@@ -79,4 +82,9 @@ func (m *defaultProjectService) ProjectDetail(ctx context.Context, in *ProjectDe
 func (m *defaultProjectService) RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error) {
 	client := v1.NewProjectServiceClient(m.cli.Conn())
 	return client.RecycleOrRecoverProject(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) UpdateCollectProject(ctx context.Context, in *UpdateCollectProjectRequest, opts ...grpc.CallOption) (*UpdateCollectProjectResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.UpdateCollectProject(ctx, in, opts...)
 }

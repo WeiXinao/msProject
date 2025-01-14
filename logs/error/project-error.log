@@ -400,3 +400,5 @@
 {"level":"ERROR","time":"2025-01-14T19:58:13.688+0800","caller":"internal/discovbuilder.go:35","msg":"bad resolver state","caller":"internal/discovbuilder.go:35"}
 {"level":"ERROR","time":"2025-01-14T19:59:12.467+0800","caller":"internal/discovbuilder.go:35","msg":"bad resolver state","caller":"internal/discovbuilder.go:35"}
 {"level":"ERROR","time":"2025-01-14T20:12:02.002+0800","caller":"internal/discovbuilder.go:35","msg":"bad resolver state","caller":"internal/discovbuilder.go:35"}
+{"level":"ERROR","time":"2025-01-14T21:37:36.124+0800","caller":"internal/discovbuilder.go:35","msg":"bad resolver state","caller":"internal/discovbuilder.go:35"}
+{"level":"ERROR","time":"2025-01-14T21:37:36.124+0800","caller":"internal/discovbuilder.go:35","msg":"bad resolver state","caller":"internal/discovbuilder.go:35"}

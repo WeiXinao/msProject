@@ -32,11 +32,22 @@ func (l *FindProjectByMemIdLogic) FindProjectByMemId(in *v1.ProjectRequest) (*v1
 	pageSize := in.PageSize
 	pms, total, err := l.svcCtx.ProjectRepo.FindProjectByMemId(l.ctx, in.SelectBy, memberId, page, pageSize)
 	if err != nil {
-		l.Error("[FindProjectByMemId]", err)
+		l.Error("[logic FindProjectByMemId]", err)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)
 	}
 	if pms == nil {
 		return &v1.ProjectResponse{Pm: []*v1.ProjectMessage{}, Total: total}, nil
+	}
+	mapIdToProjectAndMember, _, err := l.svcCtx.ProjectRepo.FindCollectProjectByMemId(l.ctx, memberId, page, pageSize)
+	if err != nil {
+		l.Error("[logic FindProjectByMemId]", err)
+		return nil, respx.ToStatusErr(respx.ErrInternalServer)
+	}
+	for i, pm := range pms {
+		_, ok := mapIdToProjectAndMember[pm.Project.Id]
+		if ok {
+			pms[i].Collected = domain.Collected
+		}
 	}
 	pm := []*v1.ProjectMessage{}
 	err = copier.CopyWithOption(&pm, &pms, copier.Option{DeepCopy: true})

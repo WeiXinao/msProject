@@ -21,6 +21,8 @@ type ProjectDao interface {
 	GetProjectAndMemberByPidAndMid(ctx context.Context, pid int64, mid int64) (ProjectAndMember, error)
 	IsCollectedByPidAndMid(ctx context.Context, pid int64, mid int64) (bool, error)
 	DeleteProject(ctx context.Context, projectId int64, deleted bool) error
+	SaveProjectCollection(ctx context.Context, projectCollection ProjectCollection) error
+	DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error
 }
 
 type ProjectMenu struct {
