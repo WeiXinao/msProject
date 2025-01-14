@@ -16,4 +16,32 @@ type ProjectAndMember struct {
 	JoinTime    int64
 	IsOwner     int64
 	Authorize   string
+	OwnerName   string
+	Collected   int
 }
+
+func (m *ProjectAndMember) GetAccessControlType() string {
+	if m.AccessControlType == 0 {
+		return "open"
+	}
+	if m.AccessControlType == 1 {
+		return "private"
+	}
+	if m.AccessControlType == 2 {
+		return "custom"
+	}
+	return ""
+}
+
+func ToMap(orgs []*ProjectAndMember) map[int64]*ProjectAndMember {
+	m := make(map[int64]*ProjectAndMember)
+	for _, v := range orgs {
+		m[v.Id] = v
+	}
+	return m
+}
+
+const (
+	Uncollected = iota
+	Collected
+)

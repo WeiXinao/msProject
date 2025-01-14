@@ -4,8 +4,10 @@ import (
 	"context"
 	"github.com/WeiXinao/msProject/api/proto/gen/project/v1"
 	"github.com/WeiXinao/msProject/pkg/respx"
+	"github.com/WeiXinao/msProject/project/internal/domain"
 	"github.com/WeiXinao/msProject/project/internal/svc"
 	"github.com/jinzhu/copier"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +30,7 @@ func (l *FindProjectByMemIdLogic) FindProjectByMemId(in *v1.ProjectRequest) (*v1
 	memberId := in.MemberId
 	page := in.Page
 	pageSize := in.PageSize
-	pms, total, err := l.svcCtx.ProjectRepo.FindProjectByMemId(l.ctx, memberId, page, pageSize)
+	pms, total, err := l.svcCtx.ProjectRepo.FindProjectByMemId(l.ctx, in.SelectBy, memberId, page, pageSize)
 	if err != nil {
 		l.Error("[FindProjectByMemId]", err)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)
@@ -47,6 +49,12 @@ func (l *FindProjectByMemIdLogic) FindProjectByMemId(in *v1.ProjectRequest) (*v1
 		if err != nil {
 			l.Error("[FindProjectByMemId]", err)
 		}
+		pam := domain.ToMap(pms)[p.Id]
+		p.AccessControlType = pam.GetAccessControlType()
+		p.JoinTime = time.UnixMilli(pam.JoinTime).Format(time.DateTime)
+		p.OwnerName = in.MemberName
+		p.Order = int32(pam.Order)
+		p.CreateTime = time.UnixMilli(pam.CreateTime).Format(time.DateTime)
 	}
 	return &v1.ProjectResponse{Pm: pm, Total: total}, nil
 }

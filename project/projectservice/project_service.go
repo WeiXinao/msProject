@@ -14,16 +14,27 @@ import (
 )
 
 type (
-	IndexRequest    = v1.IndexRequest
-	IndexResponse   = v1.IndexResponse
-	MenuMessage     = v1.MenuMessage
-	ProjectMessage  = v1.ProjectMessage
-	ProjectRequest  = v1.ProjectRequest
-	ProjectResponse = v1.ProjectResponse
+	FindProjectTemplateRequest  = v1.FindProjectTemplateRequest
+	FindProjectTemplateResponse = v1.FindProjectTemplateResponse
+	IndexRequest                = v1.IndexRequest
+	IndexResponse               = v1.IndexResponse
+	MenuMessage                 = v1.MenuMessage
+	ProjectDetailRequest        = v1.ProjectDetailRequest
+	ProjectDetailResponse       = v1.ProjectDetailResponse
+	ProjectMessage              = v1.ProjectMessage
+	ProjectRequest              = v1.ProjectRequest
+	ProjectResponse             = v1.ProjectResponse
+	ProjectTemplateMessage      = v1.ProjectTemplateMessage
+	SaveProjectReq              = v1.SaveProjectReq
+	SaveProjectRsp              = v1.SaveProjectRsp
+	TaskStages                  = v1.TaskStages
 
 	ProjectService interface {
 		Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
 		FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
+		FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
+		SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error)
+		ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error)
 	}
 
 	defaultProjectService struct {
@@ -45,4 +56,19 @@ func (m *defaultProjectService) Index(ctx context.Context, in *IndexRequest, opt
 func (m *defaultProjectService) FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error) {
 	client := v1.NewProjectServiceClient(m.cli.Conn())
 	return client.FindProjectByMemId(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.FindProjectTemplate(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.SaveProject(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.ProjectDetail(ctx, in, opts...)
 }

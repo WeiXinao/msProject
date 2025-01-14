@@ -32,3 +32,18 @@ func (s *ProjectServiceServer) FindProjectByMemId(ctx context.Context, in *v1.Pr
 	l := logic.NewFindProjectByMemIdLogic(ctx, s.svcCtx)
 	return l.FindProjectByMemId(in)
 }
+
+func (s *ProjectServiceServer) FindProjectTemplate(ctx context.Context, in *v1.FindProjectTemplateRequest) (*v1.FindProjectTemplateResponse, error) {
+	l := logic.NewFindProjectTemplateLogic(ctx, s.svcCtx)
+	return l.FindProjectTemplate(in)
+}
+
+func (s *ProjectServiceServer) SaveProject(ctx context.Context, in *v1.SaveProjectReq) (*v1.SaveProjectRsp, error) {
+	l := logic.NewSaveProjectLogic(ctx, s.svcCtx)
+	return l.SaveProject(in)
+}
+
+func (s *ProjectServiceServer) ProjectDetail(ctx context.Context, in *v1.ProjectDetailRequest) (*v1.ProjectDetailResponse, error) {
+	l := logic.NewProjectDetailLogic(ctx, s.svcCtx)
+	return l.ProjectDetail(in)
+}

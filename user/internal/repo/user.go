@@ -17,6 +17,7 @@ import (
 type UserRepo interface {
 	CacheCaptcha(ctx context.Context, mobile, captcha string, expire time.Duration) error
 	VerifyCaptcha(ctx context.Context, mobile, expectCaptcha string) error
+	GetMemberById(ctx context.Context, memId int64) (domain.Member, error)
 	GetMemberByEmail(ctx context.Context, email string) (domain.Member, error)
 	GetMemberByAccount(ctx context.Context, account string) (domain.Member, error)
 	GetMemberByMobile(ctx context.Context, mobile string) (domain.Member, error)
@@ -31,6 +32,14 @@ type userRepo struct {
 	cache     cachex.Cache
 	userCache *cache.UserCache
 	userDao   dao.UserDao
+}
+
+func (u *userRepo) GetMemberById(ctx context.Context, memId int64) (domain.Member, error) {
+	member, err := u.userDao.GetMemberById(ctx, memId)
+	if err != nil {
+		return domain.Member{}, err
+	}
+	return u.ToDomain(member)
 }
 
 func (u *userRepo) GetOrganizationByMemId(ctx context.Context, memId int64) ([]domain.Organization, error) {

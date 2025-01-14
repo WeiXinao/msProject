@@ -18,7 +18,11 @@ type (
 	CaptchaResponse     = userv1.CaptchaResponse
 	LoginRequest        = userv1.LoginRequest
 	LoginResponse       = userv1.LoginResponse
+	MemberInfoRequest   = userv1.MemberInfoRequest
+	MemberInfoResponse  = userv1.MemberInfoResponse
 	MemberMessage       = userv1.MemberMessage
+	MyOrgListRequest    = userv1.MyOrgListRequest
+	MyOrgListResponse   = userv1.MyOrgListResponse
 	OrganizationMessage = userv1.OrganizationMessage
 	RegisterRequest     = userv1.RegisterRequest
 	RegisterResponse    = userv1.RegisterResponse
@@ -28,6 +32,8 @@ type (
 		GetCaptcha(ctx context.Context, in *CaptchaRequest, opts ...grpc.CallOption) (*CaptchaResponse, error)
 		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 		Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+		MyOrgList(ctx context.Context, in *MyOrgListRequest, opts ...grpc.CallOption) (*MyOrgListResponse, error)
+		MemberInfo(ctx context.Context, in *MemberInfoRequest, opts ...grpc.CallOption) (*MemberInfoResponse, error)
 	}
 
 	defaultLoginService struct {
@@ -54,4 +60,14 @@ func (m *defaultLoginService) Register(ctx context.Context, in *RegisterRequest,
 func (m *defaultLoginService) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
 	client := userv1.NewLoginServiceClient(m.cli.Conn())
 	return client.Login(ctx, in, opts...)
+}
+
+func (m *defaultLoginService) MyOrgList(ctx context.Context, in *MyOrgListRequest, opts ...grpc.CallOption) (*MyOrgListResponse, error) {
+	client := userv1.NewLoginServiceClient(m.cli.Conn())
+	return client.MyOrgList(ctx, in, opts...)
+}
+
+func (m *defaultLoginService) MemberInfo(ctx context.Context, in *MemberInfoRequest, opts ...grpc.CallOption) (*MemberInfoResponse, error) {
+	client := userv1.NewLoginServiceClient(m.cli.Conn())
+	return client.MemberInfo(ctx, in, opts...)
 }

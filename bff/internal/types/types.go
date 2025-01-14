@@ -11,6 +11,13 @@ type GetCaptchaResp struct {
 	Captcha string `json:"captcha"`
 }
 
+type GetOrgListReq struct {
+}
+
+type GetOrgListRsp struct {
+	OrganizationList []OrganizationList `json:"organizationList"`
+}
+
 type IndexReq struct {
 	Token string `header:"Authorization,optional"`
 }
@@ -31,10 +38,13 @@ type LoginRsp struct {
 }
 
 type Member struct {
-	Name   string `json:"name"`
-	Mobile string `json:"mobile"`
-	Status int    `json:"status"`
-	Code   string `json:"code"`
+	Name             string `json:"name"`
+	Mobile           string `json:"mobile"`
+	Status           int    `json:"status"`
+	Code             string `json:"code"`
+	CreateTime       string `json:"create_time"`
+	LastLoginTime    string `json:"last_login_time"`
+	OrganizationCode string `json:"organization_code"`
 }
 
 type MenuMessage struct {
@@ -43,15 +53,18 @@ type MenuMessage struct {
 	Title      string         `json:"title"`
 	Icon       string         `json:"icon"`
 	Url        string         `json:"url"`
-	FilePath   string         `json:"filePath"`
+	FilePath   string         `json:"file_path"`
 	Params     string         `json:"params"`
 	Node       string         `json:"node"`
 	Sort       int32          `json:"sort"`
 	Status     int32          `json:"status"`
-	CreateBy   int64          `json:"createBy"`
-	IsInner    int32          `json:"isInner"`
+	CreateBy   int64          `json:"create_by"`
+	IsInner    int32          `json:"is_inner"`
 	Values     string         `json:"values"`
-	ShowSlider int32          `json:"showSlider"`
+	ShowSlider int32          `json:"show_slider"`
+	StatusText string         `json:"statusText"`
+	InnerText  string         `json:"innerText"`
+	FullUrl    string         `json:"fullUrl"`
 	Children   []*MenuMessage `json:"children"`
 }
 
@@ -59,8 +72,8 @@ type OrganizationList struct {
 	Name        string `json:"name"`
 	Avatar      string `json:"avatar"`
 	Description string `json:"description"`
-	MemberId    int64  `json:"memberId"`
-	CreateTime  int64  `json:"createTime"`
+	OwnerCode   string `json:"owner_code"`
+	CreateTime  string `json:"create_time"`
 	Personal    int32  `json:"personal"`
 	Address     string `json:"address"`
 	Province    int32  `json:"province"`
@@ -73,45 +86,124 @@ type Project struct {
 	Cover              string  `json:"cover"`
 	Name               string  `json:"name"`
 	Description        string  `json:"description"`
-	AccessControlType  int     `json:"accessControlType"`
-	WhiteList          string  `json:"whiteList"`
+	AccessControlType  string  `json:"access_control_type"`
+	WhiteList          string  `json:"white_list"`
 	Order              int     `json:"order"`
 	Deleted            int     `json:"deleted"`
-	TemplateCode       string  `json:"templateCode"`
+	TemplateCode       string  `json:"template_code"`
 	Schedule           float64 `json:"schedule"`
-	CreateTime         string  `json:"createTime"`
-	OrganizationCode   int64   `json:"organizationCode"`
-	DeletedTime        string  `json:"deletedTime"`
+	CreateTime         string  `json:"create_time"`
+	OrganizationCode   int64   `json:"organization_code"`
+	DeletedTime        string  `json:"deleted_time"`
 	Private            int     `json:"private"`
 	Prefix             string  `json:"prefix"`
-	OpenPrefix         int     `json:"openPrefix"`
+	OpenPrefix         int     `json:"open_prefix"`
 	Archive            int     `json:"archive"`
-	ArchiveTime        int64   `json:"archiveTime"`
-	OpenBeginTime      int     `json:"openBeginTime"`
-	OpenTaskPrivate    int     `json:"openTaskPrivate"`
-	TaskBoardTheme     string  `json:"taskBoardTheme"`
-	BeginTime          int64   `json:"beginTime"`
-	EndTime            int64   `json:"endTime"`
-	AutoUpdateSchedule int     `json:"autoUpdateSchedule"`
+	ArchiveTime        int64   `json:"archive_time"`
+	OpenBeginTime      int     `json:"open_begin_time"`
+	OpenTaskPrivate    int     `json:"open_task_private"`
+	TaskBoardTheme     string  `json:"task_board_theme"`
+	BeginTime          int64   `json:"begin_time"`
+	EndTime            int64   `json:"end_time"`
+	AutoUpdateSchedule int     `json:"auto_update_schedule"`
 	Code               string  `json:"code"`
 }
 
 type ProjectAndMember struct {
 	Project
-	ProjectCode int64  `json:"projectCode"`
-	MemberCode  int64  `json:"memberCode"`
-	JoinTime    int64  `json:"joinTime"`
-	IsOwner     int64  `json:"isOwner"`
+	ProjectCode int64  `json:"project_code"`
+	MemberCode  int64  `json:"member_code"`
+	JoinTime    int64  `json:"join_time"`
+	IsOwner     int64  `json:"is_owner"`
 	Authorize   string `json:"authorize"`
+	OwnerName   string `json:"owner_name"`
+	Collected   int    `json:"collected"`
 }
 
 type ProjectMember struct {
 	Id          int64  `json:"id"`
-	ProjectCode int64  `json:"projectCode"`
-	MemberCode  int64  `json:"memberCode"`
-	JoinTime    int64  `json:"joinTime"`
-	IsOwner     int64  `json:"isOwner"`
+	ProjectCode int64  `json:"project_code"`
+	MemberCode  int64  `json:"member_code"`
+	JoinTime    int64  `json:"join_time"`
+	IsOwner     int64  `json:"is_owner"`
 	Authorize   string `json:"authorize"`
+}
+
+type ProjectSaveReq struct {
+	Name         string `form:"name"`
+	TemplateCode string `form:"templateCode"`
+	Description  string `form:"description"`
+	Id           int    `form:"id"`
+}
+
+type ProjectSaveRsp struct {
+	Id               int64  `json:"id"`
+	Cover            string `json:"cover"`
+	Name             string `json:"name"`
+	Description      string `json:"description"`
+	Code             string `json:"code"`
+	CreateTime       string `json:"create_time"`
+	TaskBoardTheme   string `json:"task_board_theme"`
+	OrganizationCode string `json:"organization_code"`
+}
+
+type ProjectTemplate struct {
+	Id               int                   `json:"id"`
+	Name             string                `json:"name"`
+	Description      string                `json:"description"`
+	Sort             int                   `json:"sort"`
+	CreateTime       string                `json:"create_time"`
+	OrganizationCode string                `json:"organization_code"`
+	Cover            string                `json:"cover"`
+	MemberCode       string                `json:"member_code"`
+	IsSystem         int                   `json:"is_system"`
+	TaskStages       []*TaskStagesOnlyName `json:"task_stages"`
+	Code             string                `json:"code"`
+}
+
+type ProjectTemplateReq struct {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+	ViewType int32 `form:"viewType"`
+}
+
+type ProjectTemplateRsp struct {
+	Ptm   []*ProjectTemplate `json:"list"`
+	Total int64              `json:"total"`
+}
+
+type ReadProjectReq struct {
+	ProjectCode string `form:"projectCode"`
+}
+
+type ReadProjectRsp struct {
+	Cover              string  `json:"cover"`
+	Name               string  `json:"name"`
+	Description        string  `json:"description"`
+	AccessControlType  string  `json:"access_control_type"`
+	WhiteList          string  `json:"white_list"`
+	Order              int     `json:"order"`
+	Deleted            int     `json:"deleted"`
+	TemplateCode       string  `json:"template_code"`
+	Schedule           float64 `json:"schedule"`
+	CreateTime         string  `json:"create_time"`
+	OrganizationCode   string  `json:"organization_code"`
+	DeletedTime        string  `json:"deleted_time"`
+	Private            int     `json:"private"`
+	Prefix             string  `json:"prefix"`
+	OpenPrefix         int     `json:"open_prefix"`
+	Archive            int     `json:"archive"`
+	ArchiveTime        int64   `json:"archive_time"`
+	OpenBeginTime      int     `json:"open_begin_time"`
+	OpenTaskPrivate    int     `json:"open_task_private"`
+	TaskBoardTheme     string  `json:"task_board_theme"`
+	BeginTime          int64   `json:"begin_time"`
+	EndTime            int64   `json:"end_time"`
+	AutoUpdateSchedule int     `json:"auto_update_schedule"`
+	Code               string  `json:"code"`
+	OwnerName          string  `json:"owner_name"`
+	Collected          int     `json:"collected"`
+	OwnerAvatar        string  `json:"owner_avatar"`
 }
 
 type RegisterReq struct {
@@ -127,13 +219,18 @@ type RegisterResp struct {
 }
 
 type SelfListReq struct {
-	Page     int64 `form:"page,default=1"`
-	PageSize int64 `form:"pageSize,default=10"`
+	Page     int64  `form:"page,default=1"`
+	PageSize int64  `form:"pageSize,default=10"`
+	SelectBy string `form:"selectBy,optional"`
 }
 
 type SelfListRsp struct {
 	List  []*ProjectAndMember `json:"list"`
 	Total int64               `json:"total"`
+}
+
+type TaskStagesOnlyName struct {
+	Name string `json:"name"`
 }
 
 type TokenList struct {

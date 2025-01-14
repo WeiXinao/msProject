@@ -9,9 +9,9 @@ type Project struct {
 	WhiteList          string
 	Order              int
 	Deleted            int
-	TemplateCode       string
+	TemplateCode       int
 	Schedule           float64
-	CreateTime         string
+	CreateTime         int64
 	OrganizationCode   int64
 	DeletedTime        string
 	Private            int
@@ -26,3 +26,23 @@ type Project struct {
 	EndTime            int64
 	AutoUpdateSchedule int
 }
+
+const (
+	Undeleted = iota
+	Deleted
+)
+
+const (
+	Unarchived = iota
+	Archived
+)
+
+const (
+	AccessControlTypeOpen = iota
+	AccessControlTypePrivate
+)
+
+const (
+	TaskBoardThemeDefault = "default"
+	TaskBoardThemeSimple  = "simple"
+)

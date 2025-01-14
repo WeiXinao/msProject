@@ -19,8 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProjectService_Index_FullMethodName              = "/api.proto.project.v1.ProjectService/Index"
-	ProjectService_FindProjectByMemId_FullMethodName = "/api.proto.project.v1.ProjectService/FindProjectByMemId"
+	ProjectService_Index_FullMethodName               = "/api.proto.project.v1.ProjectService/Index"
+	ProjectService_FindProjectByMemId_FullMethodName  = "/api.proto.project.v1.ProjectService/FindProjectByMemId"
+	ProjectService_FindProjectTemplate_FullMethodName = "/api.proto.project.v1.ProjectService/FindProjectTemplate"
+	ProjectService_SaveProject_FullMethodName         = "/api.proto.project.v1.ProjectService/SaveProject"
+	ProjectService_ProjectDetail_FullMethodName       = "/api.proto.project.v1.ProjectService/ProjectDetail"
 )
 
 // ProjectServiceClient is the client API for ProjectService service.
@@ -29,6 +32,9 @@ const (
 type ProjectServiceClient interface {
 	Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
 	FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
+	FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
+	SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error)
+	ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error)
 }
 
 type projectServiceClient struct {
@@ -59,12 +65,45 @@ func (c *projectServiceClient) FindProjectByMemId(ctx context.Context, in *Proje
 	return out, nil
 }
 
+func (c *projectServiceClient) FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FindProjectTemplateResponse)
+	err := c.cc.Invoke(ctx, ProjectService_FindProjectTemplate_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SaveProjectRsp)
+	err := c.cc.Invoke(ctx, ProjectService_SaveProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ProjectDetailResponse)
+	err := c.cc.Invoke(ctx, ProjectService_ProjectDetail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility.
 type ProjectServiceServer interface {
 	Index(context.Context, *IndexRequest) (*IndexResponse, error)
 	FindProjectByMemId(context.Context, *ProjectRequest) (*ProjectResponse, error)
+	FindProjectTemplate(context.Context, *FindProjectTemplateRequest) (*FindProjectTemplateResponse, error)
+	SaveProject(context.Context, *SaveProjectReq) (*SaveProjectRsp, error)
+	ProjectDetail(context.Context, *ProjectDetailRequest) (*ProjectDetailResponse, error)
 	mustEmbedUnimplementedProjectServiceServer()
 }
 
@@ -80,6 +119,15 @@ func (UnimplementedProjectServiceServer) Index(context.Context, *IndexRequest) (
 }
 func (UnimplementedProjectServiceServer) FindProjectByMemId(context.Context, *ProjectRequest) (*ProjectResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindProjectByMemId not implemented")
+}
+func (UnimplementedProjectServiceServer) FindProjectTemplate(context.Context, *FindProjectTemplateRequest) (*FindProjectTemplateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindProjectTemplate not implemented")
+}
+func (UnimplementedProjectServiceServer) SaveProject(context.Context, *SaveProjectReq) (*SaveProjectRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveProject not implemented")
+}
+func (UnimplementedProjectServiceServer) ProjectDetail(context.Context, *ProjectDetailRequest) (*ProjectDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProjectDetail not implemented")
 }
 func (UnimplementedProjectServiceServer) mustEmbedUnimplementedProjectServiceServer() {}
 func (UnimplementedProjectServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +186,60 @@ func _ProjectService_FindProjectByMemId_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_FindProjectTemplate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindProjectTemplateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).FindProjectTemplate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_FindProjectTemplate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).FindProjectTemplate(ctx, req.(*FindProjectTemplateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_SaveProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveProjectReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).SaveProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_SaveProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).SaveProject(ctx, req.(*SaveProjectReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_ProjectDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).ProjectDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_ProjectDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).ProjectDetail(ctx, req.(*ProjectDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +254,18 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FindProjectByMemId",
 			Handler:    _ProjectService_FindProjectByMemId_Handler,
+		},
+		{
+			MethodName: "FindProjectTemplate",
+			Handler:    _ProjectService_FindProjectTemplate_Handler,
+		},
+		{
+			MethodName: "SaveProject",
+			Handler:    _ProjectService_SaveProject_Handler,
+		},
+		{
+			MethodName: "ProjectDetail",
+			Handler:    _ProjectService_ProjectDetail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

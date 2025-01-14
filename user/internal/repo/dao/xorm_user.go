@@ -10,6 +10,18 @@ type XormUserDao struct {
 	db *xorm.Engine
 }
 
+func (x *XormUserDao) GetMemberById(ctx context.Context, memId int64) (Member, error) {
+	member := Member{}
+	has, err := x.db.Context(ctx).Where("id = ?", memId).Get(&member)
+	if err != nil {
+		return Member{}, err
+	}
+	if !has {
+		return Member{}, ErrRecordNotFound
+	}
+	return member, err
+}
+
 func (x *XormUserDao) GetOrganizationByMemId(ctx context.Context, memId int64) ([]Organization, error) {
 	orgs := make([]Organization, 0)
 	err := x.db.Context(ctx).Where("member_id = ?", memId).Find(&orgs)

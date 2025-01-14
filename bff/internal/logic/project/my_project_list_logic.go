@@ -28,12 +28,15 @@ func NewMyProjectListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MyP
 
 func (l *MyProjectListLogic) MyProjectList(req *types.SelfListReq) (resp *types.SelfListRsp, err error) {
 	keyMemberId := "memberId"
+	keyMemberName := "memberName"
 	memberId, _ := l.ctx.Value(keyMemberId).(int64)
+	memberName, _ := l.ctx.Value(keyMemberName).(string)
 	myProjectResp, err := l.svcCtx.ProjectClient.FindProjectByMemId(l.ctx,
 		&projectv1.ProjectRequest{
-			MemberId: memberId,
-			Page:     req.Page,
-			PageSize: req.PageSize,
+			MemberId:   memberId,
+			MemberName: memberName,
+			Page:       req.Page,
+			PageSize:   req.PageSize,
 		})
 	if err != nil {
 		l.Error("[MyProjectList]", err)

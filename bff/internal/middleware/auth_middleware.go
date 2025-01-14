@@ -3,7 +3,9 @@ package middleware
 import (
 	"context"
 	"errors"
+	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
+	"github.com/WeiXinao/msProject/user/loginservice"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 	"strings"
@@ -13,15 +15,19 @@ import (
 var (
 	ErrIllegalAuthorizationHeader = errors.New("无效的Authorization头")
 	KeyMemberId                   = "memberId"
+	KeyMemberName                 = "memberName"
+	KeyOrganizationCode           = "organizationCode"
 )
 
 type AuthMiddlewareBuilder struct {
 	jwtx.Jwter
+	UserClient loginservice.LoginService
 }
 
-func NewAuthMiddlewareBuilder(jwter jwtx.Jwter) *AuthMiddlewareBuilder {
+func NewAuthMiddlewareBuilder(jwter jwtx.Jwter, userClient loginservice.LoginService) *AuthMiddlewareBuilder {
 	return &AuthMiddlewareBuilder{
-		Jwter: jwter,
+		Jwter:      jwter,
+		UserClient: userClient,
 	}
 }
 
@@ -50,7 +56,17 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		//	3. 处理结果，认证通过 将信息放入 gin 的上下文，失败返回未登录
+		rsp, err := a.UserClient.MemberInfo(r.Context(), &userv1.MemberInfoRequest{
+			Id: userClaims.UserId,
+		})
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			logx.Error("[Auth]", err)
+			return
+		}
 		ctx := context.WithValue(r.Context(), KeyMemberId, userClaims.UserId)
+		ctx = context.WithValue(ctx, KeyMemberName, rsp.Member.Name)
+		ctx = context.WithValue(ctx, KeyOrganizationCode, rsp.Member.OrganizationCode)
 		next(w, r.WithContext(ctx))
 	}
 }

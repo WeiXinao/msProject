@@ -9,6 +9,7 @@ import (
 	"github.com/WeiXinao/msProject/user/internal/repo"
 	"github.com/WeiXinao/xkit/slice"
 	"github.com/jinzhu/copier"
+	"time"
 
 	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 	"github.com/WeiXinao/msProject/user/internal/svc"
@@ -45,8 +46,9 @@ func (l *LoginLogic) Login(in *userv1.LoginRequest) (*userv1.LoginResponse, erro
 	if err != nil {
 		return nil, err
 	}
-	memberMsg.LastLoginTime = m.LastLoginTime.UnixMilli()
+	memberMsg.LastLoginTime = m.LastLoginTime.Format(time.DateTime)
 	memberMsg.Code, _ = l.svcCtx.Encrypter.EncryptInt64(m.Id)
+	memberMsg.CreateTime = m.CreateTime.Format(time.DateTime)
 
 	// 2. 根据用户id查询组织
 	orgs, err := l.svcCtx.UserRepo.GetOrganizationByMemId(l.ctx, m.Id)
@@ -59,8 +61,9 @@ func (l *LoginLogic) Login(in *userv1.LoginRequest) (*userv1.LoginResponse, erro
 		if er != nil {
 			l.Error("[Login] ", er)
 		}
-		orgMsg.CreateTime = src.CTime.UnixMilli()
+		orgMsg.CreateTime = src.CTime.Format(time.DateTime)
 		orgMsg.Code, _ = l.svcCtx.Encrypter.EncryptInt64(src.Id)
+		orgMsg.OwnerCode = memberMsg.Code
 		return orgMsg
 	})
 

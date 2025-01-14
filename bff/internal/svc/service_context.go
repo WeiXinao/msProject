@@ -22,7 +22,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	jwter := InitJwter(c)
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
-	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter)
+	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient)
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,

@@ -37,3 +37,13 @@ func (s *LoginServiceServer) Login(ctx context.Context, in *userv1.LoginRequest)
 	l := logic.NewLoginLogic(ctx, s.svcCtx)
 	return l.Login(in)
 }
+
+func (s *LoginServiceServer) MyOrgList(ctx context.Context, in *userv1.MyOrgListRequest) (*userv1.MyOrgListResponse, error) {
+	l := logic.NewMyOrgListLogic(ctx, s.svcCtx)
+	return l.MyOrgList(in)
+}
+
+func (s *LoginServiceServer) MemberInfo(ctx context.Context, in *userv1.MemberInfoRequest) (*userv1.MemberInfoResponse, error) {
+	l := logic.NewMemberInfoLogic(ctx, s.svcCtx)
+	return l.MemberInfo(in)
+}

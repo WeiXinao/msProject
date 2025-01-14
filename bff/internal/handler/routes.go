@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	organization "github.com/WeiXinao/msProject/bff/internal/handler/organization"
 	project "github.com/WeiXinao/msProject/bff/internal/handler/project"
 	user "github.com/WeiXinao/msProject/bff/internal/handler/user"
 	"github.com/WeiXinao/msProject/bff/internal/svc"
@@ -20,13 +21,47 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/_getOrgList",
+					Handler: organization.MyOrgListHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/project/organization"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
 					Path:    "/index",
 					Handler: project.IndexHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/project",
+					Handler: project.ProjectListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project/read",
+					Handler: project.ReadProjectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project/save",
+					Handler: project.ProjectSaveHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/project/selfList",
 					Handler: project.MyProjectListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project_template",
+					Handler: project.ProjectTemplateHandler(serverCtx),
 				},
 			}...,
 		),

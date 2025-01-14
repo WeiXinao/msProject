@@ -26,7 +26,10 @@ message MenuMessage {
   int32 isInner = 12;
   string values = 13;
   int32 showSlider = 14;
-  repeated MenuMessage children = 15;
+  string statusText = 15;
+  string innerText  = 16;
+  string fullUrl    = 17;
+  repeated MenuMessage children = 18;
 }
 
 message ProjectMessage {
@@ -34,7 +37,7 @@ message ProjectMessage {
     string cover = 2;
     string name = 3;
     string description = 4;
-    int32 accessControlType = 5;
+    string accessControlType = 5;
     string whiteList = 6;
     int32 order = 7;
     int32 deleted = 8;
@@ -56,16 +59,20 @@ message ProjectMessage {
     int32 autoUpdateSchedule = 24;
     int64 projectCode = 25;
     int64 memberCode = 26;
-    int64 joinTime = 27;
+    string joinTime = 27;
     int64 isOwner = 28;
     string authorize = 29;
     string code = 30;
+    string ownerName = 31;
+    int32 collected = 32;
 }
 
 message ProjectRequest {
   int64 memberId = 1;
-  int64 page = 2;
-  int64 pageSize = 3;
+  string memberName = 2;
+  int64 page = 3;
+  int64 pageSize = 4;
+  string selectBy = 5;
 }
 
 message ProjectResponse {
@@ -73,7 +80,101 @@ message ProjectResponse {
   int64 total = 2;
 }
 
+message FindProjectTemplateRequest {
+  int64 memberId = 1;
+  string memberName = 2;
+  int64 page = 3;
+  int64 pageSize = 4;
+  string selectBy = 5;
+  string organizationCode = 6;
+  int32 viewType = 7;
+}
+
+message ProjectTemplateMessage{
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 sort = 4;
+  string createTime = 5;
+  string organizationCode = 6;
+  string cover = 7;
+  string memberCode = 8;
+  int32 isSystem = 9;
+  repeated TaskStages taskStages = 10;
+  string code = 11;
+}
+message TaskStages{
+  string name = 1;
+}
+message FindProjectTemplateResponse {
+  repeated ProjectTemplateMessage ptm = 1;
+  int64  total = 2;
+}
+
+message SaveProjectReq {
+  int64 memberId = 1;
+  string memberName = 2;
+  int64 page = 3;
+  int64 pageSize = 4;
+  string selectBy = 5;
+  string organizationCode = 6;
+  int32 viewType = 7;
+  string name = 8;
+  string templateCode = 9;
+  string description = 10;
+  int64 id = 11;
+}
+message SaveProjectRsp {
+  int64 Id = 1;
+  string Cover = 2;
+  string Name = 3;
+  string Description = 4;
+  string Code = 5;
+  string CreateTime = 6;
+  string TaskBoardTheme = 7;
+  string OrganizationCode = 8;
+}
+
+message ProjectDetailRequest {
+  string projectCode = 1;
+  int64 memberId = 2;
+}
+message ProjectDetailResponse {
+  int64 id = 1;
+  string cover = 2;
+  string name = 3;
+  string description = 4;
+  string accessControlType = 5;
+  string whiteList = 6;
+  int32 order = 7;
+  int32 deleted = 8;
+  string templateCode = 9;
+  double schedule = 10;
+  string createTime = 11;
+  string organizationCode = 12;
+  string deletedTime = 13;
+  int32 private = 14;
+  string prefix = 15;
+  int32 openPrefix = 16;
+  int32 archive = 17;
+  int64 archiveTime = 18;
+  int32 openBeginTime = 19;
+  int32 openTaskPrivate = 20;
+  string taskBoardTheme = 21;
+  int64 beginTime = 22;
+  int64 endTime = 23;
+  int32 autoUpdateSchedule = 24;
+  string code = 25;
+  int64 isOwner = 26;
+  string ownerName = 27;
+  int32 collected = 28;
+  string ownerAvatar = 29;
+}
+
 service ProjectService {
   rpc Index(IndexRequest) returns (IndexResponse);
   rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
+  rpc FindProjectTemplate(FindProjectTemplateRequest) returns (FindProjectTemplateResponse);
+  rpc SaveProject(SaveProjectReq) returns (SaveProjectRsp);
+  rpc ProjectDetail(ProjectDetailRequest) returns (ProjectDetailResponse);
 }

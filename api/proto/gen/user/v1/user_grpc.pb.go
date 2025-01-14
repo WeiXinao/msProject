@@ -22,6 +22,8 @@ const (
 	LoginService_GetCaptcha_FullMethodName = "/api.proto.user.v1.LoginService/GetCaptcha"
 	LoginService_Register_FullMethodName   = "/api.proto.user.v1.LoginService/Register"
 	LoginService_Login_FullMethodName      = "/api.proto.user.v1.LoginService/Login"
+	LoginService_MyOrgList_FullMethodName  = "/api.proto.user.v1.LoginService/MyOrgList"
+	LoginService_MemberInfo_FullMethodName = "/api.proto.user.v1.LoginService/MemberInfo"
 )
 
 // LoginServiceClient is the client API for LoginService service.
@@ -31,6 +33,8 @@ type LoginServiceClient interface {
 	GetCaptcha(ctx context.Context, in *CaptchaRequest, opts ...grpc.CallOption) (*CaptchaResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	MyOrgList(ctx context.Context, in *MyOrgListRequest, opts ...grpc.CallOption) (*MyOrgListResponse, error)
+	MemberInfo(ctx context.Context, in *MemberInfoRequest, opts ...grpc.CallOption) (*MemberInfoResponse, error)
 }
 
 type loginServiceClient struct {
@@ -71,6 +75,26 @@ func (c *loginServiceClient) Login(ctx context.Context, in *LoginRequest, opts .
 	return out, nil
 }
 
+func (c *loginServiceClient) MyOrgList(ctx context.Context, in *MyOrgListRequest, opts ...grpc.CallOption) (*MyOrgListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MyOrgListResponse)
+	err := c.cc.Invoke(ctx, LoginService_MyOrgList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *loginServiceClient) MemberInfo(ctx context.Context, in *MemberInfoRequest, opts ...grpc.CallOption) (*MemberInfoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MemberInfoResponse)
+	err := c.cc.Invoke(ctx, LoginService_MemberInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LoginServiceServer is the server API for LoginService service.
 // All implementations must embed UnimplementedLoginServiceServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type LoginServiceServer interface {
 	GetCaptcha(context.Context, *CaptchaRequest) (*CaptchaResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	MyOrgList(context.Context, *MyOrgListRequest) (*MyOrgListResponse, error)
+	MemberInfo(context.Context, *MemberInfoRequest) (*MemberInfoResponse, error)
 	mustEmbedUnimplementedLoginServiceServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedLoginServiceServer) Register(context.Context, *RegisterReques
 }
 func (UnimplementedLoginServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedLoginServiceServer) MyOrgList(context.Context, *MyOrgListRequest) (*MyOrgListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MyOrgList not implemented")
+}
+func (UnimplementedLoginServiceServer) MemberInfo(context.Context, *MemberInfoRequest) (*MemberInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MemberInfo not implemented")
 }
 func (UnimplementedLoginServiceServer) mustEmbedUnimplementedLoginServiceServer() {}
 func (UnimplementedLoginServiceServer) testEmbeddedByValue()                      {}
@@ -172,6 +204,42 @@ func _LoginService_Login_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LoginService_MyOrgList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MyOrgListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServiceServer).MyOrgList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LoginService_MyOrgList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServiceServer).MyOrgList(ctx, req.(*MyOrgListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LoginService_MemberInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MemberInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LoginServiceServer).MemberInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LoginService_MemberInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LoginServiceServer).MemberInfo(ctx, req.(*MemberInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LoginService_ServiceDesc is the grpc.ServiceDesc for LoginService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +258,14 @@ var LoginService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _LoginService_Login_Handler,
+		},
+		{
+			MethodName: "MyOrgList",
+			Handler:    _LoginService_MyOrgList_Handler,
+		},
+		{
+			MethodName: "MemberInfo",
+			Handler:    _LoginService_MemberInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
