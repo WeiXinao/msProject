@@ -239,10 +239,17 @@ type ReadProjectRsp {
 	EndTime            int64   `json:"end_time"`
 	AutoUpdateSchedule int     `json:"auto_update_schedule"`
 	Code               string  `json:"code"`
-
 	OwnerName          string  `json:"owner_name"`
 	Collected          int     `json:"collected"`
 	OwnerAvatar        string  `json:"owner_avatar"`
+}
+
+type RecycleProjectReq {
+	ProjectCode string `form:"projectCode"`
+}
+
+type RecycleProjectRsp {
+	ProjectList []*Project
 }
 
 @server (
@@ -268,6 +275,12 @@ service bff {
 
 	@handler ReadProject
 	post /project/read (ReadProjectReq) returns (ReadProjectRsp)
+
+	@handler RecycleProject
+	post /project/recycle (RecycleProjectReq) returns (RecycleProjectRsp)
+
+	@handler RecoverProject
+	post /project/recovery (RecycleProjectReq) returns (RecycleProjectRsp)
 }
 
 type GetOrgListReq {}

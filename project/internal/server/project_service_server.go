@@ -47,3 +47,8 @@ func (s *ProjectServiceServer) ProjectDetail(ctx context.Context, in *v1.Project
 	l := logic.NewProjectDetailLogic(ctx, s.svcCtx)
 	return l.ProjectDetail(in)
 }
+
+func (s *ProjectServiceServer) RecycleOrRecoverProject(ctx context.Context, in *v1.RecycleProjectRequest) (*v1.RecycleProjectResponse, error) {
+	l := logic.NewRecycleOrRecoverProjectLogic(ctx, s.svcCtx)
+	return l.RecycleOrRecoverProject(in)
+}

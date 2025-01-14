@@ -25,6 +25,8 @@ type (
 	ProjectRequest              = v1.ProjectRequest
 	ProjectResponse             = v1.ProjectResponse
 	ProjectTemplateMessage      = v1.ProjectTemplateMessage
+	RecycleProjectRequest       = v1.RecycleProjectRequest
+	RecycleProjectResponse      = v1.RecycleProjectResponse
 	SaveProjectReq              = v1.SaveProjectReq
 	SaveProjectRsp              = v1.SaveProjectRsp
 	TaskStages                  = v1.TaskStages
@@ -35,6 +37,7 @@ type (
 		FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
 		SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error)
 		ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error)
+		RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error)
 	}
 
 	defaultProjectService struct {
@@ -71,4 +74,9 @@ func (m *defaultProjectService) SaveProject(ctx context.Context, in *SaveProject
 func (m *defaultProjectService) ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error) {
 	client := v1.NewProjectServiceClient(m.cli.Conn())
 	return client.ProjectDetail(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.RecycleOrRecoverProject(ctx, in, opts...)
 }

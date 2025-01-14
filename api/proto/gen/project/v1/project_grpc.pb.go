@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ProjectService_Index_FullMethodName               = "/api.proto.project.v1.ProjectService/Index"
-	ProjectService_FindProjectByMemId_FullMethodName  = "/api.proto.project.v1.ProjectService/FindProjectByMemId"
-	ProjectService_FindProjectTemplate_FullMethodName = "/api.proto.project.v1.ProjectService/FindProjectTemplate"
-	ProjectService_SaveProject_FullMethodName         = "/api.proto.project.v1.ProjectService/SaveProject"
-	ProjectService_ProjectDetail_FullMethodName       = "/api.proto.project.v1.ProjectService/ProjectDetail"
+	ProjectService_Index_FullMethodName                   = "/api.proto.project.v1.ProjectService/Index"
+	ProjectService_FindProjectByMemId_FullMethodName      = "/api.proto.project.v1.ProjectService/FindProjectByMemId"
+	ProjectService_FindProjectTemplate_FullMethodName     = "/api.proto.project.v1.ProjectService/FindProjectTemplate"
+	ProjectService_SaveProject_FullMethodName             = "/api.proto.project.v1.ProjectService/SaveProject"
+	ProjectService_ProjectDetail_FullMethodName           = "/api.proto.project.v1.ProjectService/ProjectDetail"
+	ProjectService_RecycleOrRecoverProject_FullMethodName = "/api.proto.project.v1.ProjectService/RecycleOrRecoverProject"
 )
 
 // ProjectServiceClient is the client API for ProjectService service.
@@ -35,6 +36,7 @@ type ProjectServiceClient interface {
 	FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
 	SaveProject(ctx context.Context, in *SaveProjectReq, opts ...grpc.CallOption) (*SaveProjectRsp, error)
 	ProjectDetail(ctx context.Context, in *ProjectDetailRequest, opts ...grpc.CallOption) (*ProjectDetailResponse, error)
+	RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error)
 }
 
 type projectServiceClient struct {
@@ -95,6 +97,16 @@ func (c *projectServiceClient) ProjectDetail(ctx context.Context, in *ProjectDet
 	return out, nil
 }
 
+func (c *projectServiceClient) RecycleOrRecoverProject(ctx context.Context, in *RecycleProjectRequest, opts ...grpc.CallOption) (*RecycleProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RecycleProjectResponse)
+	err := c.cc.Invoke(ctx, ProjectService_RecycleOrRecoverProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectServiceServer is the server API for ProjectService service.
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type ProjectServiceServer interface {
 	FindProjectTemplate(context.Context, *FindProjectTemplateRequest) (*FindProjectTemplateResponse, error)
 	SaveProject(context.Context, *SaveProjectReq) (*SaveProjectRsp, error)
 	ProjectDetail(context.Context, *ProjectDetailRequest) (*ProjectDetailResponse, error)
+	RecycleOrRecoverProject(context.Context, *RecycleProjectRequest) (*RecycleProjectResponse, error)
 	mustEmbedUnimplementedProjectServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedProjectServiceServer) SaveProject(context.Context, *SaveProje
 }
 func (UnimplementedProjectServiceServer) ProjectDetail(context.Context, *ProjectDetailRequest) (*ProjectDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProjectDetail not implemented")
+}
+func (UnimplementedProjectServiceServer) RecycleOrRecoverProject(context.Context, *RecycleProjectRequest) (*RecycleProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RecycleOrRecoverProject not implemented")
 }
 func (UnimplementedProjectServiceServer) mustEmbedUnimplementedProjectServiceServer() {}
 func (UnimplementedProjectServiceServer) testEmbeddedByValue()                        {}
@@ -240,6 +256,24 @@ func _ProjectService_ProjectDetail_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_RecycleOrRecoverProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RecycleProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).RecycleOrRecoverProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_RecycleOrRecoverProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).RecycleOrRecoverProject(ctx, req.(*RecycleProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ProjectService_ServiceDesc is the grpc.ServiceDesc for ProjectService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProjectDetail",
 			Handler:    _ProjectService_ProjectDetail_Handler,
+		},
+		{
+			MethodName: "RecycleOrRecoverProject",
+			Handler:    _ProjectService_RecycleOrRecoverProject_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

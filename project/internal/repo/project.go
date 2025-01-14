@@ -15,6 +15,10 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
+func (p *projectRepo) DeleteProject(ctx context.Context, projectId int64, deleted bool) error {
+	return p.dao.DeleteProject(ctx, projectId, deleted)
+}
+
 func (p *projectRepo) GetProjectAndMemberByPidAndMid(ctx context.Context, pid int64, mid int64) (domain.ProjectAndMember, error) {
 	pam, err := p.dao.GetProjectAndMemberByPidAndMid(ctx, pid, mid)
 	if err != nil {

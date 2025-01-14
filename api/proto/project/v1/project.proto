@@ -171,10 +171,18 @@ message ProjectDetailResponse {
   string ownerAvatar = 29;
 }
 
+message RecycleProjectRequest {
+  string projectCode = 1;
+  bool deleted = 2;
+}
+message RecycleProjectResponse {
+}
+
 service ProjectService {
   rpc Index(IndexRequest) returns (IndexResponse);
   rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
   rpc FindProjectTemplate(FindProjectTemplateRequest) returns (FindProjectTemplateResponse);
   rpc SaveProject(SaveProjectReq) returns (SaveProjectRsp);
   rpc ProjectDetail(ProjectDetailRequest) returns (ProjectDetailResponse);
+  rpc RecycleOrRecoverProject(RecycleProjectRequest) returns (RecycleProjectResponse);
 }

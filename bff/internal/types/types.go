@@ -206,6 +206,14 @@ type ReadProjectRsp struct {
 	OwnerAvatar        string  `json:"owner_avatar"`
 }
 
+type RecycleProjectReq struct {
+	ProjectCode string `form:"projectCode"`
+}
+
+type RecycleProjectRsp struct {
+	ProjectList []*Project
+}
+
 type RegisterReq struct {
 	Email     string `form:"email"`
 	Name      string `form:"name"`

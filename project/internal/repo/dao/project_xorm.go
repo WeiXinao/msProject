@@ -11,11 +11,25 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+func (p *projectXormDao) DeleteProject(ctx context.Context, projectId int64, deleted bool) error {
+	isDel := 0
+	if deleted {
+		isDel = 1
+	}
+	_, err := p.db.Context(ctx).
+		Table(new(Project)).
+		Where("id = ?", projectId).
+		Update(map[string]any{
+			"deleted": isDel,
+		})
+	return err
+}
+
 func (p *projectXormDao) GetProjectAndMemberByPidAndMid(ctx context.Context, pid int64, mid int64) (ProjectAndMember, error) {
 	pam := ProjectAndMember{}
 	has, err := p.db.Context(ctx).Table("ms_project").
 		Join("inner", "ms_project_member", "ms_project.id = ms_project_member.project_code").
-		Where("ms_project_member.project_code = ? AND ms_project_member.member_code = ?", pid, mid).
+		Where("ms_project_member.project_code = ? AND ms_project_member.member_code = ? AND deleted = 0", pid, mid).
 		Get(&pam)
 	if err != nil {
 		return ProjectAndMember{}, err
@@ -116,7 +130,7 @@ func (p *projectXormDao) FindCollectProjectByMemId(ctx context.Context, memId in
 	pam := []*ProjectAndMember{}
 	err := p.db.Context(ctx).Table("ms_project").
 		Join("inner", "ms_project_member", "ms_project.id = ms_project_member.project_code").
-		Where("ms_project.id IN (SELECT project_code FROM ms_project_collection WHERE member_code = ?)", memId).
+		Where("ms_project.id IN (SELECT project_code FROM ms_project_collection WHERE member_code = ?) AND ms_project.deleted = 0", memId).
 		OrderBy("`order`").
 		Limit(int(size), int(offset)).
 		Find(&pam)
@@ -134,6 +148,10 @@ func (p *projectXormDao) FindProjectByMemId(ctx context.Context, selectBy string
 		Join("inner", "ms_project_member", "ms_project.id = ms_project_member.project_code").
 		Where("ms_project_member.member_code = ?", memId)
 	//cntSess := p.db.Context(ctx).Where("member_code = ?", memId)
+
+	if selectBy != "deleted" {
+		listSess.Where("deleted = 0")
+	}
 
 	if selectBy == "archive" {
 		listSess.Where("archive = 1")

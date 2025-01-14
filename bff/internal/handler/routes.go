@@ -50,6 +50,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/project/recovery",
+					Handler: project.RecoverProjectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/project/recycle",
+					Handler: project.RecycleProjectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/project/save",
 					Handler: project.ProjectSaveHandler(serverCtx),
 				},
