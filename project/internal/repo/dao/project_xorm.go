@@ -11,6 +11,29 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+// GetProjectMembersByPid implements ProjectDao.
+func (p *projectXormDao) GetProjectMembersByPid(ctx context.Context, pid int64) ([]*ProjectMember, error) {
+	pm := make([]*ProjectMember, 0)	
+	err := p.db.Where("project_code = ?", pid).Find(&pm)
+	return pm, err
+}
+
+func (p *projectXormDao) FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]MsTaskStagesTemplate, error) {
+	var list []MsTaskStagesTemplate
+	err := p.db.Where("project_template_code = ?", templateCode).
+		OrderBy("sort DESC, id ASC").
+		Find(&list)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func (p *projectXormDao) UpdateProject(ctx context.Context, project Project) error {
+	_, err := p.db.Context(ctx).ID(project.Id).Update(&project)
+	return err
+}
+
 func (p *projectXormDao) DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error {
 	_, err := p.db.Context(ctx).Delete(&ProjectCollection{
 		ProjectCode: projectCode,

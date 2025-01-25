@@ -11,6 +11,7 @@ type Config struct {
 	LogConfig        lx.LogConfig
 	UserRpcClient    zrpc.RpcClientConf
 	ProjectRpcClient zrpc.RpcClientConf
+	TaskRpcClient zrpc.RpcClientConf
 	Jwt              Jwt
 }
 

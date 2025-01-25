@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"github.com/WeiXinao/msProject/pkg/cachex"
 	"github.com/WeiXinao/msProject/user/internal/domain"
@@ -11,6 +12,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/zeromicro/go-zero/core/threading"
 	"time"
 )
 
@@ -18,6 +20,7 @@ type UserRepo interface {
 	CacheCaptcha(ctx context.Context, mobile, captcha string, expire time.Duration) error
 	VerifyCaptcha(ctx context.Context, mobile, expectCaptcha string) error
 	GetMemberById(ctx context.Context, memId int64) (domain.Member, error)
+	GetMemberByIds(ctx context.Context, memIds []int64) ([]*domain.Member, error)
 	GetMemberByEmail(ctx context.Context, email string) (domain.Member, error)
 	GetMemberByAccount(ctx context.Context, account string) (domain.Member, error)
 	GetMemberByMobile(ctx context.Context, mobile string) (domain.Member, error)
@@ -32,29 +35,82 @@ type userRepo struct {
 	cache     cachex.Cache
 	userCache *cache.UserCache
 	userDao   dao.UserDao
+	accessExp time.Duration
+}
+
+func (u *userRepo) GetMemberByIds(ctx context.Context, memIds []int64) ([]*domain.Member, error) {
+	member, err := u.userDao.GetMemberByIds(ctx, memIds)
+	if err != nil {
+		return nil, err
+	}
+	memberDmns := make([]*domain.Member, 0)
+	err = copier.Copy(&memberDmns, member)
+	return memberDmns, err
 }
 
 func (u *userRepo) GetMemberById(ctx context.Context, memId int64) (domain.Member, error) {
+	memStr, err := u.cache.Get(ctx, u.userCache.MemberKey(memId))
+	memDmn := domain.Member{}
+	if err == nil {
+		err = json.Unmarshal([]byte(memStr), &memDmn)
+		if err == nil {
+			return memDmn, nil
+		}
+	}
+	logx.WithContext(ctx).Error("[repo GetMemberById]", err)
+
 	member, err := u.userDao.GetMemberById(ctx, memId)
 	if err != nil {
 		return domain.Member{}, err
 	}
+	memDmn, err = u.ToDomain(member)
+	if err != nil {
+		return domain.Member{}, err
+	}
+	threading.GoSafe(func() {
+		er := u.cache.Put(ctx, u.userCache.MemberKey(memDmn.Id), memDmn, u.accessExp)
+		if er != nil {
+			logx.WithContext(ctx).Error("[repo GetMemberByAccountAndPwd]", er)
+		}
+	})
 	return u.ToDomain(member)
 }
 
 func (u *userRepo) GetOrganizationByMemId(ctx context.Context, memId int64) ([]domain.Organization, error) {
+	orgDmns := make([]domain.Organization, 0)
+	orgsStr, err := u.cache.Get(ctx, u.userCache.MemberOrganizationKey(memId))
+	if err == nil {
+		if err == nil {
+			err = json.Unmarshal([]byte(orgsStr), &orgDmns)
+			if err == nil {
+				return orgDmns, nil
+			}
+		}
+	}
+
+	if err != redis.Nil {
+		logx.WithContext(ctx).Error("[GetOrganizationByMemId] repo ", err)
+	}
+
 	orgs, err := u.userDao.GetOrganizationByMemId(ctx, memId)
 	if err != nil {
 		return nil, err
 	}
-	return slice.Map(orgs, func(idx int, src dao.Organization) domain.Organization {
+	orgDmns = slice.Map(orgs, func(idx int, src dao.Organization) domain.Organization {
 		org := domain.Organization{}
 		er := copier.Copy(&org, &src)
 		if er != nil {
 			logx.WithContext(ctx).Errorf("[GetOrganizationByMemId] repo: %w", ErrTypeConvert)
 		}
 		return org
-	}), nil
+	})
+	threading.GoSafe(func() {
+		er := u.cache.Put(ctx, u.userCache.MemberOrganizationKey(memId), orgDmns, u.accessExp)
+		if err != nil {
+			logx.WithContext(ctx).Error("[repo GetOrganizationByMemId]", er)
+		}
+	})
+	return orgDmns, nil
 }
 
 func (u *userRepo) GetMemberByAccountAndPwd(ctx context.Context, account string, pwd string) (domain.Member, error) {
@@ -66,6 +122,12 @@ func (u *userRepo) GetMemberByAccountAndPwd(ctx context.Context, account string,
 	if err != nil {
 		return domain.Member{}, err
 	}
+	threading.GoSafe(func() {
+		er := u.cache.Put(ctx, u.userCache.MemberKey(memDomain.Id), memDomain, u.accessExp)
+		if er != nil {
+			logx.WithContext(ctx).Error("[repo GetMemberByAccountAndPwd]", er)
+		}
+	})
 	return memDomain, nil
 }
 
@@ -175,7 +237,7 @@ func (u *userRepo) ToEntity(member domain.Member) (dao.Member, error) {
 	return memberDao, nil
 }
 
-func NewUserRepo(dao dao.UserDao, cache cachex.Cache, userCache *cache.UserCache) UserRepo {
+func NewUserRepo(dao dao.UserDao, cache cachex.Cache, userCache *cache.UserCache, accessExp time.Duration) UserRepo {
 	return &userRepo{
 		cache:     cache,
 		userCache: userCache,

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 	lx "github.com/WeiXinao/msProject/pkg/logx"
 	"github.com/WeiXinao/msProject/user/internal/config"
@@ -33,6 +34,7 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
+	s.AddUnaryInterceptors(ctx.Interceptors...)
 	defer s.Stop()
 
 	// 设置 log 的 writer

@@ -1,15 +1,19 @@
 package svc
 
 import (
+	"time"
+
 	"github.com/WeiXinao/msProject/pkg/cachex"
 	"github.com/WeiXinao/msProject/pkg/encrypts"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/internal/config"
 	"github.com/WeiXinao/msProject/project/internal/repo"
 	"github.com/WeiXinao/msProject/project/internal/repo/dao"
+	"github.com/WeiXinao/msProject/task/taskservice"
+	"github.com/WeiXinao/msProject/user/loginservice"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"time"
+	"github.com/zeromicro/go-zero/zrpc"
 	"xorm.io/xorm"
 )
 
@@ -18,6 +22,8 @@ type ServiceContext struct {
 	Jwter       jwtx.Jwter
 	Encrypter   encrypts.Encrypter
 	ProjectRepo repo.ProjectRepo
+	TaskClient taskservice.TaskService
+	UserClient     loginservice.LoginService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -26,6 +32,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	rcli := redis.MustNewRedis(c.RedisConfig)
 	ca := cachex.NewRedisCache(rcli)
 	db := InitDB(c)
+
+	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
+	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 
 	projectDao, err := dao.NewProjectXormDao(db)
 	if err != nil {
@@ -37,6 +46,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Jwter:       jwter,
 		Encrypter:   encrypter,
 		ProjectRepo: projectRepo,
+		TaskClient: taskClient,
+		UserClient: userClient,
 	}
 }
 

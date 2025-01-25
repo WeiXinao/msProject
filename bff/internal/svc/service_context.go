@@ -1,20 +1,23 @@
 package svc
 
 import (
+	"time"
+
 	"github.com/WeiXinao/msProject/bff/internal/config"
 	"github.com/WeiXinao/msProject/bff/internal/middleware"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/projectservice"
+	"github.com/WeiXinao/msProject/task/taskservice"
 	"github.com/WeiXinao/msProject/user/loginservice"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
-	"time"
 )
 
 type ServiceContext struct {
 	Config         config.Config
 	UserClient     loginservice.LoginService
 	ProjectClient  projectservice.ProjectService
+	TaskClient taskservice.TaskService
 	AuthMiddleware rest.Middleware
 }
 
@@ -22,11 +25,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	jwter := InitJwter(c)
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
+	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
 	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient)
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,
 		ProjectClient:  projectClient,
+		TaskClient: taskClient,
 		AuthMiddleware: authMiddleware.Build,
 	}
 }

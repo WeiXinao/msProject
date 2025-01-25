@@ -1,22 +1,22 @@
 Name: project.rpc
-ListenOn: 0.0.0.0:8081
+ListenOn: 127.0.0.1:8081
 Etcd:
   Hosts:
-  - 192.168.5.4:2379
+  - 127.0.0.1:2379
   Key: project.rpc
 RedisConfig:
-  Host: "192.168.5.4:6379"
+  Host: "127.0.0.1:6379"
   Type: "node"
   Tls: false
   NonBlock: false
   PingTimeout: 1s
 MySQLConfig:
   DriverName: mysql
-  Dsn: root:123456@tcp(192.168.5.4:3307)/ms_project?charset=utf8
+  Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8
 logConfig:
-  debugFileName: "..\\logs\\debug\\project-debug.log"
-  infoFileName:  "..\\logs\\info\\project-info.log"
-  warnFileName:  "..\\logs\\error\\project-error.log"
+  debugFileName: "../../logs/debug/project-debug.log"
+  infoFileName:  "../../logs/info/project-info.log"
+  warnFileName:  "../../logs/error/project-error.log"
   maxSize:       500
   maxAge:        28
   maxBackups:    3
@@ -29,3 +29,13 @@ Jwt:
   RtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvfx"
 #  AES 加密 24 byte
 AESKey: "123jldjalsdjalkajlds1234"
+TaskRpcClient:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: task.rpc
+UserRpcClient:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: user.rpc

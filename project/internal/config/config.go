@@ -11,6 +11,8 @@ type Config struct {
 	RedisConfig redis.RedisConf
 	LogConfig   lx.LogConfig
 	MySQLConfig MySQLConfig
+	TaskRpcClient zrpc.RpcClientConf
+	UserRpcClient    zrpc.RpcClientConf
 	Jwt         Jwt
 	AESKey      string
 }

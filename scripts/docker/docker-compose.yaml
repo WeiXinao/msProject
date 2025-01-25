@@ -27,12 +27,23 @@ services:
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.5.4:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379
     ports:
       - "2379:2379"
       - "2380:2380"
     volumes:
       - "/root/etcd/data:/etcd-data"
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf 
+      - /root/nginx/conf/conf.d:/etc/nginx/conf.d 
+      - /root/nginx/log:/var/log/nginx 
+      - /root/nginx/html:/usr/share/nginx/html 
 #  user:
 #    container_name: user-1
 #    image: user:latest

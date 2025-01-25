@@ -85,10 +85,19 @@ message MemberInfoResponse {
   MemberMessage member = 1;
 }
 
+message MemberInfosByIdRequest {
+  repeated int64 mIds = 1;
+}
+
+message MemberInfosByIdResponse {
+  repeated MemberMessage list = 1;
+}
+
 service LoginService {
   rpc GetCaptcha(CaptchaRequest) returns (CaptchaResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
   rpc Login(LoginRequest) returns (LoginResponse);
   rpc MyOrgList(MyOrgListRequest) returns (MyOrgListResponse);
   rpc MemberInfo(MemberInfoRequest) returns (MemberInfoResponse);
+  rpc MemberInfosById(MemberInfosByIdRequest) returns (MemberInfosByIdResponse);
 }

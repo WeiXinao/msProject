@@ -4,11 +4,12 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"net/http"
+
 	lx "github.com/WeiXinao/msProject/pkg/logx"
 	"github.com/WeiXinao/msProject/pkg/respx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"net/http"
 
 	"github.com/WeiXinao/msProject/bff/internal/config"
 	"github.com/WeiXinao/msProject/bff/internal/handler"
@@ -31,7 +32,7 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
-
+	
 	httpx.SetErrorHandler(func(err error) (int, any) {
 		var e *respx.Error
 		switch {

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/WeiXinao/msProject/api/proto/gen/project/v1"
+	taskv1 "github.com/WeiXinao/msProject/api/proto/gen/task/v1"
 	"github.com/WeiXinao/msProject/project/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -70,14 +71,41 @@ func (l *SaveProjectLogic) SaveProject(in *v1.SaveProjectReq) (*v1.SaveProjectRs
 	savedProject, err := l.svcCtx.ProjectRepo.SaveProject(l.ctx, project, projectMember)
 	if err != nil {
 		l.Error("[logic SaveProject]", err)
-		return nil, respx.ErrInternalServer
+		return nil, respx.ToStatusErr(respx.ErrInternalServer) 
 	}
 
 	code, err := l.svcCtx.Encrypter.EncryptInt64(savedProject.Id)
 	if err != nil {
 		l.Error("[logic SaveProject]", err)
-		return nil, respx.ErrInternalServer
+		return nil, respx.ToStatusErr(respx.ErrInternalServer) 
 	}
+	// 3. 生成任务的步骤
+	taskStageTmplateList, err := l.svcCtx.
+	ProjectRepo.
+	FindTaskStagesTmplsByProjectTmplId(l.ctx, templateCode)
+	if err != nil {
+		l.Error("[logic SaveProject]", err)
+		return nil, respx.ToStatusErr(respx.ErrInternalServer) 
+	}
+	taskStageList := make([]*taskv1.SaveTaskStagesMessage, 0)
+	for idx, mtst := range taskStageTmplateList {
+		taskStage := &taskv1.SaveTaskStagesMessage{
+			ProjectCode: savedProject.Id,
+			Name: mtst.Name,	
+			Sort: int32(idx + 1),
+			CreateTime: time.Now().UnixMilli(),	
+			Deleted: domain.Undeleted,
+		}
+		taskStageList = append(taskStageList, taskStage)
+	}
+	_, err = l.svcCtx.TaskClient.SaveTaskStages(l.ctx, &taskv1.SaveTaskStagesRequest{
+		List: taskStageList,
+	})
+	if err != nil {
+		l.Error("[logic SaveProject]", err)
+		return nil, respx.ToStatusErr(respx.ErrInternalServer) 
+	}
+
 	return &v1.SaveProjectRsp{
 		Id:               savedProject.Id,
 		Cover:            savedProject.Cover,

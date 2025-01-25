@@ -261,12 +261,54 @@ type CollectProjectRsp {
 	ProjectList []*Project
 }
 
+type EditProjectReq {
+	ProjectCode        string  `form:"projectCode"`
+	Cover              string  `form:"cover,optional"`
+	Name               string  `form:"name,optional"`
+	Description        string  `form:"description,optional"`
+	Schedule           float64 `form:"schedule,optional"`
+	Private            int     `form:"private,optional"`
+	Prefix             string  `form:"prefix,optional"`
+	OpenPrefix         int     `form:"open_prefix,optional"`
+	OpenBeginTime      int     `form:"open_begin_time,optional"`
+	OpenTaskPrivate    int     `form:"open_task_private,optional"`
+	TaskBoardTheme     string  `form:"task_board_theme,optional"`
+	AutoUpdateSchedule int     `form:"auto_update_schedule,optional"`
+}
+
+type EditProjectRsp {
+	ProjectList []*Project
+}
+
+type ProjectMemberListReq {
+	ProjectCode string `form:"projectCode"`
+	PageSize    int64  `form:"pageSize,default=10"`
+	Page        int64  `form:"page,default=1"`
+}
+
+type ProjectListMember {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Avatar  string `json:"avatar"`
+	Code    string `json:"code"`
+	IsOwner int    `json:"IsOwner"`
+}
+
+type ProjectMemberListRsp {
+	List  []*ProjectListMember `json:"list"`
+	Total int64                `json:"total"`
+	Page  int64                `json:"page"`
+}
+
 @server (
 	prefix:     /project
 	group:      project
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler ProjectMember
+	post /project_member/index (ProjectMemberListReq) returns (ProjectMemberListRsp)
+
 	@handler Index
 	post /index (IndexReq) returns (IndexRsp)
 
@@ -293,6 +335,9 @@ service bff {
 
 	@handler CollectProject
 	post /project_collect/collect (CollectProjectReq) returns (CollectProjectRsp)
+
+	@handler EditProject
+	post /project/edit (EditProjectReq) returns (EditProjectRsp)
 }
 
 type GetOrgListReq {}
@@ -309,5 +354,42 @@ type GetOrgListRsp {
 service bff {
 	@handler MyOrgList
 	post /_getOrgList (GetOrgListRsp) returns (GetOrgListRsp)
+}
+
+type TaskStagesReq {
+	ProjectCode string `form:"projectCode"`
+	PageSize    int64  `form:"pageSize,default=10"`
+	Page        int64  `form:"page,default=1"`
+}
+
+type TaskStagesResp {
+	List  []*TaskStages `json:"list"`
+	Total int64         `json:"total"`
+}
+
+type TaskStages {
+	Name         string `json:"name"`
+	ProjectCode  string `json:"project_code"`
+	Sort         int    `json:"sort"`
+	Description  string `json:"description"`
+	CreateTime   string `json:"create_time"`
+	Code         string `json:"code"`
+	Deleted      int    `json:"deleted"`
+	TasksLoading bool   `json:"tasksLoading"`
+	FixedCreator bool   `json:"fixedCreator"`
+	ShowTaskCard bool   `json:"showTaskCard"`
+	Tasks        []int  `json:"tasks"`
+	DoneTasks    []int  `json:"doneTasks"`
+	UnDoneTasks  []int  `json:"unDoneTasks"`
+}
+
+@server (
+	prefix:     /project
+	group:      task
+	middleware: AuthMiddleware
+)
+service bff {
+	@handler TaskStages
+	post /task_stages (TaskStagesReq) returns (TaskStagesResp)
 }
 

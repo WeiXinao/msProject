@@ -2,12 +2,22 @@ package dao
 
 import (
 	"context"
+
 	"github.com/WeiXinao/msProject/pkg/ormx"
+	"github.com/WeiXinao/xkit/slice"
 	"xorm.io/xorm"
 )
 
 type XormUserDao struct {
 	db *xorm.Engine
+}
+
+func (x *XormUserDao) GetMemberByIds(ctx context.Context, memIds []int64) ([]*Member, error) {
+	member := make([]*Member, 0)
+	err := x.db.In("id", slice.Map(memIds, func(idx int, src int64) any {
+		return src
+	})...).Find(&member)
+	return member, err
 }
 
 func (x *XormUserDao) GetMemberById(ctx context.Context, memId int64) (Member, error) {

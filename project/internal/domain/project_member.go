@@ -45,3 +45,8 @@ const (
 	Uncollected = iota
 	Collected
 )
+
+const (
+	NotOwner = iota
+	Owner
+)

@@ -15,6 +15,39 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
+// GetProjectMembersByPid implements ProjectRepo.
+func (p *projectRepo) GetProjectMembersByPid(ctx context.Context, pid int64) ([]*domain.ProjectMember, error) {
+	pmMdls, err := p.dao.GetProjectMembersByPid(ctx, pid)
+	if err != nil {
+		return nil, err
+	}
+	pmDmns := make([]*domain.ProjectMember, 0)
+	err = copier.Copy(&pmDmns, pmMdls)
+	if err != nil {
+		return nil, err
+	}
+	return pmDmns, nil
+}
+
+func (p *projectRepo) FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]*domain.MsTaskStagesTemplate, error) {
+	taskTmpls, err := p.dao.FindTaskStagesTmplsByProjectTmplId(ctx, templateCode)
+	var taskTmplDmns []*domain.MsTaskStagesTemplate
+	err = copier.Copy(&taskTmplDmns, taskTmpls)
+	if err != nil {
+		return nil, err
+	}
+	return taskTmplDmns, nil
+}
+
+func (p *projectRepo) UpdateProject(ctx context.Context, project domain.Project) error {
+	projectEntity := dao.Project{}
+	err := copier.Copy(&projectEntity, project)
+	if err != nil {
+		return err
+	}
+	return p.dao.UpdateProject(ctx, projectEntity)
+}
+
 func (p *projectRepo) DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error {
 	return p.dao.DeleteProjectCollection(ctx, memberId, projectCode)
 }

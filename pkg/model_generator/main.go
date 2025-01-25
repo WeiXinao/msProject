@@ -125,7 +125,7 @@ func ParseTemplate(tmpl, tmplName, dst string, data any) error {
 	if err != nil {
 		return err
 	}
-	file, err := os.OpenFile(dst, os.O_CREATE|os.O_APPEND, os.ModePerm)
+	file, err := os.OpenFile(dst, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return err
 	}

@@ -23,4 +23,8 @@ type ProjectRepo interface {
 	DeleteProject(ctx context.Context, projectId int64, deleted bool) error
 	SaveProjectCollection(ctx context.Context, projectCollection domain.ProjectCollection) error
 	DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error
+	UpdateProject(ctx context.Context, project domain.Project) error
+	GetProjectMembersByPid(ctx context.Context, pid int64) ([]*domain.ProjectMember, error)
+
+	FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]*domain.MsTaskStagesTemplate, error)
 }

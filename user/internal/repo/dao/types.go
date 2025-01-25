@@ -15,6 +15,7 @@ type UserDao interface {
 	GetMemberByAccountAndPwd(ctx context.Context, account string, pwd string) (Member, error)
 	GetOrganizationByMemId(ctx context.Context, memId int64) ([]Organization, error)
 	GetMemberById(ctx context.Context, memId int64) (Member, error)
+	GetMemberByIds(ctx context.Context, memIds []int64) ([]*Member, error)
 }
 
 type Member struct {

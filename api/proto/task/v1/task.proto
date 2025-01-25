@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package task.v1;
+option go_package="api/proto/gen/task/v1";
+
+message TaskStagesRequest {
+  int64 memberId = 1;
+  string projectCode = 2;
+  int64 page = 3;
+  int64 pageSize = 4;
+}
+
+message TaskStagesMessage {
+  string code = 1;
+  string name = 2;
+  string projectCode = 3;
+  int32 sort = 4;
+  string description = 5;
+  string createTime = 6;
+  int32 deleted = 7;
+  int32 id = 8;
+}
+
+message SaveTaskStagesMessage {
+	int32 id            = 1;
+  string name       = 2;
+  int64 projectCode = 3;
+	int32 sort           = 4;
+	string description = 5;
+	int64 createTime  = 6;
+  int32 deleted        = 7;
+}
+
+message TaskStagesResponse {
+  int64 total = 1;
+  repeated TaskStagesMessage list = 2;
+}
+
+message SaveTaskStagesRequest {
+  repeated SaveTaskStagesMessage list  = 1;
+}
+
+message SaveTaskStagesResponse {
+}
+
+service TaskService {
+  rpc TaskStages(TaskStagesRequest) returns(TaskStagesResponse);
+  rpc SaveTaskStages(SaveTaskStagesRequest) returns (SaveTaskStagesResponse);
+}
