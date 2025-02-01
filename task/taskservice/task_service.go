@@ -14,9 +14,13 @@ import (
 )
 
 type (
+	ExecutorMessage        = v1.ExecutorMessage
 	SaveTaskStagesMessage  = v1.SaveTaskStagesMessage
 	SaveTaskStagesRequest  = v1.SaveTaskStagesRequest
 	SaveTaskStagesResponse = v1.SaveTaskStagesResponse
+	TaskListRequest        = v1.TaskListRequest
+	TaskListResponse       = v1.TaskListResponse
+	TaskMessage            = v1.TaskMessage
 	TaskStagesMessage      = v1.TaskStagesMessage
 	TaskStagesRequest      = v1.TaskStagesRequest
 	TaskStagesResponse     = v1.TaskStagesResponse
@@ -24,6 +28,7 @@ type (
 	TaskService interface {
 		TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
 		SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
+		TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
 	}
 
 	defaultTaskService struct {
@@ -45,4 +50,9 @@ func (m *defaultTaskService) TaskStages(ctx context.Context, in *TaskStagesReque
 func (m *defaultTaskService) SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error) {
 	client := v1.NewTaskServiceClient(m.cli.Conn())
 	return client.SaveTaskStages(ctx, in, opts...)
+}
+
+func (m *defaultTaskService) TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.TaskList(ctx, in, opts...)
 }

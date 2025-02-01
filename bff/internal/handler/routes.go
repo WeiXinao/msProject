@@ -103,6 +103,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/task_stages",
 					Handler: task.TaskStagesHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/task_stages/tasks",
+					Handler: task.TaskListHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/project"),

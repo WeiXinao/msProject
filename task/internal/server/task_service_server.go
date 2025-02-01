@@ -32,3 +32,8 @@ func (s *TaskServiceServer) SaveTaskStages(ctx context.Context, in *v1.SaveTaskS
 	l := logic.NewSaveTaskStagesLogic(ctx, s.svcCtx)
 	return l.SaveTaskStages(in)
 }
+
+func (s *TaskServiceServer) TaskList(ctx context.Context, in *v1.TaskListRequest) (*v1.TaskListResponse, error) {
+	l := logic.NewTaskListLogic(ctx, s.svcCtx)
+	return l.TaskList(in)
+}

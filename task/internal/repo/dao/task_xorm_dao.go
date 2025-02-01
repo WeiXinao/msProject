@@ -9,6 +9,22 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// FindTaskMemberByTaskId implements TaskDao.
+func (t *taskXormDao) FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*TaskMember, bool, error) {
+	taskMembers := make([]*TaskMember, 0)
+	has, err := t.db.Where("task_code = ? AND member_code = ?", taskCode, memberId).Get(&taskMembers)
+	return taskMembers, has, err
+}
+
+// FindTaskByStageCode implements TaskDao.
+func (t *taskXormDao) FindTaskByStageCode(ctx context.Context, stageCode int) ([]*Task, error) {
+	tasks := make([]*Task, 0)
+	err := t.db.Where("stage_code = ? AND deleted = 0", stageCode).
+		OrderBy("sort ASC").
+		Find(&tasks)
+	return tasks, err
+}
+
 // FindStagesByProjectIdPagination implements TaskDao.
 func (t *taskXormDao) FindStagesByProjectIdPagination(ctx context.Context, projectCode int64, page int64, pageSize int64) ([]*MsTaskStages, int64, error) {
 	taskStagesList := make([]*MsTaskStages, 0)
@@ -20,9 +36,9 @@ func (t *taskXormDao) FindStagesByProjectIdPagination(ctx context.Context, proje
 	}
 
 	err = sqlClause.
-	OrderBy("sort ASC").
-	Limit(int(pageSize), int(offset)).
-	Find(&taskStagesList)
+		OrderBy("sort ASC").
+		Limit(int(pageSize), int(offset)).
+		Find(&taskStagesList)
 	if err != nil {
 		total = 0
 	}
@@ -38,6 +54,10 @@ func (t *taskXormDao) CreateTaskStagesList(ctx context.Context,
 }
 
 func NewTaskXormDao(engine *xorm.Engine) TaskDao {
+	engine.Sync(
+		new(Task),
+		new(TaskMember),
+	)
 	return &taskXormDao{
 		db: engine,
 	}

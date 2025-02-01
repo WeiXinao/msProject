@@ -13,6 +13,7 @@ type Config struct {
 	MySQLConfig MySQLConfig
 	Jwt         Jwt
 	AESKey      string
+	UserRpcClient    zrpc.RpcClientConf
 }
 
 type Jwt struct {

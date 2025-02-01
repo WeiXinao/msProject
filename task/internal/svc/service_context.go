@@ -8,7 +8,9 @@ import (
 	"github.com/WeiXinao/msProject/task/internal/config"
 	"github.com/WeiXinao/msProject/task/internal/repo"
 	"github.com/WeiXinao/msProject/task/internal/repo/dao"
+	"github.com/WeiXinao/msProject/user/loginservice"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zeromicro/go-zero/zrpc"
 	"xorm.io/xorm"
 )
 
@@ -17,6 +19,7 @@ type ServiceContext struct {
 	Jwter       jwtx.Jwter
 	Encrypter   encrypts.Encrypter
 	TaskRepo repo.TaskRepo
+	UserClient     loginservice.LoginService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -28,11 +31,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	dao := dao.NewTaskXormDao(db)
 	taskRepo := repo.NewTaskRepo(dao)
 
+	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
+
 	return &ServiceContext{
 		Config:      c,
 		Jwter:       jwter,
 		Encrypter:   encrypter,
 		TaskRepo: taskRepo,
+		UserClient: userClient,
 	}
 }
 
