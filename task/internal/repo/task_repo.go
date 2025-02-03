@@ -14,6 +14,10 @@ type TaskRepo interface {
 		page int64, pageSize int64) ([]*domain.TaskStages, int64, error)
 	FindTaskByStageCode(ctx context.Context, stageCode int) ([]*domain.Task, error)
 	FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*domain.TaskMember, bool, error)
+	FindById(ctx context.Context, id int64) (*domain.TaskStages, bool, error)
+	FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error)
+	FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error)
+	CreateTaskAndMember(ctx context.Context, task domain.Task, taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error)
 }
 
 func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
@@ -32,18 +36,62 @@ type taskRepo struct {
 	dao dao.TaskDao
 }
 
-// FindTaskMemberByTaskId implements TaskRepo.
-func (t *taskRepo) FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*domain.TaskMember, bool, error) {
-	tm, has, err := t.dao.FindTaskMemberByTaskId(ctx, taskCode, memberId)	
+// CreateTaskAndMember implements TaskRepo.
+func (t *taskRepo) CreateTaskAndMember(ctx context.Context, task domain.Task, taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error) {
+	var (
+		taskEty = dao.Task{}
+		taskMemberEty = dao.TaskMember{}
+	)
+	err = copier.Copy(&taskEty, task)
+	if err != nil {
+		return 0, 0, err
+	}
+	err = copier.Copy(&taskMemberEty, taskMember)
+	if err != nil {
+		return 0, 0, err
+	}
+	err = t.dao.CreateTaskAndMember(ctx, &taskEty, &taskMemberEty)
+	if err != nil {
+		return 0, 0, err
+	}
+	return taskEty.Id, taskMemberEty.Id, nil
+}
+
+func (t *taskRepo) FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error) {
+	return t.dao.FindTaskSort(ctx, projectCode, stageCode)
+}
+
+// FindTaskMaxIdNum implements TaskRepo.
+func (t *taskRepo) FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error) {
+	return t.dao.FindTaskMaxIdNum(ctx, projectCode)
+}
+
+// FindById implements TaskRepo.
+func (t *taskRepo) FindById(ctx context.Context, id int64) (*domain.TaskStages, bool, error) {
+	mts, has, err := t.dao.FindById(ctx, id)
 	if err != nil {
 		return nil, false, err
 	}
-	tmsDmn := make([]*domain.TaskMember, 0) 
+	ts := &domain.TaskStages{}
+	err = copier.CopyWithOption(ts, mts, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, false, err
+	}
+	return ts, has, nil
+}
+
+// FindTaskMemberByTaskId implements TaskRepo.
+func (t *taskRepo) FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*domain.TaskMember, bool, error) {
+	tm, has, err := t.dao.FindTaskMemberByTaskId(ctx, taskCode, memberId)
+	if err != nil {
+		return nil, false, err
+	}
+	tmsDmn := make([]*domain.TaskMember, 0)
 	err = copier.CopyWithOption(&tmsDmn, tm, copier.Option{DeepCopy: true})
 	if err != nil {
 		return nil, false, err
 	}
-	return tmsDmn, has, nil	
+	return tmsDmn, has, nil
 }
 
 // FindTaskByStageCode implements TaskRepo.

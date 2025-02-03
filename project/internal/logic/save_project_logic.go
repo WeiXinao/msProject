@@ -2,13 +2,15 @@ package logic
 
 import (
 	"context"
-	"github.com/WeiXinao/msProject/pkg/respx"
-	"github.com/WeiXinao/msProject/project/internal/domain"
 	"strconv"
 	"time"
 
+	"github.com/WeiXinao/msProject/pkg/respx"
+	"github.com/WeiXinao/msProject/project/internal/domain"
+	"github.com/WeiXinao/msProject/project/internal/events/task"
+
 	"github.com/WeiXinao/msProject/api/proto/gen/project/v1"
-	taskv1 "github.com/WeiXinao/msProject/api/proto/gen/task/v1"
+	// taskv1 "github.com/WeiXinao/msProject/api/proto/gen/task/v1"
 	"github.com/WeiXinao/msProject/project/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -87,19 +89,24 @@ func (l *SaveProjectLogic) SaveProject(in *v1.SaveProjectReq) (*v1.SaveProjectRs
 		l.Error("[logic SaveProject]", err)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer) 
 	}
-	taskStageList := make([]*taskv1.SaveTaskStagesMessage, 0)
+	// taskStageList := make([]*taskv1.SaveTaskStagesMessage, 0)
+	taskStageList := make([]*domain.TaskStages, 0)
 	for idx, mtst := range taskStageTmplateList {
-		taskStage := &taskv1.SaveTaskStagesMessage{
+		taskStage := &domain.TaskStages{
 			ProjectCode: savedProject.Id,
 			Name: mtst.Name,	
-			Sort: int32(idx + 1),
+			Sort: idx + 1,
 			CreateTime: time.Now().UnixMilli(),	
 			Deleted: domain.Undeleted,
 		}
 		taskStageList = append(taskStageList, taskStage)
 	}
-	_, err = l.svcCtx.TaskClient.SaveTaskStages(l.ctx, &taskv1.SaveTaskStagesRequest{
-		List: taskStageList,
+	// _, err = l.svcCtx.TaskClient.SaveTaskStages(l.ctx, &taskv1.SaveTaskStagesRequest{
+	// 	List: taskStageList,
+	// })
+
+	err = l.svcCtx.TaskProducer.ProduceSaveTaskStagesEvent(l.ctx, task.SaveTaskStagesEvent{
+		TaskStagesList: taskStageList,
 	})
 	if err != nil {
 		l.Error("[logic SaveProject]", err)

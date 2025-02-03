@@ -15,6 +15,7 @@ import (
 
 type (
 	ExecutorMessage        = v1.ExecutorMessage
+	SaveTaskRequest        = v1.SaveTaskRequest
 	SaveTaskStagesMessage  = v1.SaveTaskStagesMessage
 	SaveTaskStagesRequest  = v1.SaveTaskStagesRequest
 	SaveTaskStagesResponse = v1.SaveTaskStagesResponse
@@ -29,6 +30,7 @@ type (
 		TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
 		SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
 		TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
+		SaveTask(ctx context.Context, in *SaveTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 	}
 
 	defaultTaskService struct {
@@ -55,4 +57,9 @@ func (m *defaultTaskService) SaveTaskStages(ctx context.Context, in *SaveTaskSta
 func (m *defaultTaskService) TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error) {
 	client := v1.NewTaskServiceClient(m.cli.Conn())
 	return client.TaskList(ctx, in, opts...)
+}
+
+func (m *defaultTaskService) SaveTask(ctx context.Context, in *SaveTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.SaveTask(ctx, in, opts...)
 }

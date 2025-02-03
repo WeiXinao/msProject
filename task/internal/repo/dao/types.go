@@ -1,6 +1,13 @@
 package dao
 
-import "context"
+import (
+	"context"
+	"errors"
+)
+
+var (
+	ErrTypeConvert = errors.New("类型转换错误")
+)
 
 type TaskDao interface {
 	CreateTaskStagesList(ctx context.Context, taskStagesList []*MsTaskStages) error
@@ -8,6 +15,12 @@ type TaskDao interface {
 		page int64, pageSize int64) ([]*MsTaskStages, int64, error)
 	FindTaskByStageCode(ctx context.Context, stageCode int) ([]*Task, error)
     FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*TaskMember, bool, error)
+	FindById(ctx context.Context, id int64) (*MsTaskStages, bool, error)
+	FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error)
+	FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error)
+    CreateTaskAndMember(ctx context.Context, task *Task, taskMember *TaskMember) error
+    CreateTask(ctx context.Context, task *Task) error
+    CreateTaskMember(ctx context.Context, task *TaskMember) error
 }
 
 type MsTaskStages struct {

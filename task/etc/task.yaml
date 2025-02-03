@@ -34,3 +34,17 @@ UserRpcClient:
     Hosts:
     - 127.0.0.1:2379
     Key: user.rpc
+ProjectRpcClient:
+  Etcd:
+    Hosts:
+    - 127.0.0.1:2379
+    Key: project.rpc
+KqConsumerConf:
+  Name: kqConsumer
+  Brokers:
+    - 127.0.0.1:9094
+  Group: kqConsumer
+  Topic: taskstages-save
+  Offset: last
+  Consumers: 8
+  Processors: 8

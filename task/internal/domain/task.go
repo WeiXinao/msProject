@@ -161,4 +161,5 @@ type TaskDisplay struct {
 type Executor struct {
 	Name string
 	Avatar string
+	Code string
 }

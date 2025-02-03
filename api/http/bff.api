@@ -462,6 +462,6 @@ service bff {
 	post /task_stages/tasks (TaskReq) returns (TaskRsp)
 
 	@handler SaveTask
-	post /task/save() returns()
+	post /task/save (TaskSaveReq) returns (TaskDisplay)
 }
 

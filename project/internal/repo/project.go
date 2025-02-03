@@ -15,6 +15,17 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
+// FindProjectById implements ProjectRepo.
+func (p *projectRepo) FindProjectById(ctx context.Context, id int64) (*domain.Project, error) {
+	project, err := p.dao.FindProjectById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	projectDmn := &domain.Project{}	
+	err = copier.Copy(projectDmn, project)
+	return projectDmn, err
+}
+
 // GetProjectMembersByPid implements ProjectRepo.
 func (p *projectRepo) GetProjectMembersByPid(ctx context.Context, pid int64) ([]*domain.ProjectMember, error) {
 	pmMdls, err := p.dao.GetProjectMembersByPid(ctx, pid)

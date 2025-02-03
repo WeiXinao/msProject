@@ -13,3 +13,12 @@ var (
 	ErrVerifyCaptchaFail          = NewError(401007, "验证码错误")
 	ErrAccountOrPasswordIncorrect = NewError(401008, "用户名或密码错误")
 )
+
+var (
+	ErrProjectAlreadyDeleted = NewError(402001, "项目已删除")
+)
+
+var (
+	ErrEmptyTaskName = NewError(403001, "任务标题不能为空")
+	ErrTaskStageNotExists = NewError(403002, "任务步骤不存在")
+)

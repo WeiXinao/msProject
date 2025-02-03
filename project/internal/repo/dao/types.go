@@ -25,6 +25,7 @@ type ProjectDao interface {
 	DeleteProjectCollection(ctx context.Context, memberId int64, projectCode int64) error
 	UpdateProject(ctx context.Context, project Project) error
 	GetProjectMembersByPid(ctx context.Context, pid int64) ([]*ProjectMember, error)
+	FindProjectById(ctx context.Context, id int64) (*Project, error)
 
 	FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]MsTaskStagesTemplate, error)
 }

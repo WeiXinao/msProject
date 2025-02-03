@@ -11,9 +11,16 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+// FindProjectById implements ProjectDao.
+func (p *projectXormDao) FindProjectById(ctx context.Context, id int64) (*Project, error) {
+	project := &Project{}
+	_, err := p.db.Where("id = ?", id).Get(project)
+	return project, err
+}
+
 // GetProjectMembersByPid implements ProjectDao.
 func (p *projectXormDao) GetProjectMembersByPid(ctx context.Context, pid int64) ([]*ProjectMember, error) {
-	pm := make([]*ProjectMember, 0)	
+	pm := make([]*ProjectMember, 0)
 	err := p.db.Where("project_code = ?", pid).Find(&pm)
 	return pm, err
 }

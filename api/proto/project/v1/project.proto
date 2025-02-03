@@ -225,6 +225,10 @@ message ProjectMemberListResponse {
   repeated ProjectMemberMessage list = 2;
 }
 
+message FindProjectByIdRequest {
+  int64 projectCode = 1;
+}
+
 service ProjectService {
   rpc Index(IndexRequest) returns (IndexResponse);
   rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
@@ -235,4 +239,5 @@ service ProjectService {
   rpc UpdateCollectProject(UpdateCollectProjectRequest) returns (UpdateCollectProjectResponse);
   rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse);
   rpc ProjectMemberList(ProjectMemberListRequest) returns (ProjectMemberListResponse);
+  rpc FindProjectById(FindProjectByIdRequest) returns (ProjectMessage);
 }

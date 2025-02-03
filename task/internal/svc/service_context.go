@@ -5,6 +5,7 @@ import (
 
 	"github.com/WeiXinao/msProject/pkg/encrypts"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
+	"github.com/WeiXinao/msProject/project/projectservice"
 	"github.com/WeiXinao/msProject/task/internal/config"
 	"github.com/WeiXinao/msProject/task/internal/repo"
 	"github.com/WeiXinao/msProject/task/internal/repo/dao"
@@ -20,6 +21,7 @@ type ServiceContext struct {
 	Encrypter   encrypts.Encrypter
 	TaskRepo repo.TaskRepo
 	UserClient     loginservice.LoginService
+	ProjectClient projectservice.ProjectService
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -32,6 +34,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	taskRepo := repo.NewTaskRepo(dao)
 
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
+	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
 
 	return &ServiceContext{
 		Config:      c,
@@ -39,6 +42,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Encrypter:   encrypter,
 		TaskRepo: taskRepo,
 		UserClient: userClient,
+		ProjectClient: projectClient,
 	}
 }
 

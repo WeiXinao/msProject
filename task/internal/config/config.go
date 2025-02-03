@@ -1,9 +1,10 @@
 package config
 
 import (
+	lx "github.com/WeiXinao/msProject/pkg/logx"
+	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
-	lx "github.com/WeiXinao/msProject/pkg/logx"
 )
 
 type Config struct {
@@ -14,6 +15,8 @@ type Config struct {
 	Jwt         Jwt
 	AESKey      string
 	UserRpcClient    zrpc.RpcClientConf
+	ProjectRpcClient zrpc.RpcClientConf
+	KqConsumerConf kq.KqConf
 }
 
 type Jwt struct {

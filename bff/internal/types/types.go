@@ -344,6 +344,13 @@ type TaskRsp struct {
 	List []*TaskDisplay `json:"list"`
 }
 
+type TaskSaveReq struct {
+	Name        string `form:"name"`
+	StageCode   string `form:"stage_code"`
+	ProjectCode string `form:"project_code"`
+	AssignTo    string `form:"assign_to"`
+}
+
 type TaskStages struct {
 	Name         string `json:"name"`
 	ProjectCode  string `json:"project_code"`

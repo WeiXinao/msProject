@@ -11,10 +11,16 @@ type Config struct {
 	RedisConfig redis.RedisConf
 	LogConfig   lx.LogConfig
 	MySQLConfig MySQLConfig
+	KqPusherConf KqPusherConf
 	TaskRpcClient zrpc.RpcClientConf
 	UserRpcClient    zrpc.RpcClientConf
 	Jwt         Jwt
 	AESKey      string
+}
+
+type KqPusherConf struct {
+	Brokers []string
+	Topic   string
 }
 
 type Jwt struct {

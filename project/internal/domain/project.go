@@ -27,6 +27,10 @@ type Project struct {
 	AutoUpdateSchedule int
 }
 
+func (m *Project) GetAccessControlType() string {
+	return []string{"open", "private", "custom"}[m.AccessControlType]
+}
+
 const (
 	Undeleted = iota
 	Deleted

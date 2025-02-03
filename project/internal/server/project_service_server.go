@@ -67,3 +67,8 @@ func (s *ProjectServiceServer) ProjectMemberList(ctx context.Context, in *v1.Pro
 	l := logic.NewProjectMemberListLogic(ctx, s.svcCtx)
 	return l.ProjectMemberList(in)
 }
+
+func (s *ProjectServiceServer) FindProjectById(ctx context.Context, in *v1.FindProjectByIdRequest) (*v1.ProjectMessage, error) {
+	l := logic.NewFindProjectByIdLogic(ctx, s.svcCtx)
+	return l.FindProjectById(in)
+}

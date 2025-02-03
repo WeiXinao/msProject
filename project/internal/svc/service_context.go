@@ -7,11 +7,13 @@ import (
 	"github.com/WeiXinao/msProject/pkg/encrypts"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/internal/config"
+	"github.com/WeiXinao/msProject/project/internal/events/task"
 	"github.com/WeiXinao/msProject/project/internal/repo"
 	"github.com/WeiXinao/msProject/project/internal/repo/dao"
 	"github.com/WeiXinao/msProject/task/taskservice"
 	"github.com/WeiXinao/msProject/user/loginservice"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 	"xorm.io/xorm"
@@ -21,6 +23,7 @@ type ServiceContext struct {
 	Config      config.Config
 	Jwter       jwtx.Jwter
 	Encrypter   encrypts.Encrypter
+	TaskProducer task.Producer
 	ProjectRepo repo.ProjectRepo
 	TaskClient taskservice.TaskService
 	UserClient     loginservice.LoginService
@@ -29,11 +32,13 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	encrypter := encrypts.NewEncrypter(c.AESKey)
 	jwter := InitJwter(c)
+	kqPusher := kq.NewPusher(c.KqPusherConf.Brokers, c.KqPusherConf.Topic)
+	taskProducer := task.NewKqSyncProducer(kqPusher)
 	rcli := redis.MustNewRedis(c.RedisConfig)
 	ca := cachex.NewRedisCache(rcli)
 	db := InitDB(c)
 
-	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
+	// taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 
 	projectDao, err := dao.NewProjectXormDao(db)
@@ -45,8 +50,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Config:      c,
 		Jwter:       jwter,
 		Encrypter:   encrypter,
+		TaskProducer: taskProducer,
 		ProjectRepo: projectRepo,
-		TaskClient: taskClient,
+		// TaskClient: taskClient,
 		UserClient: userClient,
 	}
 }

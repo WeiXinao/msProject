@@ -14,6 +14,7 @@ import (
 )
 
 type (
+	FindProjectByIdRequest       = v1.FindProjectByIdRequest
 	FindProjectTemplateRequest   = v1.FindProjectTemplateRequest
 	FindProjectTemplateResponse  = v1.FindProjectTemplateResponse
 	IndexRequest                 = v1.IndexRequest
@@ -48,6 +49,7 @@ type (
 		UpdateCollectProject(ctx context.Context, in *UpdateCollectProjectRequest, opts ...grpc.CallOption) (*UpdateCollectProjectResponse, error)
 		UpdateProject(ctx context.Context, in *UpdateProjectRequest, opts ...grpc.CallOption) (*UpdateProjectResponse, error)
 		ProjectMemberList(ctx context.Context, in *ProjectMemberListRequest, opts ...grpc.CallOption) (*ProjectMemberListResponse, error)
+		FindProjectById(ctx context.Context, in *FindProjectByIdRequest, opts ...grpc.CallOption) (*ProjectMessage, error)
 	}
 
 	defaultProjectService struct {
@@ -104,4 +106,9 @@ func (m *defaultProjectService) UpdateProject(ctx context.Context, in *UpdatePro
 func (m *defaultProjectService) ProjectMemberList(ctx context.Context, in *ProjectMemberListRequest, opts ...grpc.CallOption) (*ProjectMemberListResponse, error) {
 	client := v1.NewProjectServiceClient(m.cli.Conn())
 	return client.ProjectMemberList(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) FindProjectById(ctx context.Context, in *FindProjectByIdRequest, opts ...grpc.CallOption) (*ProjectMessage, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.FindProjectById(ctx, in, opts...)
 }

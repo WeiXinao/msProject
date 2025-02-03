@@ -64,6 +64,7 @@ func (l *TaskStagesLogic) TaskStages(in *v1.TaskStagesRequest) (*v1.TaskStagesRe
 			Id: int32(src.Id),
 		}
 	})
+
 	return &v1.TaskStagesResponse{
 		List: taskStagesMsgs,
 		Total: total,

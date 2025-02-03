@@ -87,19 +87,30 @@ message TaskMessage{
   string code = 32;
   int32 canRead = 33;
   ExecutorMessage executor = 34;
+  string projectName = 35;
 }
 
 message ExecutorMessage {
   string Name = 1;
   string Avatar = 2;
+  string Code = 3;
 }
 
 message TaskListResponse{
   repeated TaskMessage list = 1;
 }
 
+message SaveTaskRequest {
+  string projectCode = 1;
+  string stageCode = 2;
+  string name = 3;
+  string assignTo = 4;
+  int64 memberId = 5;
+}
+
 service TaskService {
   rpc TaskStages(TaskStagesRequest) returns(TaskStagesResponse);
   rpc SaveTaskStages(SaveTaskStagesRequest) returns (SaveTaskStagesResponse);
   rpc TaskList(TaskListRequest) returns (TaskListResponse);
+  rpc SaveTask(SaveTaskRequest) returns (TaskMessage);
 }
