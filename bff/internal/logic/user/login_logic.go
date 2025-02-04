@@ -33,6 +33,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRsp, err error
 	if err != nil {
 		return nil, err
 	}
+	loginReq.Ip = l.ctx.Value("ip").(string)
 	loginRsp, err := l.svcCtx.UserClient.Login(l.ctx, loginReq)
 	if err != nil {
 		return nil, respx.FromStatusErr(err)

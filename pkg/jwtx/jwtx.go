@@ -62,13 +62,14 @@ func (j *JwtToken) ParseToken(token string, claims jwt.Claims) error {
 	return nil
 }
 
-func (j *JwtToken) GenAccessToken(uid int64) (string, error) {
+func (j *JwtToken) GenAccessToken(uid int64, ip string) (string, error) {
 	j.accessDDL = time.Now().Add(j.accessExp)
 	claims := UserClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(j.accessDDL),
 		},
 		UserId: uid,
+		IP: ip,
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
 	signedString, err := token.SignedString([]byte(j.atKey))

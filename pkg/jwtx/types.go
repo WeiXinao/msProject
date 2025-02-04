@@ -6,7 +6,7 @@ import (
 )
 
 type Jwter interface {
-	GenAccessToken(uid int64) (string, error)
+	GenAccessToken(uid int64, ip string) (string, error)
 	GenRefreshToken(uid int64) (string, error)
 	ParseToken(token string, claims jwt.Claims) error
 	AccessExpire() time.Time
@@ -15,6 +15,7 @@ type Jwter interface {
 type UserClaims struct {
 	jwt.RegisteredClaims
 	UserId int64
+	IP string
 }
 
 type RefreshClaims struct {

@@ -3,17 +3,20 @@ package middleware
 import (
 	"context"
 	"errors"
+	"net"
+	"net/http"
+	"strings"
+	"time"
+
 	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/user/loginservice"
 	"github.com/zeromicro/go-zero/core/logx"
-	"net/http"
-	"strings"
-	"time"
 )
 
 var (
 	ErrIllegalAuthorizationHeader = errors.New("无效的Authorization头")
+	ErrIpNotConsistent = errors.New("IP 不一致")
 	KeyMemberId                   = "memberId"
 	KeyMemberName                 = "memberName"
 	KeyOrganizationCode           = "organizationCode"
@@ -48,6 +51,19 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			logx.Error("[Auth]", err)
+			return
+		}
+
+		// 认证 IP
+		host, _, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			logx.Error("[Auth]", err)
+			return
+		}
+		if host != userClaims.IP {
+			w.WriteHeader(http.StatusUnauthorized)
+			logx.Error("[Auth]", ErrIpNotConsistent)
 			return
 		}
 

@@ -68,7 +68,7 @@ func (l *LoginLogic) Login(in *userv1.LoginRequest) (*userv1.LoginResponse, erro
 	})
 
 	// 3. 用 jwt 生成 token
-	aToken, err := l.svcCtx.Jwter.GenAccessToken(m.Id)
+	aToken, err := l.svcCtx.Jwter.GenAccessToken(m.Id, in.Ip)
 	if err != nil {
 		return nil, err
 	}

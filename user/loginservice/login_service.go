@@ -7,7 +7,7 @@ package loginservice
 import (
 	"context"
 
-	 v1_userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
+	v1_userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

@@ -9,7 +9,7 @@ import (
 
 	"github.com/WeiXinao/msProject/user/internal/logic"
 	"github.com/WeiXinao/msProject/user/internal/svc"
-	 v1_userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
+	v1_userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 )
 
 type LoginServiceServer struct {
