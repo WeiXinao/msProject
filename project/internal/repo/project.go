@@ -15,13 +15,24 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
+// FindProjectByIds implements ProjectRepo.
+func (p *projectRepo) FindProjectByIds(ctx context.Context, ids []int64) ([]*domain.Project, error) {
+	projects, err := p.dao.FindProjectByIds(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	projectDmns := make([]*domain.Project, 0)
+	err = copier.CopyWithOption(&projectDmns, projects, copier.Option{DeepCopy: true})
+	return projectDmns, err
+}
+
 // FindProjectById implements ProjectRepo.
 func (p *projectRepo) FindProjectById(ctx context.Context, id int64) (*domain.Project, error) {
 	project, err := p.dao.FindProjectById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-	projectDmn := &domain.Project{}	
+	projectDmn := &domain.Project{}
 	err = copier.Copy(projectDmn, project)
 	return projectDmn, err
 }

@@ -11,6 +11,58 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// FindTaskByAssignTo implements TaskDao.
+func (t *taskXormDao) FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
+	page int64, pageSize int64) ([]*Task, int64, error) {
+	tasks := make([]*Task, 0)
+	condition := "assign_to = ? and done = ? and deleted = 0"
+	offset := (page - 1) * pageSize
+	err := t.db.Context(ctx).
+		Where(condition, memberId, done).
+		Limit(int(pageSize), int(offset)).Find(&tasks)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := t.db.Context(ctx).Where(condition, memberId, done).Count(&Task{})
+	return tasks, total, err
+}
+
+// FindTaskByCreateBy implements TaskDao.
+func (t *taskXormDao) FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
+	page int64, pageSize int64) ([]*Task, int64, error) {
+	tasks := make([]*Task, 0)
+	condition := "create_by = ? and done = ? and deleted = 0"
+	offset := (page - 1) * pageSize
+	err := t.db.Context(ctx).
+		Where(condition, memberId, done).
+		Limit(int(pageSize), int(offset)).Find(&tasks)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := t.db.Context(ctx).Where(condition, memberId, done).Count(&Task{})
+	return tasks, total, err
+}
+
+// FindTaskByMemberCode implements TaskDao.
+func (t *taskXormDao) FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
+	page int64, pageSize int64) ([]*Task, int64, error) {
+	tasks := make([]*Task, 0)
+	offset := (page - 1) * pageSize
+	err := t.db.Context(ctx).Table("ms_task").
+		Join("inner", "ms_task_member", "ms_task.id = ms_task_member.task_code").
+		Where("ms_task_member.member_code = ? AND ms_task.done = ? AND deleted = 0", memberId, done).
+		Limit(int(pageSize), int(offset)).
+		Find(&tasks)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := t.db.Context(ctx).Table("ms_task").
+		Join("inner", "ms_task_member", "ms_task.id = ms_task_member.task_code").
+		Where("ms_task_member.member_code = ? AND ms_task.done = ? AND deleted = 0", memberId, done).
+		Count(&Task{})
+	return tasks, total, err
+}
+
 // Move implements TaskDao.
 func (t *taskXormDao) Move(ctx context.Context, toStageCode int, task Task, nextTask Task) error {
 	old := t.db
@@ -29,11 +81,11 @@ func (t *taskXormDao) Move(ctx context.Context, toStageCode int, task Task, next
 		_, err := t.db.Exec(moveUpSql, task.StageCode, task.Sort)
 		if err != nil {
 			return err
-		}	
+		}
 		// 在将从 nextTask 开始，下面的，往下移动
 		task.StageCode = toStageCode
 		task.Sort = max(nextTask.Sort, 1)
-		moveDownSql := "UPDATE ms_task SET sort = sort + 1 WHERE stage_code = ? AND sort >= ?" 
+		moveDownSql := "UPDATE ms_task SET sort = sort + 1 WHERE stage_code = ? AND sort >= ?"
 		_, err = t.db.Exec(moveDownSql, task.StageCode, task.Sort)
 		if err != nil {
 			return err

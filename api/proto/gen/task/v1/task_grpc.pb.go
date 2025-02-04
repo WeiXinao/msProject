@@ -19,17 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TaskService_TaskSort_FullMethodName       = "/task.v1.TaskService/TaskSort"
-	TaskService_TaskStages_FullMethodName     = "/task.v1.TaskService/TaskStages"
-	TaskService_SaveTaskStages_FullMethodName = "/task.v1.TaskService/SaveTaskStages"
-	TaskService_TaskList_FullMethodName       = "/task.v1.TaskService/TaskList"
-	TaskService_SaveTask_FullMethodName       = "/task.v1.TaskService/SaveTask"
+	TaskService_MyTaskList_FullMethodName     = "/api.proto.task.v1.TaskService/MyTaskList"
+	TaskService_TaskSort_FullMethodName       = "/api.proto.task.v1.TaskService/TaskSort"
+	TaskService_TaskStages_FullMethodName     = "/api.proto.task.v1.TaskService/TaskStages"
+	TaskService_SaveTaskStages_FullMethodName = "/api.proto.task.v1.TaskService/SaveTaskStages"
+	TaskService_TaskList_FullMethodName       = "/api.proto.task.v1.TaskService/TaskList"
+	TaskService_SaveTask_FullMethodName       = "/api.proto.task.v1.TaskService/SaveTask"
 )
 
 // TaskServiceClient is the client API for TaskService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error)
 	TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error)
 	TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
 	SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
@@ -43,6 +45,16 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MyTaskListResponse)
+	err := c.cc.Invoke(ctx, TaskService_MyTaskList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error) {
@@ -99,6 +111,7 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	MyTaskList(context.Context, *MyTaskListRequest) (*MyTaskListResponse, error)
 	TaskSort(context.Context, *TaskSortRequest) (*TaskSortResponse, error)
 	TaskStages(context.Context, *TaskStagesRequest) (*TaskStagesResponse, error)
 	SaveTaskStages(context.Context, *SaveTaskStagesRequest) (*SaveTaskStagesResponse, error)
@@ -114,6 +127,9 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) MyTaskList(context.Context, *MyTaskListRequest) (*MyTaskListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MyTaskList not implemented")
+}
 func (UnimplementedTaskServiceServer) TaskSort(context.Context, *TaskSortRequest) (*TaskSortResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TaskSort not implemented")
 }
@@ -148,6 +164,24 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_MyTaskList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MyTaskListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).MyTaskList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_MyTaskList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).MyTaskList(ctx, req.(*MyTaskListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_TaskSort_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -244,9 +278,13 @@ func _TaskService_SaveTask_Handler(srv interface{}, ctx context.Context, dec fun
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var TaskService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "task.v1.TaskService",
+	ServiceName: "api.proto.task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "MyTaskList",
+			Handler:    _TaskService_MyTaskList_Handler,
+		},
 		{
 			MethodName: "TaskSort",
 			Handler:    _TaskService_TaskSort_Handler,

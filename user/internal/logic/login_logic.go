@@ -76,6 +76,7 @@ func (l *LoginLogic) Login(in *userv1.LoginRequest) (*userv1.LoginResponse, erro
 	if err != nil {
 		return nil, err
 	}
+	// 可以给 token 加密处理 增加安全性
 	tokenList := &userv1.TokenMessage{
 		AccessToken:    aToken,
 		RefreshToken:   rToken,

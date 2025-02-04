@@ -11,6 +11,15 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+// FindProjectByIds implements ProjectDao.
+func (p *projectXormDao) FindProjectByIds(ctx context.Context, ids []int64) ([]*Project, error) {
+	projects := make([]*Project, 0)
+  err := p.db.In("id", slice.Map(ids, func(idx int, src int64) any {
+		return src 
+	})...).Find(&projects)
+	return projects, err
+}
+
 // FindProjectById implements ProjectDao.
 func (p *projectXormDao) FindProjectById(ctx context.Context, id int64) (*Project, error) {
 	project := &Project{}

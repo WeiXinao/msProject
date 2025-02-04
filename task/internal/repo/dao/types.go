@@ -24,7 +24,12 @@ type TaskDao interface {
 	FindTaskById(ctx context.Context, id int64) (Task, error)
 	UpdateTask(ctx context.Context, ts Task) error
 	Move(ctx context.Context, toStageCode int, task Task, nextTask Task) error
-
+	FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
+        page int64, pageSize int64) ([]*Task, int64, error)
+	FindTaskByMemberCode(ctx context.Context, memberId int64, done int, 
+        page int64, pageSize int64) ([]*Task, int64, error)
+	FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
+        page int64, pageSize int64) ([]*Task, int64, error)
 }
 
 type MsTaskStages struct {

@@ -105,6 +105,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/task/selfList",
+					Handler: task.MyTaskListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/sort",
 					Handler: task.TaskSortHandler(serverCtx),
 				},

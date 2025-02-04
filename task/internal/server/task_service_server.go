@@ -23,6 +23,11 @@ func NewTaskServiceServer(svcCtx *svc.ServiceContext) *TaskServiceServer {
 	}
 }
 
+func (s *TaskServiceServer) MyTaskList(ctx context.Context, in *v1.MyTaskListRequest) (*v1.MyTaskListResponse, error) {
+	l := logic.NewMyTaskListLogic(ctx, s.svcCtx)
+	return l.MyTaskList(in)
+}
+
 func (s *TaskServiceServer) TaskSort(ctx context.Context, in *v1.TaskSortRequest) (*v1.TaskSortResponse, error) {
 	l := logic.NewTaskSortLogic(ctx, s.svcCtx)
 	return l.TaskSort(in)

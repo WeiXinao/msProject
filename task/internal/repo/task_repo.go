@@ -21,6 +21,12 @@ type TaskRepo interface {
 	FindTaskById(ctx context.Context, id int64) (domain.Task, error)
 	UpdateTask(ctx context.Context, ts domain.Task) error
 	Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error
+	FindTaskByAssignTo(ctx context.Context, memberId int64, done int, 
+		page int64, pageSize int64) ([]*domain.Task, int64, error)
+	FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
+		page int64, pageSize int64) ([]*domain.Task, int64, error)
+	FindTaskByCreateBy(ctx context.Context, memberId int64, done int, 
+		page int64, pageSize int64) ([]*domain.Task, int64, error)
 }
 
 func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
@@ -37,6 +43,42 @@ func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
 
 type taskRepo struct {
 	dao dao.TaskDao
+}
+
+// FindTaskByAssignTo implements TaskRepo.
+func (t *taskRepo) FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
+	page int64, pageSize int64) ([]*domain.Task,int64, error) {
+	tasks, total, err := t.dao.FindTaskByAssignTo(ctx, memberId, done, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	taskDmns := make([]*domain.Task, 0)
+	err = copier.CopyWithOption(&taskDmns, tasks, copier.Option{DeepCopy: true})
+	return taskDmns, total, err
+}
+
+// FindTaskByCreateBy implements TaskRepo.
+func (t *taskRepo) FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
+	 page int64, pageSize int64) ([]*domain.Task,	int64, error) {
+	tasks, total, err := t.dao.FindTaskByCreateBy(ctx, memberId, done, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	taskDmns := make([]*domain.Task, 0)
+	err = copier.CopyWithOption(&taskDmns, tasks, copier.Option{DeepCopy: true})
+	return taskDmns, total, err
+}
+
+// FindTaskByMemberCode implements TaskRepo.
+func (t *taskRepo) FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
+	page int64, pageSize int64) ([]*domain.Task, int64, error) {
+	tasks, total ,err := t.dao.FindTaskByMemberCode(ctx, memberId, done, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	taskDmns := make([]*domain.Task, 0)
+	err = copier.CopyWithOption(&taskDmns, tasks, copier.Option{DeepCopy: true})
+	return taskDmns, total, err
 }
 
 // Move implements TaskRepo.

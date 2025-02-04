@@ -72,3 +72,8 @@ func (s *ProjectServiceServer) FindProjectById(ctx context.Context, in *v1.FindP
 	l := logic.NewFindProjectByIdLogic(ctx, s.svcCtx)
 	return l.FindProjectById(in)
 }
+
+func (s *ProjectServiceServer) FindProjectByIds(ctx context.Context, in *v1.FindProjectByIdsRequest) (*v1.FindProjectByIdsResponse, error) {
+	l := logic.NewFindProjectByIdsLogic(ctx, s.svcCtx)
+	return l.FindProjectByIds(in)
+}
