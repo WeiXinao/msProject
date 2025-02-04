@@ -11,11 +11,54 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// Move implements TaskDao.
+func (t *taskXormDao) Move(ctx context.Context, toStageCode int, task Task, nextTask Task) error {
+	old := t.db
+	defer func() {
+		t.db = old
+	}()
+	return ormx.NewTxSession(t.db.Context(ctx)).Tx(func(session any) error {
+		sess, ok := session.(*xorm.Session)
+		if !ok {
+			return ErrTypeConvert
+		}
+		t.db = sess.Engine()
+
+		// 想将 task 后面的向上移动
+		moveUpSql := "UPDATE ms_task SET sort = sort - 1 WHERE stage_code = ? AND sort > ?"
+		_, err := t.db.Exec(moveUpSql, task.StageCode, task.Sort)
+		if err != nil {
+			return err
+		}	
+		// 在将从 nextTask 开始，下面的，往下移动
+		task.StageCode = toStageCode
+		task.Sort = max(nextTask.Sort, 1)
+		moveDownSql := "UPDATE ms_task SET sort = sort + 1 WHERE stage_code = ? AND sort >= ?" 
+		_, err = t.db.Exec(moveDownSql, task.StageCode, task.Sort)
+		if err != nil {
+			return err
+		}
+		return t.UpdateTask(ctx, task)
+	})
+}
+
+// UpdateTask implements TaskDao.
+func (t *taskXormDao) UpdateTask(ctx context.Context, ts Task) error {
+	_, err := t.db.Where("id = ?", ts.Id).Update(&ts)
+	return err
+}
+
+// FindTaskById implements TaskDao.
+func (t *taskXormDao) FindTaskById(ctx context.Context, id int64) (Task, error) {
+	task := Task{}
+	_, err := t.db.Where("id = ?", id).Get(&task)
+	return task, err
+}
 
 // CreateTaskAndMember implements TaskDao.
 func (t *taskXormDao) CreateTaskAndMember(ctx context.Context, task *Task, taskMember *TaskMember) error {
 	oldDB := t.db
-	defer func ()  {
+	defer func() {
 		t.db = oldDB
 	}()
 	return ormx.NewTxSession(t.db.Context(ctx)).Tx(func(session any) error {
@@ -42,7 +85,7 @@ func (t *taskXormDao) CreateTask(ctx context.Context, task *Task) error {
 }
 
 // CreateTaskMember implements TaskDao.
-func (t *taskXormDao) CreateTaskMember(ctx context.Context, 
+func (t *taskXormDao) CreateTaskMember(ctx context.Context,
 	taskMember *TaskMember) error {
 	_, err := t.db.InsertOne(taskMember)
 	return err

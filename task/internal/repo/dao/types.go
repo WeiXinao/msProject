@@ -21,6 +21,10 @@ type TaskDao interface {
     CreateTaskAndMember(ctx context.Context, task *Task, taskMember *TaskMember) error
     CreateTask(ctx context.Context, task *Task) error
     CreateTaskMember(ctx context.Context, task *TaskMember) error
+	FindTaskById(ctx context.Context, id int64) (Task, error)
+	UpdateTask(ctx context.Context, ts Task) error
+	Move(ctx context.Context, toStageCode int, task Task, nextTask Task) error
+
 }
 
 type MsTaskStages struct {

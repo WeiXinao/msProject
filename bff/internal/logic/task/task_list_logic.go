@@ -29,6 +29,7 @@ func NewTaskListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TaskList
 func (l *TaskListLogic) TaskList(req *types.TaskReq) (resp *types.TaskRsp, err error) {
 	taskListRsp, err := l.svcCtx.TaskClient.TaskList(l.ctx, &v1.TaskListRequest{
 		StageCode: req.StageCode,
+		MemberId: l.ctx.Value("memberId").(int64),
 	})
 	if err != nil {
 		err = respx.FromStatusErr(err)

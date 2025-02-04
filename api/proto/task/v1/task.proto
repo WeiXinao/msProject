@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package task.v1;
+package api.proto.task.v1;
 option go_package="api/proto/gen/task/v1";
 
 message TaskStagesRequest {
@@ -108,7 +108,17 @@ message SaveTaskRequest {
   int64 memberId = 5;
 }
 
+message TaskSortRequest {
+  string preTaskCode = 1;
+  string nextTaskCode = 2;
+  string toStageCode = 3;
+}
+
+message TaskSortResponse {
+}
+
 service TaskService {
+  rpc TaskSort(TaskSortRequest) returns (TaskSortResponse);
   rpc TaskStages(TaskStagesRequest) returns(TaskStagesResponse);
   rpc SaveTaskStages(SaveTaskStagesRequest) returns (SaveTaskStagesResponse);
   rpc TaskList(TaskListRequest) returns (TaskListResponse);

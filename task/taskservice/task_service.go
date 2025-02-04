@@ -22,11 +22,14 @@ type (
 	TaskListRequest        = v1.TaskListRequest
 	TaskListResponse       = v1.TaskListResponse
 	TaskMessage            = v1.TaskMessage
+	TaskSortRequest        = v1.TaskSortRequest
+	TaskSortResponse       = v1.TaskSortResponse
 	TaskStagesMessage      = v1.TaskStagesMessage
 	TaskStagesRequest      = v1.TaskStagesRequest
 	TaskStagesResponse     = v1.TaskStagesResponse
 
 	TaskService interface {
+		TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error)
 		TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
 		SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
 		TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
@@ -42,6 +45,11 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.TaskSort(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error) {

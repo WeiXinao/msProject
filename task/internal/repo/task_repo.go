@@ -18,6 +18,9 @@ type TaskRepo interface {
 	FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error)
 	FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error)
 	CreateTaskAndMember(ctx context.Context, task domain.Task, taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error)
+	FindTaskById(ctx context.Context, id int64) (domain.Task, error)
+	UpdateTask(ctx context.Context, ts domain.Task) error
+	Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error
 }
 
 func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
@@ -36,10 +39,48 @@ type taskRepo struct {
 	dao dao.TaskDao
 }
 
+// Move implements TaskRepo.
+func (t *taskRepo) Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error {
+	taskEty, nextTaskEty := dao.Task{}, dao.Task{}
+	err := copier.Copy(&taskEty, task)
+	if err != nil {
+		return err
+	}
+	err = copier.Copy(&nextTaskEty, nextTask)
+	if err != nil {
+		return err
+	}
+	return t.dao.Move(ctx, toStageCode, taskEty, nextTaskEty)
+}
+
+// UpdateTaskSort implements TaskRepo.
+func (t *taskRepo) UpdateTask(ctx context.Context, ts domain.Task) error {
+	task := dao.Task{}
+	err := copier.Copy(&task, ts)
+	if err != nil {
+		return err
+	}
+	return t.dao.UpdateTask(ctx, task)
+}
+
+// FindTaskById implements TaskRepo.
+func (t *taskRepo) FindTaskById(ctx context.Context, id int64) (domain.Task, error) {
+	ts, err := t.dao.FindTaskById(ctx, id)
+	if err != nil {
+		return domain.Task{}, err
+	}
+	taskDmn := domain.Task{}
+	err = copier.Copy(&taskDmn, ts)
+	if err != nil {
+		return domain.Task{}, err
+	}
+	return taskDmn, nil
+}
+
 // CreateTaskAndMember implements TaskRepo.
 func (t *taskRepo) CreateTaskAndMember(ctx context.Context, task domain.Task, taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error) {
 	var (
-		taskEty = dao.Task{}
+		taskEty       = dao.Task{}
 		taskMemberEty = dao.TaskMember{}
 	)
 	err = copier.Copy(&taskEty, task)

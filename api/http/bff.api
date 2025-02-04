@@ -449,12 +449,25 @@ type TaskSaveReq {
 	AssignTo    string `form:"assign_to"`
 }
 
+type TaskSortReq {
+	PreTaskCode  string `form:"preTaskCode"`
+	NextTaskCode string `form:"nextTaskCode"`
+	ToStageCode  string `form:"toStageCode"`
+}
+
+type TaskSortRsp {
+	list []int
+}
+
 @server (
 	prefix:     /project
 	group:      task
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler TaskSort
+	post /task/sort (TaskSortReq) returns (TaskSortRsp)
+
 	@handler TaskStages
 	post /task_stages (TaskStagesReq) returns (TaskStagesResp)
 

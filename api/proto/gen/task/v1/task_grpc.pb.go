@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	TaskService_TaskSort_FullMethodName       = "/task.v1.TaskService/TaskSort"
 	TaskService_TaskStages_FullMethodName     = "/task.v1.TaskService/TaskStages"
 	TaskService_SaveTaskStages_FullMethodName = "/task.v1.TaskService/SaveTaskStages"
 	TaskService_TaskList_FullMethodName       = "/task.v1.TaskService/TaskList"
@@ -29,6 +30,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error)
 	TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
 	SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
 	TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
@@ -41,6 +43,16 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskSortResponse)
+	err := c.cc.Invoke(ctx, TaskService_TaskSort_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error) {
@@ -87,6 +99,7 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	TaskSort(context.Context, *TaskSortRequest) (*TaskSortResponse, error)
 	TaskStages(context.Context, *TaskStagesRequest) (*TaskStagesResponse, error)
 	SaveTaskStages(context.Context, *SaveTaskStagesRequest) (*SaveTaskStagesResponse, error)
 	TaskList(context.Context, *TaskListRequest) (*TaskListResponse, error)
@@ -101,6 +114,9 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) TaskSort(context.Context, *TaskSortRequest) (*TaskSortResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskSort not implemented")
+}
 func (UnimplementedTaskServiceServer) TaskStages(context.Context, *TaskStagesRequest) (*TaskStagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TaskStages not implemented")
 }
@@ -132,6 +148,24 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_TaskSort_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskSortRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).TaskSort(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_TaskSort_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).TaskSort(ctx, req.(*TaskSortRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_TaskStages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -213,6 +247,10 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "TaskSort",
+			Handler:    _TaskService_TaskSort_Handler,
+		},
 		{
 			MethodName: "TaskStages",
 			Handler:    _TaskService_TaskStages_Handler,
