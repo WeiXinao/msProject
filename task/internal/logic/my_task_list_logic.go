@@ -13,6 +13,7 @@ import (
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/threading"
 )
 
 type MyTaskListLogic struct {
@@ -51,33 +52,62 @@ func (l *MyTaskListLogic) MyTaskList(in *v1.MyTaskListRequest) (*v1.MyTaskListRe
 		return &v1.MyTaskListResponse{List: nil, Total: 0}, nil
 	}
 
-	pids := slice.Map(tasks, func(idx int, src *domain.Task) int64 {
-		return src.ProjectCode
-	})
-	mids := slice.Map(tasks, func(idx int, src *domain.Task) int64 {
-		return src.AssignTo
-	})
-	projectsRsp, err := l.svcCtx.ProjectClient.FindProjectByIds(l.ctx, &projectv1.FindProjectByIdsRequest{
-		ProjectCodes: pids,
-	})
-	if err != nil {
-		l.Error("[logic MyTaskList] %#v", err)
-		return nil, respx.ToStatusErr(respx.ErrInternalServer)
-	}
-	memberInfosRsp, err := l.svcCtx.UserClient.MemberInfosById(l.ctx, &userv1.MemberInfosByIdRequest{
-		MIds: mids,
-	})
-	if err != nil {
-		l.Error("[logic MyTaskList] %#v", err)
-		return nil, respx.ToStatusErr(respx.ErrInternalServer)
-	}
-	membersMap := slice.ToMap(memberInfosRsp.List, func(element *userv1.MemberMessage) int64 {
-		return element.GetId()
-	})
-	projectsMap := slice.ToMap(projectsRsp.Projects, func(element *projectv1.ProjectMessage) int64 {
-		return element.GetId()
+	memberMapChan := make(chan map[int64]*userv1.MemberMessage, 1)
+	defer close(memberMapChan)
+	projectMapChan := make(chan map[int64]*projectv1.ProjectMessage, 1)
+	defer close(projectMapChan)
+	errChan := make(chan error, 2)
+	defer close(errChan)
+	done := make(chan bool, 2)
+	defer close(done)
+
+	threading.GoSafe(func() {
+		mids := slice.Map(tasks, func(idx int, src *domain.Task) int64 {
+			return src.AssignTo
+		})
+		memberInfosRsp, err := l.svcCtx.UserClient.MemberInfosById(l.ctx, &userv1.MemberInfosByIdRequest{
+			MIds: mids,
+		})
+		if err != nil {
+			errChan <- err
+			return
+		}
+		membersMap := slice.ToMap(memberInfosRsp.List, func(element *userv1.MemberMessage) int64 {
+			return element.GetId()
+		})
+		memberMapChan <- membersMap
+		done <- true
 	})
 
+	threading.GoSafe(func() {
+		pids := slice.Map(tasks, func(idx int, src *domain.Task) int64 {
+			return src.ProjectCode
+		})
+		projectsRsp, err := l.svcCtx.ProjectClient.FindProjectByIds(l.ctx, &projectv1.FindProjectByIdsRequest{
+			ProjectCodes: pids,
+		})
+		if err != nil {
+			errChan <- err
+			return
+		}
+		projectsMap := slice.ToMap(projectsRsp.Projects, func(element *projectv1.ProjectMessage) int64 {
+			return element.GetId()
+		})
+		projectMapChan <- projectsMap
+		done <- true
+	})
+
+	select {
+	case err = <- errChan:
+		if err != nil {
+			l.Error("[logic MyTaskList] %#v", err)
+			return nil, respx.ToStatusErr(respx.ErrInternalServer)
+		}
+	case <- done:
+	}
+
+	membersMap := <-memberMapChan
+	projectsMap := <-projectMapChan	
 	myTaskDisplayList := slice.Map(tasks, func(idx int, src *domain.Task) *domain.MyTaskDisplay {
 		memberMsg := membersMap[src.AssignTo]
 		name := memberMsg.GetName()
