@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	TaskService_ReadTask_FullMethodName       = "/api.proto.task.v1.TaskService/ReadTask"
 	TaskService_MyTaskList_FullMethodName     = "/api.proto.task.v1.TaskService/MyTaskList"
 	TaskService_TaskSort_FullMethodName       = "/api.proto.task.v1.TaskService/TaskSort"
 	TaskService_TaskStages_FullMethodName     = "/api.proto.task.v1.TaskService/TaskStages"
@@ -31,6 +32,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 	MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error)
 	TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error)
 	TaskStages(ctx context.Context, in *TaskStagesRequest, opts ...grpc.CallOption) (*TaskStagesResponse, error)
@@ -45,6 +47,16 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskMessage)
+	err := c.cc.Invoke(ctx, TaskService_ReadTask_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error) {
@@ -111,6 +123,7 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	ReadTask(context.Context, *ReadTaskRequest) (*TaskMessage, error)
 	MyTaskList(context.Context, *MyTaskListRequest) (*MyTaskListResponse, error)
 	TaskSort(context.Context, *TaskSortRequest) (*TaskSortResponse, error)
 	TaskStages(context.Context, *TaskStagesRequest) (*TaskStagesResponse, error)
@@ -127,6 +140,9 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) ReadTask(context.Context, *ReadTaskRequest) (*TaskMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadTask not implemented")
+}
 func (UnimplementedTaskServiceServer) MyTaskList(context.Context, *MyTaskListRequest) (*MyTaskListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MyTaskList not implemented")
 }
@@ -164,6 +180,24 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_ReadTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).ReadTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_ReadTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).ReadTask(ctx, req.(*ReadTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_MyTaskList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -281,6 +315,10 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ReadTask",
+			Handler:    _TaskService_ReadTask_Handler,
+		},
 		{
 			MethodName: "MyTaskList",
 			Handler:    _TaskService_MyTaskList_Handler,

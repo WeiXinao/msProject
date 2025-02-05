@@ -330,6 +330,10 @@ type ReadProjectRsp struct {
 	OwnerAvatar        string  `json:"owner_avatar"`
 }
 
+type ReadTaskReq struct {
+	TaskCode string `form:"taskCode"`
+}
+
 type RecycleProjectReq struct {
 	ProjectCode string `form:"projectCode"`
 }
@@ -405,6 +409,8 @@ type TaskDisplay struct {
 	Stared        int      `json:"stared"`
 	Tags          []int    `json:"tags"`
 	ChildCount    []int    `json:"childCount"`
+	ProjectName   string   `json:"projectName"`
+	StageName     string   `json:"stageName"`
 }
 
 type TaskReq struct {

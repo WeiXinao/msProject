@@ -88,6 +88,9 @@ message TaskMessage{
   int32 canRead = 33;
   ExecutorMessage executor = 34;
   string projectName = 35;
+  string stageName = 36;
+  string  priText = 37;
+  string statusText = 38;
 }
 
 message ExecutorMessage {
@@ -181,7 +184,13 @@ message MyTaskListResponse{
   int64  total = 2;
 }
 
+message ReadTaskRequest {
+  string taskCode = 1;
+  int64 memberId = 2;
+}
+
 service TaskService {
+  rpc ReadTask(ReadTaskRequest) returns (TaskMessage);
   rpc MyTaskList(MyTaskListRequest) returns (MyTaskListResponse);
   rpc TaskSort(TaskSortRequest) returns (TaskSortResponse);
   rpc TaskStages(TaskStagesRequest) returns(TaskStagesResponse);

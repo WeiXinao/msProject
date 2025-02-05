@@ -100,6 +100,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/task/read",
+					Handler: task.ReadTaskHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/save",
 					Handler: task.SaveTaskHandler(serverCtx),
 				},

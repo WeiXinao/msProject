@@ -21,11 +21,11 @@ type TaskRepo interface {
 	FindTaskById(ctx context.Context, id int64) (domain.Task, error)
 	UpdateTask(ctx context.Context, ts domain.Task) error
 	Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error
-	FindTaskByAssignTo(ctx context.Context, memberId int64, done int, 
+	FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
 	FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
-	FindTaskByCreateBy(ctx context.Context, memberId int64, done int, 
+	FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
 }
 
@@ -45,9 +45,23 @@ type taskRepo struct {
 	dao dao.TaskDao
 }
 
+// FindTaskMemberByTaskIdAndMemberId implements TaskRepo.
+func (t *taskRepo) FindTaskMemberByTaskIdAndMemberId(ctx context.Context, taskId int64, taskMemberId int64) (domain.TaskMember, bool, error) {
+	taskMember, has, err := t.dao.FindTaskMemberByTaskId(ctx, taskId, taskMemberId)
+	if err != nil {
+		return domain.TaskMember{}, false, err
+	}
+	taskDmn := domain.TaskMember{}
+	err = copier.Copy(&taskDmn, taskMember)
+	if err != nil {
+		return domain.TaskMember{}, false, err
+	}
+	return taskDmn, has, nil
+}
+
 // FindTaskByAssignTo implements TaskRepo.
 func (t *taskRepo) FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
-	page int64, pageSize int64) ([]*domain.Task,int64, error) {
+	page int64, pageSize int64) ([]*domain.Task, int64, error) {
 	tasks, total, err := t.dao.FindTaskByAssignTo(ctx, memberId, done, page, pageSize)
 	if err != nil {
 		return nil, 0, err
@@ -59,7 +73,7 @@ func (t *taskRepo) FindTaskByAssignTo(ctx context.Context, memberId int64, done 
 
 // FindTaskByCreateBy implements TaskRepo.
 func (t *taskRepo) FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
-	 page int64, pageSize int64) ([]*domain.Task,	int64, error) {
+	page int64, pageSize int64) ([]*domain.Task, int64, error) {
 	tasks, total, err := t.dao.FindTaskByCreateBy(ctx, memberId, done, page, pageSize)
 	if err != nil {
 		return nil, 0, err
@@ -72,7 +86,7 @@ func (t *taskRepo) FindTaskByCreateBy(ctx context.Context, memberId int64, done 
 // FindTaskByMemberCode implements TaskRepo.
 func (t *taskRepo) FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
 	page int64, pageSize int64) ([]*domain.Task, int64, error) {
-	tasks, total ,err := t.dao.FindTaskByMemberCode(ctx, memberId, done, page, pageSize)
+	tasks, total, err := t.dao.FindTaskByMemberCode(ctx, memberId, done, page, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
