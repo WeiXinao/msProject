@@ -1720,6 +1720,218 @@ func (x *ReadTaskRequest) GetMemberId() int64 {
 	return 0
 }
 
+type TaskMemberMessage struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	Id                int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name              string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Avatar            string                 `protobuf:"bytes,3,opt,name=avatar,proto3" json:"avatar,omitempty"`
+	Code              string                 `protobuf:"bytes,4,opt,name=code,proto3" json:"code,omitempty"`
+	MembarAccountCode string                 `protobuf:"bytes,5,opt,name=membarAccountCode,proto3" json:"membarAccountCode,omitempty"`
+	IsExecutor        int32                  `protobuf:"varint,6,opt,name=isExecutor,proto3" json:"isExecutor,omitempty"`
+	IsOwner           int32                  `protobuf:"varint,7,opt,name=isOwner,proto3" json:"isOwner,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *TaskMemberMessage) Reset() {
+	*x = TaskMemberMessage{}
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskMemberMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskMemberMessage) ProtoMessage() {}
+
+func (x *TaskMemberMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskMemberMessage.ProtoReflect.Descriptor instead.
+func (*TaskMemberMessage) Descriptor() ([]byte, []int) {
+	return file_api_proto_task_v1_task_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *TaskMemberMessage) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *TaskMemberMessage) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TaskMemberMessage) GetAvatar() string {
+	if x != nil {
+		return x.Avatar
+	}
+	return ""
+}
+
+func (x *TaskMemberMessage) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *TaskMemberMessage) GetMembarAccountCode() string {
+	if x != nil {
+		return x.MembarAccountCode
+	}
+	return ""
+}
+
+func (x *TaskMemberMessage) GetIsExecutor() int32 {
+	if x != nil {
+		return x.IsExecutor
+	}
+	return 0
+}
+
+func (x *TaskMemberMessage) GetIsOwner() int32 {
+	if x != nil {
+		return x.IsOwner
+	}
+	return 0
+}
+
+type ListTaskMemberRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskCode      string                 `protobuf:"bytes,1,opt,name=taskCode,proto3" json:"taskCode,omitempty"`
+	Page          int64                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int64                  `protobuf:"varint,3,opt,name=pageSize,proto3" json:"pageSize,omitempty"`
+	MemberId      int64                  `protobuf:"varint,4,opt,name=memberId,proto3" json:"memberId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTaskMemberRequest) Reset() {
+	*x = ListTaskMemberRequest{}
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTaskMemberRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTaskMemberRequest) ProtoMessage() {}
+
+func (x *ListTaskMemberRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTaskMemberRequest.ProtoReflect.Descriptor instead.
+func (*ListTaskMemberRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_task_v1_task_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *ListTaskMemberRequest) GetTaskCode() string {
+	if x != nil {
+		return x.TaskCode
+	}
+	return ""
+}
+
+func (x *ListTaskMemberRequest) GetPage() int64 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListTaskMemberRequest) GetPageSize() int64 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListTaskMemberRequest) GetMemberId() int64 {
+	if x != nil {
+		return x.MemberId
+	}
+	return 0
+}
+
+type ListTaskMemberResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	List          []*TaskMemberMessage   `protobuf:"bytes,1,rep,name=list,proto3" json:"list,omitempty"`
+	Total         int64                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTaskMemberResponse) Reset() {
+	*x = ListTaskMemberResponse{}
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTaskMemberResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTaskMemberResponse) ProtoMessage() {}
+
+func (x *ListTaskMemberResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_task_v1_task_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTaskMemberResponse.ProtoReflect.Descriptor instead.
+func (*ListTaskMemberResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_task_v1_task_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ListTaskMemberResponse) GetList() []*TaskMemberMessage {
+	if x != nil {
+		return x.List
+	}
+	return nil
+}
+
+func (x *ListTaskMemberResponse) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
 var File_api_proto_task_v1_task_proto protoreflect.FileDescriptor
 
 var file_api_proto_task_v1_task_proto_rawDesc = []byte{
@@ -1993,8 +2205,42 @@ var file_api_proto_task_v1_task_proto_rawDesc = []byte{
 	0x74, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1a, 0x0a,
 	0x08, 0x6d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52,
-	0x08, 0x6d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x49, 0x64, 0x32, 0xf4, 0x04, 0x0a, 0x0b, 0x54, 0x61,
-	0x73, 0x6b, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4e, 0x0a, 0x08, 0x52, 0x65, 0x61,
+	0x08, 0x6d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x49, 0x64, 0x22, 0xcb, 0x01, 0x0a, 0x11, 0x54, 0x61,
+	0x73, 0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x76, 0x61, 0x74, 0x61, 0x72, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x61, 0x76, 0x61, 0x74, 0x61, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x63,
+	0x6f, 0x64, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12,
+	0x2c, 0x0a, 0x11, 0x6d, 0x65, 0x6d, 0x62, 0x61, 0x72, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x43, 0x6f, 0x64, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x6d, 0x65, 0x6d, 0x62,
+	0x61, 0x72, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x1e, 0x0a,
+	0x0a, 0x69, 0x73, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x6f, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x0a, 0x69, 0x73, 0x45, 0x78, 0x65, 0x63, 0x75, 0x74, 0x6f, 0x72, 0x12, 0x18, 0x0a,
+	0x07, 0x69, 0x73, 0x4f, 0x77, 0x6e, 0x65, 0x72, 0x18, 0x07, 0x20, 0x01, 0x28, 0x05, 0x52, 0x07,
+	0x69, 0x73, 0x4f, 0x77, 0x6e, 0x65, 0x72, 0x22, 0x7f, 0x0a, 0x15, 0x4c, 0x69, 0x73, 0x74, 0x54,
+	0x61, 0x73, 0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x1a, 0x0a, 0x08, 0x74, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x74, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x70, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x70, 0x61, 0x67, 0x65,
+	0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65, 0x12, 0x1a, 0x0a, 0x08,
+	0x6d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x49, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x08,
+	0x6d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x49, 0x64, 0x22, 0x68, 0x0a, 0x16, 0x4c, 0x69, 0x73, 0x74,
+	0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x38, 0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b,
+	0x32, 0x24, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x74, 0x61, 0x73,
+	0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x4d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x12, 0x14, 0x0a, 0x05,
+	0x74, 0x6f, 0x74, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28, 0x03, 0x52, 0x05, 0x74, 0x6f, 0x74,
+	0x61, 0x6c, 0x32, 0xdb, 0x05, 0x0a, 0x0b, 0x54, 0x61, 0x73, 0x6b, 0x53, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x12, 0x65, 0x0a, 0x0e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65,
+	0x6d, 0x62, 0x65, 0x72, 0x12, 0x28, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x74, 0x61, 0x73, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73,
+	0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x29,
+	0x2e, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x74, 0x61, 0x73, 0x6b, 0x2e,
+	0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x54, 0x61, 0x73, 0x6b, 0x4d, 0x65, 0x6d, 0x62, 0x65,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x4e, 0x0a, 0x08, 0x52, 0x65, 0x61,
 	0x64, 0x54, 0x61, 0x73, 0x6b, 0x12, 0x22, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x2e, 0x74, 0x61, 0x73, 0x6b, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x54, 0x61,
 	0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x61, 0x70, 0x69, 0x2e,
@@ -2050,7 +2296,7 @@ func file_api_proto_task_v1_task_proto_rawDescGZIP() []byte {
 	return file_api_proto_task_v1_task_proto_rawDescData
 }
 
-var file_api_proto_task_v1_task_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_api_proto_task_v1_task_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_api_proto_task_v1_task_proto_goTypes = []any{
 	(*TaskStagesRequest)(nil),      // 0: api.proto.task.v1.TaskStagesRequest
 	(*TaskStagesMessage)(nil),      // 1: api.proto.task.v1.TaskStagesMessage
@@ -2069,6 +2315,9 @@ var file_api_proto_task_v1_task_proto_goTypes = []any{
 	(*MyTaskMessage)(nil),          // 14: api.proto.task.v1.MyTaskMessage
 	(*MyTaskListResponse)(nil),     // 15: api.proto.task.v1.MyTaskListResponse
 	(*ReadTaskRequest)(nil),        // 16: api.proto.task.v1.ReadTaskRequest
+	(*TaskMemberMessage)(nil),      // 17: api.proto.task.v1.TaskMemberMessage
+	(*ListTaskMemberRequest)(nil),  // 18: api.proto.task.v1.ListTaskMemberRequest
+	(*ListTaskMemberResponse)(nil), // 19: api.proto.task.v1.ListTaskMemberResponse
 }
 var file_api_proto_task_v1_task_proto_depIdxs = []int32{
 	1,  // 0: api.proto.task.v1.TaskStagesResponse.list:type_name -> api.proto.task.v1.TaskStagesMessage
@@ -2077,25 +2326,28 @@ var file_api_proto_task_v1_task_proto_depIdxs = []int32{
 	7,  // 3: api.proto.task.v1.TaskListResponse.list:type_name -> api.proto.task.v1.TaskMessage
 	8,  // 4: api.proto.task.v1.MyTaskMessage.executor:type_name -> api.proto.task.v1.ExecutorMessage
 	14, // 5: api.proto.task.v1.MyTaskListResponse.list:type_name -> api.proto.task.v1.MyTaskMessage
-	16, // 6: api.proto.task.v1.TaskService.ReadTask:input_type -> api.proto.task.v1.ReadTaskRequest
-	13, // 7: api.proto.task.v1.TaskService.MyTaskList:input_type -> api.proto.task.v1.MyTaskListRequest
-	11, // 8: api.proto.task.v1.TaskService.TaskSort:input_type -> api.proto.task.v1.TaskSortRequest
-	0,  // 9: api.proto.task.v1.TaskService.TaskStages:input_type -> api.proto.task.v1.TaskStagesRequest
-	4,  // 10: api.proto.task.v1.TaskService.SaveTaskStages:input_type -> api.proto.task.v1.SaveTaskStagesRequest
-	6,  // 11: api.proto.task.v1.TaskService.TaskList:input_type -> api.proto.task.v1.TaskListRequest
-	10, // 12: api.proto.task.v1.TaskService.SaveTask:input_type -> api.proto.task.v1.SaveTaskRequest
-	7,  // 13: api.proto.task.v1.TaskService.ReadTask:output_type -> api.proto.task.v1.TaskMessage
-	15, // 14: api.proto.task.v1.TaskService.MyTaskList:output_type -> api.proto.task.v1.MyTaskListResponse
-	12, // 15: api.proto.task.v1.TaskService.TaskSort:output_type -> api.proto.task.v1.TaskSortResponse
-	3,  // 16: api.proto.task.v1.TaskService.TaskStages:output_type -> api.proto.task.v1.TaskStagesResponse
-	5,  // 17: api.proto.task.v1.TaskService.SaveTaskStages:output_type -> api.proto.task.v1.SaveTaskStagesResponse
-	9,  // 18: api.proto.task.v1.TaskService.TaskList:output_type -> api.proto.task.v1.TaskListResponse
-	7,  // 19: api.proto.task.v1.TaskService.SaveTask:output_type -> api.proto.task.v1.TaskMessage
-	13, // [13:20] is the sub-list for method output_type
-	6,  // [6:13] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	17, // 6: api.proto.task.v1.ListTaskMemberResponse.list:type_name -> api.proto.task.v1.TaskMemberMessage
+	18, // 7: api.proto.task.v1.TaskService.ListTaskMember:input_type -> api.proto.task.v1.ListTaskMemberRequest
+	16, // 8: api.proto.task.v1.TaskService.ReadTask:input_type -> api.proto.task.v1.ReadTaskRequest
+	13, // 9: api.proto.task.v1.TaskService.MyTaskList:input_type -> api.proto.task.v1.MyTaskListRequest
+	11, // 10: api.proto.task.v1.TaskService.TaskSort:input_type -> api.proto.task.v1.TaskSortRequest
+	0,  // 11: api.proto.task.v1.TaskService.TaskStages:input_type -> api.proto.task.v1.TaskStagesRequest
+	4,  // 12: api.proto.task.v1.TaskService.SaveTaskStages:input_type -> api.proto.task.v1.SaveTaskStagesRequest
+	6,  // 13: api.proto.task.v1.TaskService.TaskList:input_type -> api.proto.task.v1.TaskListRequest
+	10, // 14: api.proto.task.v1.TaskService.SaveTask:input_type -> api.proto.task.v1.SaveTaskRequest
+	19, // 15: api.proto.task.v1.TaskService.ListTaskMember:output_type -> api.proto.task.v1.ListTaskMemberResponse
+	7,  // 16: api.proto.task.v1.TaskService.ReadTask:output_type -> api.proto.task.v1.TaskMessage
+	15, // 17: api.proto.task.v1.TaskService.MyTaskList:output_type -> api.proto.task.v1.MyTaskListResponse
+	12, // 18: api.proto.task.v1.TaskService.TaskSort:output_type -> api.proto.task.v1.TaskSortResponse
+	3,  // 19: api.proto.task.v1.TaskService.TaskStages:output_type -> api.proto.task.v1.TaskStagesResponse
+	5,  // 20: api.proto.task.v1.TaskService.SaveTaskStages:output_type -> api.proto.task.v1.SaveTaskStagesResponse
+	9,  // 21: api.proto.task.v1.TaskService.TaskList:output_type -> api.proto.task.v1.TaskListResponse
+	7,  // 22: api.proto.task.v1.TaskService.SaveTask:output_type -> api.proto.task.v1.TaskMessage
+	15, // [15:23] is the sub-list for method output_type
+	7,  // [7:15] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_task_v1_task_proto_init() }
@@ -2109,7 +2361,7 @@ func file_api_proto_task_v1_task_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_api_proto_task_v1_task_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

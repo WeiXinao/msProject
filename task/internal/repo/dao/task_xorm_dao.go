@@ -11,6 +11,24 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// FindTaskMemberByTaskIdPagination implements TaskDao.
+func (t *taskXormDao) FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, page int64, pageSize int64) ([]*TaskMember, int64, error) {
+	taskMembers := make([]*TaskMember, 0)
+	offset := (page - 1) * pageSize
+	sql := "task_code = ?"
+	err := t.db.Context(ctx).
+		Where(sql, taskId).
+		Limit(int(pageSize), int(offset)).
+		Find(&taskMembers)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := t.db.Context(ctx).
+		Where(sql, taskId).
+		Count(new(TaskMember))
+	return taskMembers, total, err
+}
+
 // FindTaskByAssignTo implements TaskDao.
 func (t *taskXormDao) FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
 	page int64, pageSize int64) ([]*Task, int64, error) {

@@ -59,6 +59,18 @@ type IndexRsp struct {
 	Menus []*MenuMessage `json:"menus"`
 }
 
+type ListTaskMemberReq struct {
+	TaskCode string `form:"taskCode"`
+	Page     int64  `form:"page,default=1"`
+	PageSize int64  `form:"pageSize,default=10"`
+}
+
+type ListTaskMemberRsp struct {
+	List  []*TaskMember `json:"list"`
+	Total int64         `json:"total"`
+	Page  int64         `json:"page"`
+}
+
 type LoginReq struct {
 	Account  string `form:"account"`
 	Password string `form:"password"`
@@ -411,6 +423,16 @@ type TaskDisplay struct {
 	ChildCount    []int    `json:"childCount"`
 	ProjectName   string   `json:"projectName"`
 	StageName     string   `json:"stageName"`
+}
+
+type TaskMember struct {
+	Id                int64  `json:"id"`
+	Name              string `json:"name"`
+	Avatar            string `json:"avatar"`
+	Code              string `json:"code"`
+	IsExecutor        int    `json:"is_executor"`
+	IsOwner           int    `json:"is_owner"`
+	MemberAccountCode string `json:"membar_account_code"`
 }
 
 type TaskReq struct {

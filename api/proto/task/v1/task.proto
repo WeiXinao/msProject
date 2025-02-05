@@ -189,7 +189,30 @@ message ReadTaskRequest {
   int64 memberId = 2;
 }
 
+message TaskMemberMessage{
+  int64 id = 1;
+  string name = 2;
+  string avatar = 3;
+  string code = 4;
+  string membarAccountCode = 5;
+  int32 isExecutor = 6;
+  int32 isOwner = 7;
+}	
+
+message ListTaskMemberRequest {
+  string taskCode = 1;
+  int64 page = 2;
+  int64 pageSize = 3;
+  int64 memberId = 4;
+}
+
+message ListTaskMemberResponse {
+  repeated TaskMemberMessage list = 1;
+  int64  total = 2; 
+}
+
 service TaskService {
+  rpc ListTaskMember(ListTaskMemberRequest) returns(ListTaskMemberResponse);
   rpc ReadTask(ReadTaskRequest) returns (TaskMessage);
   rpc MyTaskList(MyTaskListRequest) returns (MyTaskListResponse);
   rpc TaskSort(TaskSortRequest) returns (TaskSortResponse);

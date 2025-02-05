@@ -30,6 +30,8 @@ type TaskDao interface {
         page int64, pageSize int64) ([]*Task, int64, error)
 	FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
         page int64, pageSize int64) ([]*Task, int64, error)
+	FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, 
+		page int64, pageSize int64) ([]*TaskMember, int64, error)
 }
 
 type MsTaskStages struct {

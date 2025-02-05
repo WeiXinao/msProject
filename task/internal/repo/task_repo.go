@@ -13,11 +13,13 @@ type TaskRepo interface {
 	FindStagesByProjectIdPagination(ctx context.Context, projectCode int64,
 		page int64, pageSize int64) ([]*domain.TaskStages, int64, error)
 	FindTaskByStageCode(ctx context.Context, stageCode int) ([]*domain.Task, error)
-	FindTaskMemberByTaskId(ctx context.Context, taskCode int64, memberId int64) ([]*domain.TaskMember, bool, error)
+	FindTaskMemberByTaskId(ctx context.Context, taskCode int64,
+		memberId int64) ([]*domain.TaskMember, bool, error)
 	FindById(ctx context.Context, id int64) (*domain.TaskStages, bool, error)
 	FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error)
 	FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error)
-	CreateTaskAndMember(ctx context.Context, task domain.Task, taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error)
+	CreateTaskAndMember(ctx context.Context, task domain.Task,
+		taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error)
 	FindTaskById(ctx context.Context, id int64) (domain.Task, error)
 	UpdateTask(ctx context.Context, ts domain.Task) error
 	Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error
@@ -27,6 +29,8 @@ type TaskRepo interface {
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
 	FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
+	FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64,
+		page int64, pageSize int64) ([]*domain.TaskMember, int64, error)
 }
 
 func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
@@ -41,22 +45,20 @@ func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
 		taskStageMdls)
 }
 
-type taskRepo struct {
-	dao dao.TaskDao
-}
 
-// FindTaskMemberByTaskIdAndMemberId implements TaskRepo.
-func (t *taskRepo) FindTaskMemberByTaskIdAndMemberId(ctx context.Context, taskId int64, taskMemberId int64) (domain.TaskMember, bool, error) {
-	taskMember, has, err := t.dao.FindTaskMemberByTaskId(ctx, taskId, taskMemberId)
+// FindTaskMemberByTaskIdPagination implements TaskRepo.
+func (t *taskRepo) FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, page int64, pageSize int64) ([]*domain.TaskMember, int64, error) {
+	taskMembers, total, err := t.dao.FindTaskMemberByTaskIdPagination(ctx, taskId, 
+	page, pageSize)
 	if err != nil {
-		return domain.TaskMember{}, false, err
+		return nil, 0, err
 	}
-	taskDmn := domain.TaskMember{}
-	err = copier.Copy(&taskDmn, taskMember)
+	taskDmns := make([]*domain.TaskMember, 0)
+	err = copier.Copy(&taskDmns, taskMembers)
 	if err != nil {
-		return domain.TaskMember{}, false, err
+		return nil, 0, err
 	}
-	return taskDmn, has, nil
+	return taskDmns, total, nil
 }
 
 // FindTaskByAssignTo implements TaskRepo.
@@ -215,6 +217,11 @@ func (t *taskRepo) FindStagesByProjectIdPagination(ctx context.Context, projectC
 		return nil, 0, err
 	}
 	return taskStagesDmns, total, nil
+}
+
+
+type taskRepo struct {
+	dao dao.TaskDao
 }
 
 func NewTaskRepo(dao dao.TaskDao) TaskRepo {

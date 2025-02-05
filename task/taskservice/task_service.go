@@ -15,6 +15,8 @@ import (
 
 type (
 	ExecutorMessage        = v1.ExecutorMessage
+	ListTaskMemberRequest  = v1.ListTaskMemberRequest
+	ListTaskMemberResponse = v1.ListTaskMemberResponse
 	MyTaskListRequest      = v1.MyTaskListRequest
 	MyTaskListResponse     = v1.MyTaskListResponse
 	MyTaskMessage          = v1.MyTaskMessage
@@ -25,6 +27,7 @@ type (
 	SaveTaskStagesResponse = v1.SaveTaskStagesResponse
 	TaskListRequest        = v1.TaskListRequest
 	TaskListResponse       = v1.TaskListResponse
+	TaskMemberMessage      = v1.TaskMemberMessage
 	TaskMessage            = v1.TaskMessage
 	TaskSortRequest        = v1.TaskSortRequest
 	TaskSortResponse       = v1.TaskSortResponse
@@ -33,6 +36,7 @@ type (
 	TaskStagesResponse     = v1.TaskStagesResponse
 
 	TaskService interface {
+		ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
 		ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 		MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error)
 		TaskSort(ctx context.Context, in *TaskSortRequest, opts ...grpc.CallOption) (*TaskSortResponse, error)
@@ -51,6 +55,11 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.ListTaskMember(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
