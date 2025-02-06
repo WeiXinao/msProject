@@ -558,12 +558,53 @@ type ListTaskMemberRsp {
 	Page  int64         `json:"page"`
 }
 
+type TaskLogReq {
+	TaskCode string `form:"taskCode"`
+	Page     int64  `form:"page,default=1"`
+	PageSize int64  `form:"pageSize,default=10"`
+	All      int    `form:"all"`
+	Comment  int    `form:"comment"`
+}
+
+type MemberInfo {
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
+	Code   string `json:"code"`
+	Avatar string `json:"avatar"`
+}
+
+type TaskLog {
+	Id           int64      `json:"id"`
+	MemberCode   string     `json:"member_code"`
+	Content      string     `json:"content"`
+	Remark       string     `json:"remark"`
+	Type         string     `json:"type"`
+	CreateTime   string     `json:"create_time"`
+	SourceCode   string     `json:"source_code"`
+	ActionType   string     `json:"action_type"`
+	ToMemberCode string     `json:"to_member_code"`
+	IsComment    int        `json:"is_comment"`
+	ProjectCode  string     `json:"project_code"`
+	Icon         string     `json:"icon"`
+	IsRobot      int        `json:"is_robot"`
+	Member       MemberInfo `json:"member"`
+}
+
+type TaskLogRsp {
+	List  []*TaskLog `json:"list"`
+	Total int64      `json:"total"`
+	Page  int64      `json:"page"`
+}
+
 @server (
 	prefix:     /project
 	group:      task
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler TaskLog
+	post /task/taskLog (TaskLogReq) returns (TaskLogRsp)
+
 	@handler ListTaskMember
 	post /task_member (ListTaskMemberReq) returns (ListTaskMemberRsp)
 

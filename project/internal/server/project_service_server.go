@@ -23,6 +23,16 @@ func NewProjectServiceServer(svcCtx *svc.ServiceContext) *ProjectServiceServer {
 	}
 }
 
+func (s *ProjectServiceServer) TaskLog(ctx context.Context, in *v1.TaskLogRequest) (*v1.TaskLogResponse, error) {
+	l := logic.NewTaskLogLogic(ctx, s.svcCtx)
+	return l.TaskLog(in)
+}
+
+func (s *ProjectServiceServer) CreateProjectLog(ctx context.Context, in *v1.CreateProjectLogRequest) (*v1.CreateProjectLogResponse, error) {
+	l := logic.NewCreateProjectLogLogic(ctx, s.svcCtx)
+	return l.CreateProjectLog(in)
+}
+
 func (s *ProjectServiceServer) Index(ctx context.Context, in *v1.IndexRequest) (*v1.IndexResponse, error) {
 	l := logic.NewIndexLogic(ctx, s.svcCtx)
 	return l.Index(in)

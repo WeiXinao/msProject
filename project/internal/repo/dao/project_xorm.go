@@ -11,11 +11,51 @@ type projectXormDao struct {
 	db *xorm.Engine
 }
 
+// FindLogByTaskCode implements ProjectDao.
+func (p *projectXormDao) FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*ProjectLog, int64, error) {
+	projectLogs := make([]*ProjectLog, 0)
+	whereCondition :=  p.db.Context(ctx).Where("source_code = ?", taskCode)
+	if comment == 1 {
+		whereCondition = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment)
+	} 
+
+	err := whereCondition.Find(&projectLogs)
+	if err != nil {
+		return nil, 0, err
+	}
+	return projectLogs, int64(len(projectLogs)), nil	
+}
+
+// FindLogByTaskCodePagination implements ProjectDao.
+func (p *projectXormDao) FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, page int64, pageSize int64) ([]*ProjectLog, int64, error) {
+	projectLogs := make([]*ProjectLog, 0)
+	whereCondition :=  p.db.Context(ctx).Where("source_code = ?", taskCode)
+	if comment == 1 {
+		whereCondition = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment)
+	} 
+	offset := (page - 1) * pageSize
+	err := whereCondition.Limit(int(pageSize), int(offset)).Find(&projectLogs)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := whereCondition.Count(new(ProjectLog))
+	if err != nil {
+		return nil, 0, err
+	}
+	return projectLogs, total, nil
+}
+
+// SaveProjectLog implements ProjectDao.
+func (p *projectXormDao) SaveProjectLog(ctx context.Context, projectLog ProjectLog) error {
+	_, err := p.db.Context(ctx).InsertOne(&projectLog)
+	return err
+}
+
 // FindProjectByIds implements ProjectDao.
 func (p *projectXormDao) FindProjectByIds(ctx context.Context, ids []int64) ([]*Project, error) {
 	projects := make([]*Project, 0)
-  err := p.db.In("id", slice.Map(ids, func(idx int, src int64) any {
-		return src 
+	err := p.db.In("id", slice.Map(ids, func(idx int, src int64) any {
+		return src
 	})...).Find(&projects)
 	return projects, err
 }
@@ -240,6 +280,7 @@ func NewProjectXormDao(engine *xorm.Engine) (ProjectDao, error) {
 		new(ProjectCollection),
 		new(ProjectTemplate),
 		new(MsTaskStagesTemplate),
+		new(ProjectLog),
 	)
 	if err != nil {
 		return nil, err

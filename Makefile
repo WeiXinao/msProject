@@ -12,7 +12,7 @@ task:
 	@goctl rpc protoc ./api/proto/task/v1/task.proto --go_out=. --go-grpc_out=. --zrpc_out=./task --style go_zero
 
 modelgen:
-	@./pkg/model_generator/bin/modelgen model --dsn 'root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8' --table ms_task_member --dst ./task/internal/repo/dao/types.go
+	@./pkg/model_generator/bin/modelgen model --dsn 'root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8' --table ms_project_log --dst ./project/internal/repo/dao/types.go
 
 msggen:
 	@./pkg/model_generator/bin/modelgen msg --dsn 'root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8' --table ms_project_member --dst ./api/proto/project/v1/project.proto

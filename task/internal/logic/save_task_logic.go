@@ -15,6 +15,7 @@ import (
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/threading"
 )
 
 type SaveTaskLogic struct {
@@ -142,6 +143,36 @@ func (l *SaveTaskLogic) SaveTask(in *v1.SaveTaskRequest) (*v1.TaskMessage, error
 		l.Errorf("[logic SaveTask] %#v", err)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)
 	}
+
+	// 创建任务动态
+	threading.GoSafe(func() {
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		defer cancel()
+		var (
+			logType = "create"
+			actionType = "task"
+			remark = ""
+		)
+		if logType == "create" {
+			remark = 	"创建了任务"
+		}
+		_, err := l.svcCtx.ProjectClient.CreateProjectLog(ctx, &projectservice.CreateProjectLogRequest{
+			MemberCode: task.AssignTo,
+			ProjectCode: task.ProjectCode,	
+			SourceCode: task.Id,
+			Content: task.Name,
+			Remark: remark,
+			CreateTime: time.Now().UnixMilli(),	
+			Type: logType,
+			ActionType: actionType,
+			Icon: "plus",
+			IsComment: 0,
+			IsRobot: 0,
+		})
+		if err != nil {
+			l.Errorf("[logic SaveTask] %#v", err)
+		}
+	})
 
 	return tm, nil
 }

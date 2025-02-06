@@ -92,6 +92,13 @@ type Member struct {
 	OrganizationCode string `json:"organization_code"`
 }
 
+type MemberInfo struct {
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
+	Code   string `json:"code"`
+	Avatar string `json:"avatar"`
+}
+
 type MenuMessage struct {
 	Id         int64          `json:"id"`
 	Pid        int64          `json:"pid"`
@@ -423,6 +430,37 @@ type TaskDisplay struct {
 	ChildCount    []int    `json:"childCount"`
 	ProjectName   string   `json:"projectName"`
 	StageName     string   `json:"stageName"`
+}
+
+type TaskLog struct {
+	Id           int64      `json:"id"`
+	MemberCode   string     `json:"member_code"`
+	Content      string     `json:"content"`
+	Remark       string     `json:"remark"`
+	Type         string     `json:"type"`
+	CreateTime   string     `json:"create_time"`
+	SourceCode   string     `json:"source_code"`
+	ActionType   string     `json:"action_type"`
+	ToMemberCode string     `json:"to_member_code"`
+	IsComment    int        `json:"is_comment"`
+	ProjectCode  string     `json:"project_code"`
+	Icon         string     `json:"icon"`
+	IsRobot      int        `json:"is_robot"`
+	Member       MemberInfo `json:"member"`
+}
+
+type TaskLogReq struct {
+	TaskCode string `form:"taskCode"`
+	Page     int64  `form:"page,default=1"`
+	PageSize int64  `form:"pageSize,default=10"`
+	All      int    `form:"all"`
+	Comment  int    `form:"comment"`
+}
+
+type TaskLogRsp struct {
+	List  []*TaskLog `json:"list"`
+	Total int64      `json:"total"`
+	Page  int64      `json:"page"`
 }
 
 type TaskMember struct {

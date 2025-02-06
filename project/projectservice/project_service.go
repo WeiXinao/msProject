@@ -14,6 +14,8 @@ import (
 )
 
 type (
+	CreateProjectLogRequest      = v1.CreateProjectLogRequest
+	CreateProjectLogResponse     = v1.CreateProjectLogResponse
 	FindProjectByIdRequest       = v1.FindProjectByIdRequest
 	FindProjectByIdsRequest      = v1.FindProjectByIdsRequest
 	FindProjectByIdsResponse     = v1.FindProjectByIdsResponse
@@ -21,6 +23,7 @@ type (
 	FindProjectTemplateResponse  = v1.FindProjectTemplateResponse
 	IndexRequest                 = v1.IndexRequest
 	IndexResponse                = v1.IndexResponse
+	Member                       = v1.Member
 	MenuMessage                  = v1.MenuMessage
 	ProjectDetailRequest         = v1.ProjectDetailRequest
 	ProjectDetailResponse        = v1.ProjectDetailResponse
@@ -35,6 +38,9 @@ type (
 	RecycleProjectResponse       = v1.RecycleProjectResponse
 	SaveProjectReq               = v1.SaveProjectReq
 	SaveProjectRsp               = v1.SaveProjectRsp
+	TaskLog                      = v1.TaskLog
+	TaskLogRequest               = v1.TaskLogRequest
+	TaskLogResponse              = v1.TaskLogResponse
 	TaskStages                   = v1.TaskStages
 	UpdateCollectProjectRequest  = v1.UpdateCollectProjectRequest
 	UpdateCollectProjectResponse = v1.UpdateCollectProjectResponse
@@ -42,6 +48,8 @@ type (
 	UpdateProjectResponse        = v1.UpdateProjectResponse
 
 	ProjectService interface {
+		TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error)
+		CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error)
 		Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
 		FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
 		FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
@@ -64,6 +72,16 @@ func NewProjectService(cli zrpc.Client) ProjectService {
 	return &defaultProjectService{
 		cli: cli,
 	}
+}
+
+func (m *defaultProjectService) TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.TaskLog(ctx, in, opts...)
+}
+
+func (m *defaultProjectService) CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.CreateProjectLog(ctx, in, opts...)
 }
 
 func (m *defaultProjectService) Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error) {
