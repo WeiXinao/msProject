@@ -17,6 +17,7 @@ type (
 	ExecutorMessage        = v1.ExecutorMessage
 	ListTaskMemberRequest  = v1.ListTaskMemberRequest
 	ListTaskMemberResponse = v1.ListTaskMemberResponse
+	Member                 = v1.Member
 	MyTaskListRequest      = v1.MyTaskListRequest
 	MyTaskListResponse     = v1.MyTaskListResponse
 	MyTaskMessage          = v1.MyTaskMessage
@@ -34,8 +35,12 @@ type (
 	TaskStagesMessage      = v1.TaskStagesMessage
 	TaskStagesRequest      = v1.TaskStagesRequest
 	TaskStagesResponse     = v1.TaskStagesResponse
+	TaskWorkTime           = v1.TaskWorkTime
+	TaskWorkTimeRequest    = v1.TaskWorkTimeRequest
+	TaskWorkTimeResponse   = v1.TaskWorkTimeResponse
 
 	TaskService interface {
+		TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error)
 		ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
 		ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 		MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error)
@@ -55,6 +60,11 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.TaskWorkTimeList(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error) {

@@ -100,6 +100,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/task/_taskWorkTimeList",
+					Handler: task.TaskWorkTimeListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/read",
 					Handler: task.ReadTaskHandler(serverCtx),
 				},

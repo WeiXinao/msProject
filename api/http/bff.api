@@ -596,12 +596,36 @@ type TaskLogRsp {
 	Page  int64      `json:"page"`
 }
 
+type TaskWorkTimeListReq {
+	TaskCode string `form:"taskCode"`
+}
+
+type TaskWorkTime {
+	Id         int64      `json:"id"`
+	TaskCode   string     `json:"task_code"`
+	MemberCode string     `json:"member_code"`
+	CreateTime string     `json:"create_time"`
+	Content    string     `json:"content"`
+	BeginTime  string     `json:"begin_time"`
+	Num        int        `json:"num"`
+	Code       string     `json:"code"`
+	Member     MemberInfo `json:"member"`
+}
+
+type TaskWorkTimeListRsp {
+	List  []*TaskWorkTime
+	Total int64
+}
+
 @server (
 	prefix:     /project
 	group:      task
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler TaskWorkTimeList
+	post /task/_taskWorkTimeList (TaskWorkTimeListReq) returns (TaskWorkTimeListRsp)
+
 	@handler TaskLog
 	post /task/taskLog (TaskLogReq) returns (TaskLogRsp)
 

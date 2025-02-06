@@ -19,20 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TaskService_ListTaskMember_FullMethodName = "/api.proto.task.v1.TaskService/ListTaskMember"
-	TaskService_ReadTask_FullMethodName       = "/api.proto.task.v1.TaskService/ReadTask"
-	TaskService_MyTaskList_FullMethodName     = "/api.proto.task.v1.TaskService/MyTaskList"
-	TaskService_TaskSort_FullMethodName       = "/api.proto.task.v1.TaskService/TaskSort"
-	TaskService_TaskStages_FullMethodName     = "/api.proto.task.v1.TaskService/TaskStages"
-	TaskService_SaveTaskStages_FullMethodName = "/api.proto.task.v1.TaskService/SaveTaskStages"
-	TaskService_TaskList_FullMethodName       = "/api.proto.task.v1.TaskService/TaskList"
-	TaskService_SaveTask_FullMethodName       = "/api.proto.task.v1.TaskService/SaveTask"
+	TaskService_TaskWorkTimeList_FullMethodName = "/api.proto.task.v1.TaskService/TaskWorkTimeList"
+	TaskService_ListTaskMember_FullMethodName   = "/api.proto.task.v1.TaskService/ListTaskMember"
+	TaskService_ReadTask_FullMethodName         = "/api.proto.task.v1.TaskService/ReadTask"
+	TaskService_MyTaskList_FullMethodName       = "/api.proto.task.v1.TaskService/MyTaskList"
+	TaskService_TaskSort_FullMethodName         = "/api.proto.task.v1.TaskService/TaskSort"
+	TaskService_TaskStages_FullMethodName       = "/api.proto.task.v1.TaskService/TaskStages"
+	TaskService_SaveTaskStages_FullMethodName   = "/api.proto.task.v1.TaskService/SaveTaskStages"
+	TaskService_TaskList_FullMethodName         = "/api.proto.task.v1.TaskService/TaskList"
+	TaskService_SaveTask_FullMethodName         = "/api.proto.task.v1.TaskService/SaveTask"
 )
 
 // TaskServiceClient is the client API for TaskService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error)
 	ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
 	ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 	MyTaskList(ctx context.Context, in *MyTaskListRequest, opts ...grpc.CallOption) (*MyTaskListResponse, error)
@@ -49,6 +51,16 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskWorkTimeResponse)
+	err := c.cc.Invoke(ctx, TaskService_TaskWorkTimeList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error) {
@@ -135,6 +147,7 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	TaskWorkTimeList(context.Context, *TaskWorkTimeRequest) (*TaskWorkTimeResponse, error)
 	ListTaskMember(context.Context, *ListTaskMemberRequest) (*ListTaskMemberResponse, error)
 	ReadTask(context.Context, *ReadTaskRequest) (*TaskMessage, error)
 	MyTaskList(context.Context, *MyTaskListRequest) (*MyTaskListResponse, error)
@@ -153,6 +166,9 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) TaskWorkTimeList(context.Context, *TaskWorkTimeRequest) (*TaskWorkTimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskWorkTimeList not implemented")
+}
 func (UnimplementedTaskServiceServer) ListTaskMember(context.Context, *ListTaskMemberRequest) (*ListTaskMemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMember not implemented")
 }
@@ -196,6 +212,24 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_TaskWorkTimeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskWorkTimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).TaskWorkTimeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_TaskWorkTimeList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).TaskWorkTimeList(ctx, req.(*TaskWorkTimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_ListTaskMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -349,6 +383,10 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "TaskWorkTimeList",
+			Handler:    _TaskService_TaskWorkTimeList_Handler,
+		},
 		{
 			MethodName: "ListTaskMember",
 			Handler:    _TaskService_ListTaskMember_Handler,

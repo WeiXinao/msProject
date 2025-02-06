@@ -11,6 +11,19 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// FindWorkTimeListByTaskId implements TaskDao.
+func (t *taskXormDao) FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*TaskWorkTime, int64, error) {
+	taskWorkTime := make([]*TaskWorkTime, 0)
+	err := t.db.Context(ctx).Where("task_code = ?", taskId).Find(&taskWorkTime)
+	return taskWorkTime, int64(len(taskWorkTime)), err	
+}
+
+// SaveTaskWorkTime implements TaskDao.
+func (t *taskXormDao) SaveTaskWorkTime(ctx context.Context, taskWorkTime TaskWorkTime) error {
+	_, err := t.db.Context(ctx).InsertOne(&taskWorkTime)
+	return err
+}
+
 // FindTaskMemberByTaskIdPagination implements TaskDao.
 func (t *taskXormDao) FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, page int64, pageSize int64) ([]*TaskMember, int64, error) {
 	taskMembers := make([]*TaskMember, 0)
@@ -235,6 +248,7 @@ func NewTaskXormDao(engine *xorm.Engine) TaskDao {
 		new(Task),
 		new(TaskMember),
 		new(MsTaskStages),
+		new(TaskWorkTime),
 	)
 	return &taskXormDao{
 		db: engine,

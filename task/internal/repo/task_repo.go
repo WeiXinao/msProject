@@ -8,29 +8,28 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type TaskRepo interface {
-	CreateTaskStagesList(ctx context.Context, taskStagesList []*domain.TaskStages) error
-	FindStagesByProjectIdPagination(ctx context.Context, projectCode int64,
-		page int64, pageSize int64) ([]*domain.TaskStages, int64, error)
-	FindTaskByStageCode(ctx context.Context, stageCode int) ([]*domain.Task, error)
-	FindTaskMemberByTaskId(ctx context.Context, taskCode int64,
-		memberId int64) ([]*domain.TaskMember, bool, error)
-	FindById(ctx context.Context, id int64) (*domain.TaskStages, bool, error)
-	FindTaskMaxIdNum(ctx context.Context, projectCode int64) (int64, error)
-	FindTaskSort(ctx context.Context, projectCode int64, stageCode int64) (int64, error)
-	CreateTaskAndMember(ctx context.Context, task domain.Task,
-		taskMember domain.TaskMember) (taskId int64, taskMemberId int64, err error)
-	FindTaskById(ctx context.Context, id int64) (domain.Task, error)
-	UpdateTask(ctx context.Context, ts domain.Task) error
-	Move(ctx context.Context, toStageCode int, task domain.Task, nextTask domain.Task) error
-	FindTaskByAssignTo(ctx context.Context, memberId int64, done int,
-		page int64, pageSize int64) ([]*domain.Task, int64, error)
-	FindTaskByMemberCode(ctx context.Context, memberId int64, done int,
-		page int64, pageSize int64) ([]*domain.Task, int64, error)
-	FindTaskByCreateBy(ctx context.Context, memberId int64, done int,
-		page int64, pageSize int64) ([]*domain.Task, int64, error)
-	FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64,
-		page int64, pageSize int64) ([]*domain.TaskMember, int64, error)
+// FindWorkTimeListByTaskId implements TaskRepo.
+func (t *taskRepo) FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*domain.TaskWorkTime, int64, error) {
+	taskWorkTimeList, total, err := t.dao.FindWorkTimeListByTaskId(ctx, taskId)
+	if err != nil {
+		return nil, 0, err
+	}
+	taskWorkTimeDmns := make([]*domain.TaskWorkTime, 0)
+	err = copier.Copy(&taskWorkTimeDmns, taskWorkTimeList)
+	if err != nil {
+		return nil, 0, err
+	}
+	return taskWorkTimeDmns, total, nil
+}
+
+// SaveTaskWorkTime implements TaskRepo.
+func (t *taskRepo) SaveTaskWorkTime(ctx context.Context, taskWorkTime domain.TaskWorkTime) error {
+	taskWorkTimeEty := dao.TaskWorkTime{}
+	err := copier.Copy(&taskWorkTimeEty, taskWorkTime)
+	if err != nil {
+		return err
+	}
+	return t.dao.SaveTaskWorkTime(ctx, taskWorkTimeEty)
 }
 
 func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
@@ -45,11 +44,10 @@ func (t *taskRepo) CreateTaskStagesList(ctx context.Context,
 		taskStageMdls)
 }
 
-
 // FindTaskMemberByTaskIdPagination implements TaskRepo.
 func (t *taskRepo) FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, page int64, pageSize int64) ([]*domain.TaskMember, int64, error) {
-	taskMembers, total, err := t.dao.FindTaskMemberByTaskIdPagination(ctx, taskId, 
-	page, pageSize)
+	taskMembers, total, err := t.dao.FindTaskMemberByTaskIdPagination(ctx, taskId,
+		page, pageSize)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -218,6 +216,7 @@ func (t *taskRepo) FindStagesByProjectIdPagination(ctx context.Context, projectC
 	}
 	return taskStagesDmns, total, nil
 }
+
 
 
 type taskRepo struct {

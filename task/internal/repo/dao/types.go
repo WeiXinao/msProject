@@ -32,6 +32,8 @@ type TaskDao interface {
         page int64, pageSize int64) ([]*Task, int64, error)
 	FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64, 
 		page int64, pageSize int64) ([]*TaskMember, int64, error)
+	SaveTaskWorkTime(ctx context.Context, taskWorkTime TaskWorkTime) error
+	FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*TaskWorkTime, int64, error)
 }
 
 type MsTaskStages struct {
@@ -97,4 +99,17 @@ type TaskMember struct {
 
 func (*TaskMember) TableName() string {
     return "ms_task_member"
+}
+type TaskWorkTime struct {
+    Id int64 `xorm:"'id' bigint autoincr pk notnull"`
+    TaskCode int64 `xorm:"'task_code' bigint null default(0) comment('任务ID')"`
+    MemberCode int64 `xorm:"'member_code' bigint null default(null) comment('成员id')"`
+    CreateTime int64 `xorm:"'create_time' bigint null default(null)"`
+    Content string `xorm:"'content' varchar(500) null default(null) comment('描述')"`
+    BeginTime int64 `xorm:"'begin_time' bigint null default(null) comment('开始时间')"`
+    Num int `xorm:"'num' int null default(0) comment('工时')"`
+}
+
+func (*TaskWorkTime) TableName() string {
+    return "ms_task_work_time"
 }
