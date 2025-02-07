@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package api.proto.task.v1;
-option go_package="github.com/WeiXinao/msProject/api/proto/gen/task/v1";
+option go_package="api/proto/gen/task/v1";
 
 message TaskStagesRequest {
   int64 memberId = 1;
@@ -239,7 +239,19 @@ message TaskWorkTimeResponse {
   int64 total = 2;
 }
 
+message SaveTaskWorkTimeRequest {
+	string taskCode = 1;
+	string content = 2;
+	int32 num      = 3;
+	int64 beginTime = 4;
+  int64 memberId = 5;
+}
+
+message SaveTaskWorkTimeResponse {
+}
+
 service TaskService {
+  rpc SaveTaskWorkTime(SaveTaskWorkTimeRequest) returns(SaveTaskWorkTimeResponse);
   rpc TaskWorkTimeList(TaskWorkTimeRequest) returns(TaskWorkTimeResponse);
   rpc ListTaskMember(ListTaskMemberRequest) returns(ListTaskMemberResponse);
   rpc ReadTask(ReadTaskRequest) returns (TaskMessage);

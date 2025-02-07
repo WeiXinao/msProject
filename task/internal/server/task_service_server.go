@@ -23,6 +23,11 @@ func NewTaskServiceServer(svcCtx *svc.ServiceContext) *TaskServiceServer {
 	}
 }
 
+func (s *TaskServiceServer) SaveTaskWorkTime(ctx context.Context, in *v1.SaveTaskWorkTimeRequest) (*v1.SaveTaskWorkTimeResponse, error) {
+	l := logic.NewSaveTaskWorkTimeLogic(ctx, s.svcCtx)
+	return l.SaveTaskWorkTime(in)
+}
+
 func (s *TaskServiceServer) TaskWorkTimeList(ctx context.Context, in *v1.TaskWorkTimeRequest) (*v1.TaskWorkTimeResponse, error) {
 	l := logic.NewTaskWorkTimeListLogic(ctx, s.svcCtx)
 	return l.TaskWorkTimeList(in)

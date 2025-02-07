@@ -373,6 +373,17 @@ type RegisterReq struct {
 type RegisterResp struct {
 }
 
+type SaveTaskWorkTimeReq struct {
+	TaskCode  string `form:"taskCode"`
+	Content   string `form:"content"`
+	Num       int    `form:"num"`
+	BeginTime string `form:"beginTime"`
+}
+
+type SaveTaskWorkTimeRsp struct {
+	List []int
+}
+
 type SelfListReq struct {
 	Page     int64  `form:"page,default=1"`
 	PageSize int64  `form:"pageSize,default=10"`
@@ -546,8 +557,8 @@ type TaskWorkTimeListReq struct {
 }
 
 type TaskWorkTimeListRsp struct {
-	List  []*TaskWorkTime
-	Total int64
+	List  []*TaskWorkTime `json:"list"`
+	Total int64           `json:"total"`
 }
 
 type TokenList struct {

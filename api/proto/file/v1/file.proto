@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package file;
+option go_package="./file";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service File {
+  rpc Ping(Request) returns(Response);
+}

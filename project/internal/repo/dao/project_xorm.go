@@ -28,19 +28,31 @@ func (p *projectXormDao) FindLogByTaskCode(ctx context.Context, taskCode int64, 
 
 // FindLogByTaskCodePagination implements ProjectDao.
 func (p *projectXormDao) FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, page int64, pageSize int64) ([]*ProjectLog, int64, error) {
-	projectLogs := make([]*ProjectLog, 0)
-	whereCondition :=  p.db.Context(ctx).Where("source_code = ?", taskCode)
-	if comment == 1 {
-		whereCondition = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment)
-	} 
+	var (
+		projectLogs = make([]*ProjectLog, 0)
+		total int64
+	)
 	offset := (page - 1) * pageSize
-	err := whereCondition.Limit(int(pageSize), int(offset)).Find(&projectLogs)
-	if err != nil {
-		return nil, 0, err
-	}
-	total, err := whereCondition.Count(new(ProjectLog))
-	if err != nil {
-		return nil, 0, err
+	if comment == 1 {
+		err := p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment).
+			Limit(int(pageSize), int(offset)).Find(&projectLogs)
+		if err != nil {
+			return nil, 0, err
+		}
+		total, err = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment).Count(new(ProjectLog))
+		if err != nil {
+			return nil, 0, err
+		}
+	} else {
+		err := p.db.Context(ctx).Where("source_code = ?", taskCode).
+			Limit(int(pageSize), int(offset)).Find(&projectLogs)
+		if err != nil {
+			return nil, 0, err
+		}
+		total, err = p.db.Context(ctx).Where("source_code = ?", taskCode).Count(new(ProjectLog))
+		if err != nil {
+			return nil, 0, err
+		}
 	}
 	return projectLogs, total, nil
 }

@@ -115,6 +115,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/task/saveTaskWorkTime",
+					Handler: task.SaveTaskWorkTimeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/selfList",
 					Handler: task.MyTaskListHandler(serverCtx),
 				},

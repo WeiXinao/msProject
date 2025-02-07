@@ -10,16 +10,16 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
-func TaskWorkTimeListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func SaveTaskWorkTimeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.TaskWorkTimeListReq
+		var req types.SaveTaskWorkTimeReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := task.NewTaskWorkTimeListLogic(r.Context(), svcCtx)
-		resp, err := l.TaskWorkTimeList(&req)
+		l := task.NewSaveTaskWorkTimeLogic(r.Context(), svcCtx)
+		resp, err := l.SaveTaskWorkTime(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

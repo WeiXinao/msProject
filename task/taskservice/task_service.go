@@ -14,32 +14,35 @@ import (
 )
 
 type (
-	ExecutorMessage        = v1.ExecutorMessage
-	ListTaskMemberRequest  = v1.ListTaskMemberRequest
-	ListTaskMemberResponse = v1.ListTaskMemberResponse
-	Member                 = v1.Member
-	MyTaskListRequest      = v1.MyTaskListRequest
-	MyTaskListResponse     = v1.MyTaskListResponse
-	MyTaskMessage          = v1.MyTaskMessage
-	ReadTaskRequest        = v1.ReadTaskRequest
-	SaveTaskRequest        = v1.SaveTaskRequest
-	SaveTaskStagesMessage  = v1.SaveTaskStagesMessage
-	SaveTaskStagesRequest  = v1.SaveTaskStagesRequest
-	SaveTaskStagesResponse = v1.SaveTaskStagesResponse
-	TaskListRequest        = v1.TaskListRequest
-	TaskListResponse       = v1.TaskListResponse
-	TaskMemberMessage      = v1.TaskMemberMessage
-	TaskMessage            = v1.TaskMessage
-	TaskSortRequest        = v1.TaskSortRequest
-	TaskSortResponse       = v1.TaskSortResponse
-	TaskStagesMessage      = v1.TaskStagesMessage
-	TaskStagesRequest      = v1.TaskStagesRequest
-	TaskStagesResponse     = v1.TaskStagesResponse
-	TaskWorkTime           = v1.TaskWorkTime
-	TaskWorkTimeRequest    = v1.TaskWorkTimeRequest
-	TaskWorkTimeResponse   = v1.TaskWorkTimeResponse
+	ExecutorMessage          = v1.ExecutorMessage
+	ListTaskMemberRequest    = v1.ListTaskMemberRequest
+	ListTaskMemberResponse   = v1.ListTaskMemberResponse
+	Member                   = v1.Member
+	MyTaskListRequest        = v1.MyTaskListRequest
+	MyTaskListResponse       = v1.MyTaskListResponse
+	MyTaskMessage            = v1.MyTaskMessage
+	ReadTaskRequest          = v1.ReadTaskRequest
+	SaveTaskRequest          = v1.SaveTaskRequest
+	SaveTaskStagesMessage    = v1.SaveTaskStagesMessage
+	SaveTaskStagesRequest    = v1.SaveTaskStagesRequest
+	SaveTaskStagesResponse   = v1.SaveTaskStagesResponse
+	SaveTaskWorkTimeRequest  = v1.SaveTaskWorkTimeRequest
+	SaveTaskWorkTimeResponse = v1.SaveTaskWorkTimeResponse
+	TaskListRequest          = v1.TaskListRequest
+	TaskListResponse         = v1.TaskListResponse
+	TaskMemberMessage        = v1.TaskMemberMessage
+	TaskMessage              = v1.TaskMessage
+	TaskSortRequest          = v1.TaskSortRequest
+	TaskSortResponse         = v1.TaskSortResponse
+	TaskStagesMessage        = v1.TaskStagesMessage
+	TaskStagesRequest        = v1.TaskStagesRequest
+	TaskStagesResponse       = v1.TaskStagesResponse
+	TaskWorkTime             = v1.TaskWorkTime
+	TaskWorkTimeRequest      = v1.TaskWorkTimeRequest
+	TaskWorkTimeResponse     = v1.TaskWorkTimeResponse
 
 	TaskService interface {
+		SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error)
 		TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error)
 		ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
 		ReadTask(ctx context.Context, in *ReadTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
@@ -60,6 +63,11 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.SaveTaskWorkTime(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error) {

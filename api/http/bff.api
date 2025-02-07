@@ -613,8 +613,19 @@ type TaskWorkTime {
 }
 
 type TaskWorkTimeListRsp {
-	List  []*TaskWorkTime
-	Total int64
+	List  []*TaskWorkTime `json:"list"`
+	Total int64           `json:"total"`
+}
+
+type SaveTaskWorkTimeReq {
+	TaskCode  string `form:"taskCode"`
+	Content   string `form:"content"`
+	Num       int    `form:"num"`
+	BeginTime string `form:"beginTime"`
+}
+
+type SaveTaskWorkTimeRsp {
+	List []int
 }
 
 @server (
@@ -623,6 +634,9 @@ type TaskWorkTimeListRsp {
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler SaveTaskWorkTime
+	post /task/saveTaskWorkTime (SaveTaskWorkTimeReq) returns (SaveTaskWorkTimeRsp)
+
 	@handler TaskWorkTimeList
 	post /task/_taskWorkTimeList (TaskWorkTimeListReq) returns (TaskWorkTimeListRsp)
 
