@@ -7,14 +7,14 @@ package server
 import (
 	"context"
 
-	"file/file"
-	"file/internal/logic"
-	"file/internal/svc"
+	"github.com/WeiXinao/msProject/file/internal/logic"
+	"github.com/WeiXinao/msProject/file/internal/svc"
+	"github.com/WeiXinao/msProject/api/proto/gen/file/v1"
 )
 
 type FileServer struct {
 	svcCtx *svc.ServiceContext
-	file.UnimplementedFileServer
+	v1.UnimplementedFileServer
 }
 
 func NewFileServer(svcCtx *svc.ServiceContext) *FileServer {
@@ -23,7 +23,12 @@ func NewFileServer(svcCtx *svc.ServiceContext) *FileServer {
 	}
 }
 
-func (s *FileServer) Ping(ctx context.Context, in *file.Request) (*file.Response, error) {
-	l := logic.NewPingLogic(ctx, s.svcCtx)
-	return l.Ping(in)
+func (s *FileServer) SaveTaskFile(ctx context.Context, in *v1.TaskFileRequest) (*v1.TaskFileResponse, error) {
+	l := logic.NewSaveTaskFileLogic(ctx, s.svcCtx)
+	return l.SaveTaskFile(in)
+}
+
+func (s *FileServer) TaskSources(ctx context.Context, in *v1.TaskSourcesRequest) (*v1.TaskSourceResponse, error) {
+	l := logic.NewTaskSourcesLogic(ctx, s.svcCtx)
+	return l.TaskSources(in)
 }

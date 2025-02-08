@@ -24,6 +24,17 @@ func (t *TxSession) Tx(fn func(session any) error) error {
 	return session.Commit()
 }
 
+func (t *TxSession) EngineTx(fn func(engine *xorm.Engine) error) error {
+	f := func(session any) error {
+		sess, ok := session.(*xorm.Session)
+		if !ok {
+			return ErrTypeConvert
+		}
+		return fn(sess.Engine())
+	}
+	return t.Tx(f)
+}
+
 func NewTxSession(engine *xorm.Session) Transaction {
 	return &TxSession{
 		session: engine,

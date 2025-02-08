@@ -9,10 +9,12 @@ import (
 type Config struct {
 	rest.RestConf
 	LogConfig        lx.LogConfig
+	Jwt              Jwt
+	StaticPath       string
 	UserRpcClient    zrpc.RpcClientConf
 	ProjectRpcClient zrpc.RpcClientConf
-	TaskRpcClient zrpc.RpcClientConf
-	Jwt              Jwt
+	TaskRpcClient    zrpc.RpcClientConf
+	FileRpcClient    zrpc.RpcClientConf
 }
 
 type Jwt struct {

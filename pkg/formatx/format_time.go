@@ -6,6 +6,10 @@ func ToDateTimeString(milli int64) string {
 	return time.UnixMilli(milli).Format(time.DateTime)
 }
 
+func ToDateString(t time.Time) string {
+	return t.Format(time.DateOnly)
+}
+
 func ParseDateTimeString(str string) (int64, error) {
 	time, err := time.Parse("2006-01-02 15:04", str)
 	if err != nil {

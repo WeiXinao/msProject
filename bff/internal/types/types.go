@@ -462,10 +462,10 @@ type TaskLog struct {
 
 type TaskLogReq struct {
 	TaskCode string `form:"taskCode"`
-	Page     int64  `form:"page,default=1"`
+	Page     int64  `form:"page,optional,default=1"`
 	PageSize int64  `form:"pageSize,default=10"`
-	All      int    `form:"all"`
-	Comment  int    `form:"comment"`
+	All      int    `form:"all,optional"`
+	Comment  int    `form:"comment,optional"`
 }
 
 type TaskLogRsp struct {
@@ -566,4 +566,26 @@ type TokenList struct {
 	RefreshToken   string `json:"refreshToken"`
 	TokenType      string `json:"tokenType"`
 	AccessTokenExp int64  `json:"accessTokenExp"`
+}
+
+type UploadFileReq struct {
+	TaskCode         string `form:"taskCode"`
+	ProjectCode      string `form:"projectCode"`
+	ProjectName      string `form:"projectName"`
+	TotalChunks      int    `form:"totalChunks"`
+	RelativePath     string `form:"relativePath"`
+	Filename         string `form:"filename"`
+	ChunkNumber      int    `form:"chunkNumber"`
+	ChunkSize        int    `form:"chunkSize"`
+	CurrentChunkSize int    `form:"currentChunkSize"`
+	TotalSize        int    `form:"totalSize"`
+	Identifier       string `form:"identifier"`
+}
+
+type UploadFileRsp struct {
+	File        string `json:"file"`
+	Hash        string `json:"hash"`
+	Key         string `json:"key"`
+	Url         string `json:"url"`
+	ProjectName string `json:"projectName"`
 }

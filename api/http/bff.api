@@ -562,8 +562,8 @@ type TaskLogReq {
 	TaskCode string `form:"taskCode"`
 	Page     int64  `form:"page,default=1"`
 	PageSize int64  `form:"pageSize,default=10"`
-	All      int    `form:"all"`
-	Comment  int    `form:"comment"`
+	All      int    `form:"all,optional"`
+	Comment  int    `form:"comment,optional"`
 }
 
 type MemberInfo {
@@ -663,5 +663,37 @@ service bff {
 
 	@handler SaveTask
 	post /task/save (TaskSaveReq) returns (TaskDisplay)
+}
+
+type UploadFileReq {
+	TaskCode         string `form:"taskCode"`
+	ProjectCode      string `form:"projectCode"`
+	ProjectName      string `form:"projectName"`
+	TotalChunks      int    `form:"totalChunks"`
+	RelativePath     string `form:"relativePath"`
+	Filename         string `form:"filename"`
+	ChunkNumber      int    `form:"chunkNumber"`
+	ChunkSize        int    `form:"chunkSize"`
+	CurrentChunkSize int    `form:"currentChunkSize"`
+	TotalSize        int    `form:"totalSize"`
+	Identifier       string `form:"identifier"`
+}
+
+type UploadFileRsp {
+	File        string `json:"file"`
+	Hash        string `json:"hash"`
+	Key         string `json:"key"`
+	Url         string `json:"url"`
+	ProjectName string `json:"projectName"`
+}
+
+@server (
+	prefix:     /project/file
+	group:      file
+	middleware: AuthMiddleware
+)
+service bff {
+	@handler UploadFiles
+	post /uploadFiles (UploadFileReq) returns (UploadFileRsp)
 }
 

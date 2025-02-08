@@ -50,7 +50,7 @@ func (l *TaskLogLogic) TaskLog(in *v1.TaskLogRequest) (*v1.TaskLogResponse, erro
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)
 	}
 	if total == 0 {
-		return &v1.TaskLogResponse{}, nil
+		return &v1.TaskLogResponse{List: []*v1.TaskLog{}, Total: 0}, nil
 	}
 
 	mids := slice.Map(projectLogs, func(idx int, src *domain.ProjectLog) int64 {

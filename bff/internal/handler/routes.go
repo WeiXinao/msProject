@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	file "github.com/WeiXinao/msProject/bff/internal/handler/file"
 	organization "github.com/WeiXinao/msProject/bff/internal/handler/organization"
 	project "github.com/WeiXinao/msProject/bff/internal/handler/project"
 	task "github.com/WeiXinao/msProject/bff/internal/handler/task"
@@ -16,6 +17,20 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/uploadFiles",
+					Handler: file.UploadFilesHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/project/file"),
+	)
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.AuthMiddleware},

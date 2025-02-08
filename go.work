@@ -3,6 +3,7 @@ go 1.23.0
 use (
 	./api
 	./bff
+	./file
 	./pkg
 	./project
 	./task

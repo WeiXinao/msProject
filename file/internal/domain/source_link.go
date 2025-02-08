@@ -1,0 +1,78 @@
+package domain
+
+import (
+	"github.com/WeiXinao/msProject/pkg/encrypts"
+	"github.com/WeiXinao/msProject/pkg/formatx"
+	"github.com/jinzhu/copier"
+)
+
+type SourceLink struct {
+	Id               int64
+	SourceType       string
+	SourceCode       int64
+	LinkType         string
+	LinkCode         int64
+	OrganizationCode int64
+	CreateBy         int64
+	CreateTime       int64
+	Sort             int
+}
+
+type SourceLinkDisplay struct {
+	Id               int64        `json:"id"`
+	Code             string       `json:"code"`
+	SourceType       string       `json:"source_type"`
+	SourceCode       string       `json:"source_code"`
+	LinkType         string       `json:"link_type"`
+	LinkCode         string       `json:"link_code"`
+	OrganizationCode string       `json:"organization_code"`
+	CreateBy         string       `json:"create_by"`
+	CreateTime       string       `json:"create_time"`
+	Sort             int          `json:"sort"`
+	Title            string       `json:"title"`
+	SourceDetail     SourceDetail `json:"sourceDetail"`
+}
+
+type SourceDetail struct {
+	Id               int64  `json:"id"`
+	Code             string `json:"code"`
+	PathName         string `json:"path_name"`
+	Title            string `json:"title"`
+	Extension        string `json:"extension"`
+	Size             int    `json:"size"`
+	ObjectType       string `json:"object_type"`
+	OrganizationCode string `json:"organization_code"`
+	TaskCode         string `json:"task_code"`
+	ProjectCode      string `json:"project_code"`
+	CreateBy         string `json:"create_by"`
+	CreateTime       string `json:"create_time"`
+	Downloads        int    `json:"downloads"`
+	Extra            string `json:"extra"`
+	Deleted          int    `json:"deleted"`
+	FileUrl          string `json:"file_url"`
+	FileType         string `json:"file_type"`
+	DeletedTime      string `json:"deleted_time"`
+	ProjectName      string `json:"projectName"`
+	FullName         string `json:"fullName"`
+}
+
+func (s *SourceLink) ToDisplay(f *File, encrypter encrypts.Encrypter) *SourceLinkDisplay {
+	sl := &SourceLinkDisplay{}
+	copier.Copy(sl, s)
+	sl.SourceDetail = SourceDetail{}
+	copier.Copy(&sl.SourceDetail, f)
+	sl.LinkCode, _ = encrypter.EncryptInt64(s.LinkCode)
+	sl.OrganizationCode, _ = encrypter.EncryptInt64(s.OrganizationCode)
+	sl.CreateTime = formatx.ToDateTimeString(s.CreateTime)
+	sl.CreateBy = formatx.ToDateTimeString(s.CreateBy)
+	sl.SourceCode, _ = encrypter.EncryptInt64(s.SourceCode)
+	sl.SourceDetail.OrganizationCode, _ = encrypter.EncryptInt64(f.OrganizationCode)
+	sl.SourceDetail.CreateBy, _ = encrypter.EncryptInt64(f.CreateBy)
+	sl.SourceDetail.CreateTime, _ = encrypter.EncryptInt64(f.CreateTime)
+	sl.SourceDetail.DeletedTime, _ = encrypter.EncryptInt64(f.DeletedTime)
+	sl.SourceDetail.TaskCode, _ = encrypter.EncryptInt64(f.TaskCode)
+	sl.SourceDetail.ProjectCode, _ = encrypter.EncryptInt64(f.ProjectCode)
+	sl.SourceDetail.FullName = f.Title
+	sl.Title = f.Title
+	return sl
+}

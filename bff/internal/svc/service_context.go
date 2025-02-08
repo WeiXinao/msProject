@@ -5,6 +5,7 @@ import (
 
 	"github.com/WeiXinao/msProject/bff/internal/config"
 	"github.com/WeiXinao/msProject/bff/internal/middleware"
+	"github.com/WeiXinao/msProject/file/file"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/projectservice"
 	"github.com/WeiXinao/msProject/task/taskservice"
@@ -17,8 +18,10 @@ type ServiceContext struct {
 	Config         config.Config
 	UserClient     loginservice.LoginService
 	ProjectClient  projectservice.ProjectService
-	TaskClient taskservice.TaskService
+	TaskClient     taskservice.TaskService
+	FileClient     file.File
 	AuthMiddleware rest.Middleware
+	StaticPath     string
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -26,13 +29,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
 	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
+	fileClient := file.NewFile(zrpc.MustNewClient(c.FileRpcClient))
 	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient)
+	StaticPath := c.StaticPath
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,
 		ProjectClient:  projectClient,
-		TaskClient: taskClient,
+		TaskClient:     taskClient,
+		FileClient:     fileClient,
 		AuthMiddleware: authMiddleware.Build,
+		StaticPath:     StaticPath,
 	}
 }
 

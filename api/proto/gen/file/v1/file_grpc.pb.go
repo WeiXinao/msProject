@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: file.proto
+// source: api/proto/file/v1/file.proto
 
-package file
+package v1
 
 import (
 	context "context"
@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	File_Ping_FullMethodName = "/file.File/Ping"
+	File_SaveTaskFile_FullMethodName = "/api.proto.file.v1.File/SaveTaskFile"
+	File_TaskSources_FullMethodName  = "/api.proto.file.v1.File/TaskSources"
 )
 
 // FileClient is the client API for File service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FileClient interface {
-	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	SaveTaskFile(ctx context.Context, in *TaskFileRequest, opts ...grpc.CallOption) (*TaskFileResponse, error)
+	TaskSources(ctx context.Context, in *TaskSourcesRequest, opts ...grpc.CallOption) (*TaskSourceResponse, error)
 }
 
 type fileClient struct {
@@ -37,10 +39,20 @@ func NewFileClient(cc grpc.ClientConnInterface) FileClient {
 	return &fileClient{cc}
 }
 
-func (c *fileClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *fileClient) SaveTaskFile(ctx context.Context, in *TaskFileRequest, opts ...grpc.CallOption) (*TaskFileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Response)
-	err := c.cc.Invoke(ctx, File_Ping_FullMethodName, in, out, cOpts...)
+	out := new(TaskFileResponse)
+	err := c.cc.Invoke(ctx, File_SaveTaskFile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *fileClient) TaskSources(ctx context.Context, in *TaskSourcesRequest, opts ...grpc.CallOption) (*TaskSourceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskSourceResponse)
+	err := c.cc.Invoke(ctx, File_TaskSources_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *fileClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOpt
 // All implementations must embed UnimplementedFileServer
 // for forward compatibility.
 type FileServer interface {
-	Ping(context.Context, *Request) (*Response, error)
+	SaveTaskFile(context.Context, *TaskFileRequest) (*TaskFileResponse, error)
+	TaskSources(context.Context, *TaskSourcesRequest) (*TaskSourceResponse, error)
 	mustEmbedUnimplementedFileServer()
 }
 
@@ -62,8 +75,11 @@ type FileServer interface {
 // pointer dereference when methods are called.
 type UnimplementedFileServer struct{}
 
-func (UnimplementedFileServer) Ping(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (UnimplementedFileServer) SaveTaskFile(context.Context, *TaskFileRequest) (*TaskFileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveTaskFile not implemented")
+}
+func (UnimplementedFileServer) TaskSources(context.Context, *TaskSourcesRequest) (*TaskSourceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskSources not implemented")
 }
 func (UnimplementedFileServer) mustEmbedUnimplementedFileServer() {}
 func (UnimplementedFileServer) testEmbeddedByValue()              {}
@@ -86,20 +102,38 @@ func RegisterFileServer(s grpc.ServiceRegistrar, srv FileServer) {
 	s.RegisterService(&File_ServiceDesc, srv)
 }
 
-func _File_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _File_SaveTaskFile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(FileServer).Ping(ctx, in)
+		return srv.(FileServer).SaveTaskFile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: File_Ping_FullMethodName,
+		FullMethod: File_SaveTaskFile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FileServer).Ping(ctx, req.(*Request))
+		return srv.(FileServer).SaveTaskFile(ctx, req.(*TaskFileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _File_TaskSources_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskSourcesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FileServer).TaskSources(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: File_TaskSources_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FileServer).TaskSources(ctx, req.(*TaskSourcesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -108,14 +142,18 @@ func _File_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var File_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "file.File",
+	ServiceName: "api.proto.file.v1.File",
 	HandlerType: (*FileServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Ping",
-			Handler:    _File_Ping_Handler,
+			MethodName: "SaveTaskFile",
+			Handler:    _File_SaveTaskFile_Handler,
+		},
+		{
+			MethodName: "TaskSources",
+			Handler:    _File_TaskSources_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "file.proto",
+	Metadata: "api/proto/file/v1/file.proto",
 }

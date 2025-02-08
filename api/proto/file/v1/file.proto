@@ -1,16 +1,67 @@
 syntax = "proto3";
 
-package file;
-option go_package="./file";
+package api.proto.file.v1;
+option go_package="api/proto/gen/file/v1";
 
-message Request {
-  string ping = 1;
+message TaskFileRequest{
+  string pathName = 1;
+  string fileName = 2;
+  string extension = 3;
+  int64 size = 4;
+  string projectCode = 5;
+  string taskCode = 6;
+  string organizationCode = 7;
+  string fileUrl = 8;
+  string fileType = 9;
+  int64 memberId = 10;
+}
+message TaskFileResponse{}
+
+message TaskSourcesRequest {
+
 }
 
-message Response {
-  string pong = 1;
+message TaskSourceMessage{
+  int64  id = 1;
+  string code = 2;
+  string sourceType = 3;
+  string sourceCode = 4;
+  string linkType = 5;
+  string linkCode = 6;
+  string OrganizationCode = 7;
+  string createBy = 8;
+  string createTime = 9;
+  int32 sort = 10;
+  string title = 11;
+  SourceDetail sourceDetail = 12;
+}
+message SourceDetail {
+  int64  id = 1;
+  string  code = 2;
+  string pathName = 3;
+  string title = 4;
+  string Extension = 5;
+  int32 size = 6;
+  string ObjectType = 7;
+  string OrganizationCode = 8;
+  string  TaskCode = 9;
+  string projectCode = 10;
+  string createBy = 11;
+  string createTime = 12;
+  int32 downloads = 13;
+  string Extra = 14;
+  int32 Deleted = 15;
+  string FileUrl = 16;
+  string FileType = 17;
+  string deletedTime = 18;
+  string ProjectName = 19;
+  string FullName = 20;
+}
+message TaskSourceResponse{
+  repeated TaskSourceMessage list = 1;
 }
 
 service File {
-  rpc Ping(Request) returns(Response);
+  rpc SaveTaskFile(TaskFileRequest) returns(TaskFileResponse);
+  rpc TaskSources(TaskSourcesRequest) returns(TaskSourceResponse);
 }
