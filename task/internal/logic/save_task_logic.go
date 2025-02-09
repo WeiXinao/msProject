@@ -156,7 +156,7 @@ func (l *SaveTaskLogic) SaveTask(in *v1.SaveTaskRequest) (*v1.TaskMessage, error
 		if logType == "create" {
 			remark = 	"创建了任务"
 		}
-		_, err := l.svcCtx.ProjectClient.CreateProjectLog(ctx, &projectservice.CreateProjectLogRequest{
+		err := l.svcCtx.TaskRepo.SaveProjectLog(ctx, domain.ProjectLog{
 			MemberCode: task.AssignTo,
 			ProjectCode: task.ProjectCode,	
 			SourceCode: task.Id,

@@ -1,9 +1,15 @@
 package domain
 
 import (
+
 	"github.com/WeiXinao/msProject/pkg/encrypts"
 	"github.com/WeiXinao/msProject/pkg/formatx"
 	"github.com/jinzhu/copier"
+)
+
+const (
+	NotComment = iota
+	Comment
 )
 
 type ProjectLog struct {
@@ -37,13 +43,6 @@ type ProjectLogDisplay struct {
 	Icon         string
 	IsRobot      int
 	Member       Member
-}
-
-type Member struct {
-	Id int64
-	Name string
-	Avatar string
-	Code string
 }
 
 func (l *ProjectLog) ToDisplay(encrypter encrypts.Encrypter) *ProjectLogDisplay {

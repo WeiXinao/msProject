@@ -18,7 +18,7 @@ func (x *xormFileDao) FindByIds(ctx context.Context, ids []int64) (list []*File,
 	err = x.db.Context(ctx).Table(&File{}).
 	In("id", slice.Map(ids, func(idx int, src int64) any {
 		return src
-	})).Find(list)
+	})).Find(&list)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func (x *xormFileDao) FindByIds(ctx context.Context, ids []int64) (list []*File,
 // FindByTaskCode implements FileDao.
 func (x *xormFileDao) FindByTaskCode(ctx context.Context, taskCode int64) (list []*SourceLink, err error) {
 	list = make([]*SourceLink, 0)
-	err = x.db.Context(ctx).Where("link_code = ?", taskCode).Find(list)
+	err = x.db.Context(ctx).Where(`link_type = 'task' and link_code = ?`, taskCode).Find(&list)
 	if err != nil {
 		return nil, err
 	}

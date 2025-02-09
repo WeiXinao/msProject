@@ -19,6 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	TaskService_CreateComment_FullMethodName    = "/api.proto.task.v1.TaskService/CreateComment"
+	TaskService_TaskLog_FullMethodName          = "/api.proto.task.v1.TaskService/TaskLog"
+	TaskService_CreateProjectLog_FullMethodName = "/api.proto.task.v1.TaskService/CreateProjectLog"
 	TaskService_SaveTaskWorkTime_FullMethodName = "/api.proto.task.v1.TaskService/SaveTaskWorkTime"
 	TaskService_TaskWorkTimeList_FullMethodName = "/api.proto.task.v1.TaskService/TaskWorkTimeList"
 	TaskService_ListTaskMember_FullMethodName   = "/api.proto.task.v1.TaskService/ListTaskMember"
@@ -35,6 +38,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
+	TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error)
+	CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error)
 	SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error)
 	TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error)
 	ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
@@ -53,6 +59,36 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateCommentResponse)
+	err := c.cc.Invoke(ctx, TaskService_CreateComment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *taskServiceClient) TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskLogResponse)
+	err := c.cc.Invoke(ctx, TaskService_TaskLog_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *taskServiceClient) CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateProjectLogResponse)
+	err := c.cc.Invoke(ctx, TaskService_CreateProjectLog_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error) {
@@ -159,6 +195,9 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
+	TaskLog(context.Context, *TaskLogRequest) (*TaskLogResponse, error)
+	CreateProjectLog(context.Context, *CreateProjectLogRequest) (*CreateProjectLogResponse, error)
 	SaveTaskWorkTime(context.Context, *SaveTaskWorkTimeRequest) (*SaveTaskWorkTimeResponse, error)
 	TaskWorkTimeList(context.Context, *TaskWorkTimeRequest) (*TaskWorkTimeResponse, error)
 	ListTaskMember(context.Context, *ListTaskMemberRequest) (*ListTaskMemberResponse, error)
@@ -179,6 +218,15 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
+}
+func (UnimplementedTaskServiceServer) TaskLog(context.Context, *TaskLogRequest) (*TaskLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TaskLog not implemented")
+}
+func (UnimplementedTaskServiceServer) CreateProjectLog(context.Context, *CreateProjectLogRequest) (*CreateProjectLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectLog not implemented")
+}
 func (UnimplementedTaskServiceServer) SaveTaskWorkTime(context.Context, *SaveTaskWorkTimeRequest) (*SaveTaskWorkTimeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveTaskWorkTime not implemented")
 }
@@ -228,6 +276,60 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_CreateComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCommentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).CreateComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_CreateComment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).CreateComment(ctx, req.(*CreateCommentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TaskService_TaskLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TaskLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).TaskLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_TaskLog_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).TaskLog(ctx, req.(*TaskLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TaskService_CreateProjectLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProjectLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).CreateProjectLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_CreateProjectLog_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).CreateProjectLog(ctx, req.(*CreateProjectLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_SaveTaskWorkTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -417,6 +519,18 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateComment",
+			Handler:    _TaskService_CreateComment_Handler,
+		},
+		{
+			MethodName: "TaskLog",
+			Handler:    _TaskService_TaskLog_Handler,
+		},
+		{
+			MethodName: "CreateProjectLog",
+			Handler:    _TaskService_CreateProjectLog_Handler,
+		},
 		{
 			MethodName: "SaveTaskWorkTime",
 			Handler:    _TaskService_SaveTaskWorkTime_Handler,

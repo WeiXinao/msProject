@@ -8,6 +8,55 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+// SaveComment implements TaskRepo.
+func (p *taskRepo) SaveComment(ctx context.Context, comment domain.ProjectLog) error {
+	commentEty := dao.ProjectLog{}
+	err := copier.Copy(&commentEty, comment)
+	if err != nil {
+		return err
+	}
+	return p.dao.SaveComment(ctx, commentEty)
+}
+
+// FindLogByTaskCode implements ProjectRepo.
+func (p *taskRepo) FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*domain.ProjectLog, int64, error) {
+	projectLogs, total, err := p.dao.FindLogByTaskCode(ctx, taskCode, comment)
+	if err != nil {
+		return nil, 0, err
+	}
+	projectLogDmns := make([]*domain.ProjectLog, 0)
+	err = copier.CopyWithOption(&projectLogDmns, projectLogs, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, 0, err
+	}
+	return projectLogDmns, total, nil
+}
+
+// FindLogByTaskCodePagination implements ProjectRepo.
+func (p *taskRepo) FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, page int64, pageSize int64) ([]*domain.ProjectLog, int64, error) {
+	projectLogs, total, err := p.dao.FindLogByTaskCodePagination(ctx, taskCode, comment,
+		page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	projectLogDmns := make([]*domain.ProjectLog, 0)
+	err = copier.CopyWithOption(&projectLogDmns, projectLogs, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, 0, err
+	}
+	return projectLogDmns, total, nil
+}
+
+// SaveProjectLog implements ProjectRepo.
+func (p *taskRepo) SaveProjectLog(ctx context.Context, projectLog domain.ProjectLog) error {
+	projectLogEty := dao.ProjectLog{}
+	err := copier.Copy(&projectLogEty, projectLog)
+	if err != nil {
+		return err
+	}
+	return p.dao.SaveProjectLog(ctx, projectLogEty)
+}
+
 // FindWorkTimeListByTaskId implements TaskRepo.
 func (t *taskRepo) FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*domain.TaskWorkTime, int64, error) {
 	taskWorkTimeList, total, err := t.dao.FindWorkTimeListByTaskId(ctx, taskId)
@@ -217,11 +266,10 @@ func (t *taskRepo) FindStagesByProjectIdPagination(ctx context.Context, projectC
 	return taskStagesDmns, total, nil
 }
 
-
-
 type taskRepo struct {
 	dao dao.TaskDao
 }
+
 
 func NewTaskRepo(dao dao.TaskDao) TaskRepo {
 	return &taskRepo{

@@ -250,7 +250,70 @@ message SaveTaskWorkTimeRequest {
 message SaveTaskWorkTimeResponse {
 }
 
+message CreateProjectLogRequest {
+	int64 Id    = 1;
+	int64 MemberCode  = 2;
+  string Content = 3;
+	string Remark = 4;
+	string Type = 5;
+	int64 CreateTime = 6;
+	int64 SourceCode = 7;
+	string ActionType = 8;
+	int64 ToMemberCode = 9;
+	int32 IsComment  = 10;
+	int64 ProjectCode = 11;
+	string Icon        = 12;
+	int32 IsRobot      = 13;
+}
+
+message CreateProjectLogResponse {
+}
+
+message TaskLogRequest {
+  string taskCode = 1;
+  int64 memberId = 2;
+  int64 page  = 3;
+  int64 pageSize = 4;
+  int32 all = 5;
+  int32 comment = 6;
+}
+
+message TaskLog {
+  int64 id = 1;
+  string MemberCode = 2;
+  string Content = 3;
+  string remark = 4;
+  string Type = 5;
+  string CreateTime = 6;
+  string SourceCode = 7;
+  string ActionType = 8;
+  string ToMemberCode = 9;
+  int32 IsComment = 10;
+  string ProjectCode = 11;
+  string Icon = 12;
+  int32 IsRobot = 13;
+  Member member = 14;
+}
+
+message TaskLogResponse {
+  repeated TaskLog list = 1;
+  int64  total = 2;
+}
+
+message CreateCommentRequest {
+  string taskCode = 1;
+  int64 memberId = 2;
+  string commentContent = 3;
+  repeated string mentions = 4;
+}
+
+message CreateCommentResponse {
+}
+
 service TaskService {
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
+  rpc TaskLog(TaskLogRequest) returns(TaskLogResponse);
+  rpc CreateProjectLog(CreateProjectLogRequest) returns (CreateProjectLogResponse);
   rpc SaveTaskWorkTime(SaveTaskWorkTimeRequest) returns(SaveTaskWorkTimeResponse);
   rpc TaskWorkTimeList(TaskWorkTimeRequest) returns(TaskWorkTimeResponse);
   rpc ListTaskMember(ListTaskMemberRequest) returns(ListTaskMemberResponse);

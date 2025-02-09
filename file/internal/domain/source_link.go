@@ -64,7 +64,7 @@ func (s *SourceLink) ToDisplay(f *File, encrypter encrypts.Encrypter) *SourceLin
 	sl.LinkCode, _ = encrypter.EncryptInt64(s.LinkCode)
 	sl.OrganizationCode, _ = encrypter.EncryptInt64(s.OrganizationCode)
 	sl.CreateTime = formatx.ToDateTimeString(s.CreateTime)
-	sl.CreateBy = formatx.ToDateTimeString(s.CreateBy)
+	sl.CreateBy, _ = encrypter.EncryptInt64(s.CreateBy)
 	sl.SourceCode, _ = encrypter.EncryptInt64(s.SourceCode)
 	sl.SourceDetail.OrganizationCode, _ = encrypter.EncryptInt64(f.OrganizationCode)
 	sl.SourceDetail.CreateBy, _ = encrypter.EncryptInt64(f.CreateBy)

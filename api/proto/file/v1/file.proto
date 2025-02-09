@@ -18,7 +18,7 @@ message TaskFileRequest{
 message TaskFileResponse{}
 
 message TaskSourcesRequest {
-
+  string taskCode = 1;
 }
 
 message TaskSourceMessage{
@@ -35,6 +35,7 @@ message TaskSourceMessage{
   string title = 11;
   SourceDetail sourceDetail = 12;
 }
+
 message SourceDetail {
   int64  id = 1;
   string  code = 2;

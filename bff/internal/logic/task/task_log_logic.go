@@ -6,7 +6,7 @@ import (
 	"github.com/WeiXinao/msProject/bff/internal/svc"
 	"github.com/WeiXinao/msProject/bff/internal/types"
 	"github.com/WeiXinao/msProject/pkg/respx"
-	"github.com/WeiXinao/msProject/project/projectservice"
+	"github.com/WeiXinao/msProject/task/taskservice"
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -27,7 +27,7 @@ func NewTaskLogLogic(ctx context.Context, svcCtx *svc.ServiceContext) *TaskLogLo
 }
 
 func (l *TaskLogLogic) TaskLog(req *types.TaskLogReq) (resp *types.TaskLogRsp, err error) {
-	taskLogRsp, err := l.svcCtx.ProjectClient.TaskLog(l.ctx, &projectservice.TaskLogRequest{
+	taskLogRsp, err := l.svcCtx.TaskClient.TaskLog(l.ctx, &taskservice.TaskLogRequest{
 		TaskCode: req.TaskCode,
 		MemberId: l.ctx.Value("memberId").(int64),
 		Page: int64(req.Page),

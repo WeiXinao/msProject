@@ -12,6 +12,16 @@ type CollectProjectRsp struct {
 	ProjectList []*Project
 }
 
+type CreateCommentReq struct {
+	TaskCode string   `form:"taskCode"`
+	Comment  string   `form:"comment"`
+	Mentions []string `form:"mentions"`
+}
+
+type CreateCommentRsp struct {
+	Success bool `json:"success"`
+}
+
 type EditProjectReq struct {
 	ProjectCode        string  `form:"projectCode"`
 	Cover              string  `form:"cover,optional"`
@@ -395,6 +405,44 @@ type SelfListRsp struct {
 	Total int64               `json:"total"`
 }
 
+type SourceDetail struct {
+	Id               int64  `json:"id"`
+	Code             string `json:"code"`
+	PathName         string `json:"path_name"`
+	Title            string `json:"title"`
+	Extension        string `json:"extension"`
+	Size             int    `json:"size"`
+	ObjectType       string `json:"object_type"`
+	OrganizationCode string `json:"organization_code"`
+	TaskCode         string `json:"task_code"`
+	ProjectCode      string `json:"project_code"`
+	CreateBy         string `json:"create_by"`
+	CreateTime       string `json:"create_time"`
+	Downloads        int    `json:"downloads"`
+	Extra            string `json:"extra"`
+	Deleted          int    `json:"deleted"`
+	FileUrl          string `json:"file_url"`
+	FileType         string `json:"file_type"`
+	DeletedTime      string `json:"deleted_time"`
+	ProjectName      string `json:"projectName"`
+	FullName         string `json:"fullName"`
+}
+
+type SourceLink struct {
+	Id               int64        `json:"id"`
+	Code             string       `json:"code"`
+	SourceType       string       `json:"source_type"`
+	SourceCode       string       `json:"source_code"`
+	LinkType         string       `json:"link_type"`
+	LinkCode         string       `json:"link_code"`
+	OrganizationCode string       `json:"organization_code"`
+	CreateBy         string       `json:"create_by"`
+	CreateTime       string       `json:"create_time"`
+	Sort             int          `json:"sort"`
+	Title            string       `json:"title"`
+	SourceDetail     SourceDetail `json:"sourceDetail"`
+}
+
 type TaskDisplay struct {
 	ProjectCode   string   `json:"project_code"`
 	Name          string   `json:"name"`
@@ -462,7 +510,7 @@ type TaskLog struct {
 
 type TaskLogReq struct {
 	TaskCode string `form:"taskCode"`
-	Page     int64  `form:"page,optional,default=1"`
+	Page     int64  `form:"page,default=1,optional"`
 	PageSize int64  `form:"pageSize,default=10"`
 	All      int    `form:"all,optional"`
 	Comment  int    `form:"comment,optional"`
@@ -507,6 +555,14 @@ type TaskSortReq struct {
 
 type TaskSortRsp struct {
 	List []int
+}
+
+type TaskSourcesReq struct {
+	TaskCode string `form:"taskCode"`
+}
+
+type TaskSourcesRsp struct {
+	List []*SourceLink `json:"list"`
 }
 
 type TaskStages struct {

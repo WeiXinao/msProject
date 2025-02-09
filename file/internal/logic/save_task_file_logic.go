@@ -59,7 +59,8 @@ func (l *SaveTaskFileLogic) SaveTaskFile(in *v1.TaskFileRequest) (*v1.TaskFileRe
 		FileType: in.GetFileType(),
 		FileUrl: in.GetFileUrl(),
 		DeletedTime: 0,
-	}, domain.SourceLink{
+	}, 
+	domain.SourceLink{
 		SourceType: "file",
 		LinkType: "task",
 		LinkCode: taskCode,

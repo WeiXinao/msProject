@@ -29,12 +29,6 @@ type ProjectDao interface {
 	FindProjectByIds(ctx context.Context, ids []int64) ([]*Project, error)
 
 	FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]MsTaskStagesTemplate, error)
-
-	SaveProjectLog(ctx context.Context, projectLog ProjectLog) error
-	FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*ProjectLog,
-	int64, error)
-	FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, 
-		page int64, pageSize int64) ([]*ProjectLog, int64, error)
 }
 
 type ProjectMenu struct {
@@ -144,24 +138,4 @@ type MsTaskStagesTemplate struct {
 
 func (*MsTaskStagesTemplate) TableName() string {
 	return "ms_task_stages_template"
-}
-
-type ProjectLog struct {
-    Id int64 `xorm:"'id' bigint autoincr pk notnull"`
-    MemberCode int64 `xorm:"'member_code' bigint null default(0) comment('操作人id')"`
-    Content string `xorm:"'content' text null comment('操作内容')"`
-    Remark string `xorm:"'remark' text null`
-    Type string `xorm:"'type' varchar(255) null default('create') comment('操作类型')"`
-    CreateTime int64 `xorm:"'create_time' bigint null default(null) comment('添加时间')"`
-    SourceCode int64 `xorm:"'source_code' bigint null default(0) comment('任务id')"`
-    ActionType string `xorm:"'action_type' varchar(30) null default(null) comment('场景类型')"`
-    ToMemberCode int64 `xorm:"'to_member_code' bigint null default(0)"`
-    IsComment int `xorm:"'is_comment' tinyint(1) null default(0) comment('是否评论，0：否')"`
-    ProjectCode int64 `xorm:"'project_code' bigint null default(null)"`
-    Icon string `xorm:"'icon' varchar(20) null default(null)"`
-    IsRobot int `xorm:"'is_robot' tinyint(1) null default(0) comment('是否机器人')"`
-}
-
-func (*ProjectLog) TableName() string {
-    return "ms_project_log"
 }

@@ -11,11 +11,79 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// SaveComment implements TaskDao.
+func (p *taskXormDao) SaveComment(ctx context.Context, comment ProjectLog) error {
+	return ormx.NewTxSession(p.db.Context(ctx)).EngineTx(func(engine *xorm.Engine) error {
+		projectCode := int64(0)
+		_, err := engine.
+		SQL("SELECT project_code FROM ms_task WHERE id = ? FOR UPDATE", comment.SourceCode).
+		Get(&projectCode)
+		if err != nil {
+			return err
+		}
+		comment.ProjectCode = projectCode
+		_, err = engine.InsertOne(comment)
+		return err
+	})
+}
+
+// FindLogByTaskCode implements ProjectDao.
+func (p *taskXormDao) FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*ProjectLog, int64, error) {
+	projectLogs := make([]*ProjectLog, 0)
+	whereCondition := p.db.Context(ctx).Where("source_code = ?", taskCode)
+	if comment == 1 {
+		whereCondition = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment)
+	}
+
+	err := whereCondition.Find(&projectLogs)
+	if err != nil {
+		return nil, 0, err
+	}
+	return projectLogs, int64(len(projectLogs)), nil
+}
+
+// FindLogByTaskCodePagination implements ProjectDao.
+func (p *taskXormDao) FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, page int64, pageSize int64) ([]*ProjectLog, int64, error) {
+	var (
+		projectLogs = make([]*ProjectLog, 0)
+		total       int64
+	)
+	offset := (page - 1) * pageSize
+	if comment == 1 {
+		err := p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment).
+			Limit(int(pageSize), int(offset)).Find(&projectLogs)
+		if err != nil {
+			return nil, 0, err
+		}
+		total, err = p.db.Context(ctx).Where("source_code = ? AND is_comment = ?", taskCode, comment).Count(new(ProjectLog))
+		if err != nil {
+			return nil, 0, err
+		}
+	} else {
+		err := p.db.Context(ctx).Where("source_code = ?", taskCode).
+			Limit(int(pageSize), int(offset)).Find(&projectLogs)
+		if err != nil {
+			return nil, 0, err
+		}
+		total, err = p.db.Context(ctx).Where("source_code = ?", taskCode).Count(new(ProjectLog))
+		if err != nil {
+			return nil, 0, err
+		}
+	}
+	return projectLogs, total, nil
+}
+
+// SaveProjectLog implements ProjectDao.
+func (p *taskXormDao) SaveProjectLog(ctx context.Context, projectLog ProjectLog) error {
+	_, err := p.db.Context(ctx).InsertOne(&projectLog)
+	return err
+}
+
 // FindWorkTimeListByTaskId implements TaskDao.
 func (t *taskXormDao) FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*TaskWorkTime, int64, error) {
 	taskWorkTime := make([]*TaskWorkTime, 0)
 	err := t.db.Context(ctx).Where("task_code = ?", taskId).Find(&taskWorkTime)
-	return taskWorkTime, int64(len(taskWorkTime)), err	
+	return taskWorkTime, int64(len(taskWorkTime)), err
 }
 
 // SaveTaskWorkTime implements TaskDao.
@@ -249,6 +317,7 @@ func NewTaskXormDao(engine *xorm.Engine) TaskDao {
 		new(TaskMember),
 		new(MsTaskStages),
 		new(TaskWorkTime),
+		new(ProjectLog),
 	)
 	return &taskXormDao{
 		db: engine,

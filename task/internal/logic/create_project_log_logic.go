@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
-	"github.com/WeiXinao/msProject/api/proto/gen/project/v1"
+	"github.com/WeiXinao/msProject/api/proto/gen/task/v1"
 	"github.com/WeiXinao/msProject/pkg/respx"
-	"github.com/WeiXinao/msProject/project/internal/domain"
-	"github.com/WeiXinao/msProject/project/internal/svc"
+	"github.com/WeiXinao/msProject/task/internal/domain"
+	"github.com/WeiXinao/msProject/task/internal/svc"
 	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,7 +34,7 @@ func (l *CreateProjectLogLogic) CreateProjectLog(in *v1.CreateProjectLogRequest)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)
 	}
 
-	err = l.svcCtx.ProjectRepo.SaveProjectLog(l.ctx, projectLogDmn)
+	err = l.svcCtx.TaskRepo.SaveProjectLog(l.ctx, projectLogDmn)
 	if err != nil {
 		l.Errorf("[logic CreateProjectLog] %#v", err)
 		return nil, respx.ToStatusErr(respx.ErrInternalServer)

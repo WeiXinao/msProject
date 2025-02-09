@@ -560,7 +560,7 @@ type ListTaskMemberRsp {
 
 type TaskLogReq {
 	TaskCode string `form:"taskCode"`
-	Page     int64  `form:"page,default=1"`
+	Page     int64  `form:"page,default=1,optional"`
 	PageSize int64  `form:"pageSize,default=10"`
 	All      int    `form:"all,optional"`
 	Comment  int    `form:"comment,optional"`
@@ -628,12 +628,74 @@ type SaveTaskWorkTimeRsp {
 	List []int
 }
 
+type TaskSourcesReq {
+	TaskCode string `form:"taskCode"`
+}
+
+type SourceLink {
+	Id               int64        `json:"id"`
+	Code             string       `json:"code"`
+	SourceType       string       `json:"source_type"`
+	SourceCode       string       `json:"source_code"`
+	LinkType         string       `json:"link_type"`
+	LinkCode         string       `json:"link_code"`
+	OrganizationCode string       `json:"organization_code"`
+	CreateBy         string       `json:"create_by"`
+	CreateTime       string       `json:"create_time"`
+	Sort             int          `json:"sort"`
+	Title            string       `json:"title"`
+	SourceDetail     SourceDetail `json:"sourceDetail"`
+}
+
+type SourceDetail {
+	Id               int64  `json:"id"`
+	Code             string `json:"code"`
+	PathName         string `json:"path_name"`
+	Title            string `json:"title"`
+	Extension        string `json:"extension"`
+	Size             int    `json:"size"`
+	ObjectType       string `json:"object_type"`
+	OrganizationCode string `json:"organization_code"`
+	TaskCode         string `json:"task_code"`
+	ProjectCode      string `json:"project_code"`
+	CreateBy         string `json:"create_by"`
+	CreateTime       string `json:"create_time"`
+	Downloads        int    `json:"downloads"`
+	Extra            string `json:"extra"`
+	Deleted          int    `json:"deleted"`
+	FileUrl          string `json:"file_url"`
+	FileType         string `json:"file_type"`
+	DeletedTime      string `json:"deleted_time"`
+	ProjectName      string `json:"projectName"`
+	FullName         string `json:"fullName"`
+}
+
+type TaskSourcesRsp {
+	List []*SourceLink `json:"list"`
+}
+
+type CreateCommentReq {
+	TaskCode string   `form:"taskCode"`
+	Comment  string   `form:"comment"`
+	Mentions []string `form:"mentions"`
+}
+
+type CreateCommentRsp {
+	Success bool `json:"success"`
+}
+
 @server (
 	prefix:     /project
 	group:      task
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler CreateComment
+	post /task/createComment (CreateCommentReq) returns (CreateCommentRsp)
+
+	@handler TaskSources
+	post /task/taskSources (TaskSourcesReq) returns (TaskSourcesRsp)
+
 	@handler SaveTaskWorkTime
 	post /task/saveTaskWorkTime (SaveTaskWorkTimeReq) returns (SaveTaskWorkTimeRsp)
 

@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 
-	"github.com/WeiXinao/msProject/api/proto/gen/project/v1"
+	"github.com/WeiXinao/msProject/api/proto/gen/task/v1"
 	"github.com/WeiXinao/msProject/pkg/respx"
-	"github.com/WeiXinao/msProject/project/internal/domain"
-	"github.com/WeiXinao/msProject/project/internal/svc"
+	"github.com/WeiXinao/msProject/task/internal/domain"
+	"github.com/WeiXinao/msProject/task/internal/svc"
 	"github.com/WeiXinao/msProject/user/loginservice"
 	"github.com/WeiXinao/xkit/slice"
 	"github.com/jinzhu/copier"
@@ -40,9 +40,9 @@ func (l *TaskLogLogic) TaskLog(in *v1.TaskLogRequest) (*v1.TaskLogResponse, erro
 	)
 	switch in.All {
 	case 1:
-		projectLogs, total, err = l.svcCtx.ProjectRepo.FindLogByTaskCode(l.ctx, taskCode, int(in.GetComment()))
+		projectLogs, total, err = l.svcCtx.TaskRepo.FindLogByTaskCode(l.ctx, taskCode, int(in.GetComment()))
 	case 0:
-		projectLogs, total, err = l.svcCtx.ProjectRepo.FindLogByTaskCodePagination(l.ctx, taskCode,
+		projectLogs, total, err = l.svcCtx.TaskRepo.FindLogByTaskCodePagination(l.ctx, taskCode,
 			 int(in.GetComment()), in.Page, in.PageSize)
 	}
 	if err != nil {

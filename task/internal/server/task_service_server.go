@@ -23,6 +23,21 @@ func NewTaskServiceServer(svcCtx *svc.ServiceContext) *TaskServiceServer {
 	}
 }
 
+func (s *TaskServiceServer) CreateComment(ctx context.Context, in *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
+	l := logic.NewCreateCommentLogic(ctx, s.svcCtx)
+	return l.CreateComment(in)
+}
+
+func (s *TaskServiceServer) TaskLog(ctx context.Context, in *v1.TaskLogRequest) (*v1.TaskLogResponse, error) {
+	l := logic.NewTaskLogLogic(ctx, s.svcCtx)
+	return l.TaskLog(in)
+}
+
+func (s *TaskServiceServer) CreateProjectLog(ctx context.Context, in *v1.CreateProjectLogRequest) (*v1.CreateProjectLogResponse, error) {
+	l := logic.NewCreateProjectLogLogic(ctx, s.svcCtx)
+	return l.CreateProjectLog(in)
+}
+
 func (s *TaskServiceServer) SaveTaskWorkTime(ctx context.Context, in *v1.SaveTaskWorkTimeRequest) (*v1.SaveTaskWorkTimeResponse, error) {
 	l := logic.NewSaveTaskWorkTimeLogic(ctx, s.svcCtx)
 	return l.SaveTaskWorkTime(in)

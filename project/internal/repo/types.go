@@ -30,9 +30,4 @@ type ProjectRepo interface {
 
 	FindTaskStagesTmplsByProjectTmplId(ctx context.Context, templateCode int) ([]*domain.MsTaskStagesTemplate, error)
 
-	SaveProjectLog(ctx context.Context, projectLog domain.ProjectLog) error
-	FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*domain.ProjectLog,
-	int64, error)
-	FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, 
-		page int64, pageSize int64) ([]*domain.ProjectLog, int64, error)
 }

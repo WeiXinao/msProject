@@ -15,44 +15,6 @@ type projectRepo struct {
 	dao   dao.ProjectDao
 }
 
-// FindLogByTaskCode implements ProjectRepo.
-func (p *projectRepo) FindLogByTaskCode(ctx context.Context, taskCode int64, comment int) ([]*domain.ProjectLog, int64, error) {
-	projectLogs, total, err := p.dao.FindLogByTaskCode(ctx, taskCode, comment)
-	if err != nil {
-		return nil, 0, err
-	}
-	projectLogDmns := make([]*domain.ProjectLog, 0)
-	err = copier.CopyWithOption(&projectLogDmns, projectLogs, copier.Option{DeepCopy: true})
-	if err != nil {
-		return nil, 0, err
-	}
-	return projectLogDmns, total, nil
-}
-
-// FindLogByTaskCodePagination implements ProjectRepo.
-func (p *projectRepo) FindLogByTaskCodePagination(ctx context.Context, taskCode int64, comment int, page int64, pageSize int64) ([]*domain.ProjectLog, int64, error) {
-	projectLogs, total, err := p.dao.FindLogByTaskCodePagination(ctx, taskCode, comment, 
-		page, pageSize)
-	if err != nil {
-		return nil, 0, err
-	}
-	projectLogDmns := make([]*domain.ProjectLog, 0)
-	err = copier.CopyWithOption(&projectLogDmns, projectLogs, copier.Option{DeepCopy: true})
-	if err != nil {
-		return nil, 0, err
-	}
-	return projectLogDmns, total, nil
-}
-
-// SaveProjectLog implements ProjectRepo.
-func (p *projectRepo) SaveProjectLog(ctx context.Context, projectLog domain.ProjectLog) error {
-	projectLogEty := dao.ProjectLog{}
-	err := copier.Copy(&projectLogEty, projectLog)
-	if err != nil {
-		return err
-	}
-	return p.dao.SaveProjectLog(ctx, projectLogEty)
-}
 
 // FindProjectByIds implements ProjectRepo.
 func (p *projectRepo) FindProjectByIds(ctx context.Context, ids []int64) ([]*domain.Project, error) {

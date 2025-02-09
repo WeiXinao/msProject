@@ -14,6 +14,10 @@ import (
 )
 
 type (
+	CreateCommentRequest     = v1.CreateCommentRequest
+	CreateCommentResponse    = v1.CreateCommentResponse
+	CreateProjectLogRequest  = v1.CreateProjectLogRequest
+	CreateProjectLogResponse = v1.CreateProjectLogResponse
 	ExecutorMessage          = v1.ExecutorMessage
 	ListTaskMemberRequest    = v1.ListTaskMemberRequest
 	ListTaskMemberResponse   = v1.ListTaskMemberResponse
@@ -30,6 +34,9 @@ type (
 	SaveTaskWorkTimeResponse = v1.SaveTaskWorkTimeResponse
 	TaskListRequest          = v1.TaskListRequest
 	TaskListResponse         = v1.TaskListResponse
+	TaskLog                  = v1.TaskLog
+	TaskLogRequest           = v1.TaskLogRequest
+	TaskLogResponse          = v1.TaskLogResponse
 	TaskMemberMessage        = v1.TaskMemberMessage
 	TaskMessage              = v1.TaskMessage
 	TaskSortRequest          = v1.TaskSortRequest
@@ -42,6 +49,9 @@ type (
 	TaskWorkTimeResponse     = v1.TaskWorkTimeResponse
 
 	TaskService interface {
+		CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
+		TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error)
+		CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error)
 		SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error)
 		TaskWorkTimeList(ctx context.Context, in *TaskWorkTimeRequest, opts ...grpc.CallOption) (*TaskWorkTimeResponse, error)
 		ListTaskMember(ctx context.Context, in *ListTaskMemberRequest, opts ...grpc.CallOption) (*ListTaskMemberResponse, error)
@@ -63,6 +73,21 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.CreateComment(ctx, in, opts...)
+}
+
+func (m *defaultTaskService) TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.TaskLog(ctx, in, opts...)
+}
+
+func (m *defaultTaskService) CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.CreateProjectLog(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) SaveTaskWorkTime(ctx context.Context, in *SaveTaskWorkTimeRequest, opts ...grpc.CallOption) (*SaveTaskWorkTimeResponse, error) {

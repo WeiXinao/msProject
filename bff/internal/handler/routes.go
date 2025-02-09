@@ -120,6 +120,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/task/createComment",
+					Handler: task.CreateCommentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/read",
 					Handler: task.ReadTaskHandler(serverCtx),
 				},
@@ -147,6 +152,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/task/taskLog",
 					Handler: task.TaskLogHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/task/taskSources",
+					Handler: task.TaskSourcesHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
