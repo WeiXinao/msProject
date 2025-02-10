@@ -23,6 +23,11 @@ func NewTaskServiceServer(svcCtx *svc.ServiceContext) *TaskServiceServer {
 	}
 }
 
+func (s *TaskServiceServer) GetLogBySelfProject(ctx context.Context, in *v1.GetLogBySelfProjectRequest) (*v1.GetLogBySelfProjectResponse, error) {
+	l := logic.NewGetLogBySelfProjectLogic(ctx, s.svcCtx)
+	return l.GetLogBySelfProject(in)
+}
+
 func (s *TaskServiceServer) CreateComment(ctx context.Context, in *v1.CreateCommentRequest) (*v1.CreateCommentResponse, error) {
 	l := logic.NewCreateCommentLogic(ctx, s.svcCtx)
 	return l.CreateComment(in)

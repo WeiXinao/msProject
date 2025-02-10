@@ -115,6 +115,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
+					Path:    "/project/getLogBySelfProject",
+					Handler: task.GetLogBySelfProjectHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/task/_taskWorkTimeList",
 					Handler: task.TaskWorkTimeListHandler(serverCtx),
 				},

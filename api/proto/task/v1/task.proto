@@ -310,7 +310,32 @@ message CreateCommentRequest {
 message CreateCommentResponse {
 }
 
+message GetLogBySelfProjectRequest {
+  int64 memberId = 1; 
+  int64 page  = 2;
+  int64 pageSize = 3;
+}
+
+message ProjectLogMessage{
+  string Content  = 1;
+  string Remark       = 2;
+  string CreateTime    = 3;
+  string SourceCode    = 4;
+  int32 IsComment       = 5;
+  string ProjectCode   = 6;
+  string ProjectName   =7;
+  string MemberAvatar  =8;
+  string MemberName   =9;
+  string TaskName      = 10;
+}
+
+message GetLogBySelfProjectResponse{
+  repeated ProjectLogMessage list = 1;
+  int64 total = 2;
+}
+
 service TaskService {
+  rpc GetLogBySelfProject(GetLogBySelfProjectRequest) returns (GetLogBySelfProjectResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
   rpc TaskLog(TaskLogRequest) returns(TaskLogResponse);
   rpc CreateProjectLog(CreateProjectLogRequest) returns (CreateProjectLogResponse);

@@ -55,3 +55,25 @@ func (l *ProjectLog) ToDisplay(encrypter encrypts.Encrypter) *ProjectLogDisplay 
 	pd.SourceCode, _ = encrypter.EncryptInt64(l.SourceCode)
 	return pd
 }
+
+type IndexProjectLogDisplay struct {
+	Content      string
+	Remark       string
+	CreateTime   string
+	SourceCode   string
+	IsComment    int
+	ProjectCode  string
+	MemberAvatar string
+	MemberName   string
+	ProjectName  string
+	TaskName     string
+}
+
+func (l *ProjectLog) ToIndexDisplay(encrypter encrypts.Encrypter) *IndexProjectLogDisplay {
+	pd := &IndexProjectLogDisplay{}
+	copier.Copy(pd, l)
+	pd.ProjectCode, _ = encrypter.EncryptInt64(l.ProjectCode)
+	pd.CreateTime = formatx.ToDateTimeString(l.CreateTime)
+	pd.SourceCode, _ = encrypter.EncryptInt64(l.SourceCode)
+	return pd
+}

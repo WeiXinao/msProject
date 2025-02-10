@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	lx "github.com/WeiXinao/msProject/pkg/logx"
+	"github.com/WeiXinao/msProject/pkg/pprofx"
 	"github.com/WeiXinao/msProject/pkg/respx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -48,6 +49,9 @@ func main() {
 	writer, err := lx.NewZapWriter(&c.LogConfig)
 	logx.Must(err)
 	logx.SetWriter(writer)
+
+	// 集成 pprof
+	pprofx.Register(server)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

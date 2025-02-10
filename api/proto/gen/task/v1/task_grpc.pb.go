@@ -19,25 +19,27 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TaskService_CreateComment_FullMethodName    = "/api.proto.task.v1.TaskService/CreateComment"
-	TaskService_TaskLog_FullMethodName          = "/api.proto.task.v1.TaskService/TaskLog"
-	TaskService_CreateProjectLog_FullMethodName = "/api.proto.task.v1.TaskService/CreateProjectLog"
-	TaskService_SaveTaskWorkTime_FullMethodName = "/api.proto.task.v1.TaskService/SaveTaskWorkTime"
-	TaskService_TaskWorkTimeList_FullMethodName = "/api.proto.task.v1.TaskService/TaskWorkTimeList"
-	TaskService_ListTaskMember_FullMethodName   = "/api.proto.task.v1.TaskService/ListTaskMember"
-	TaskService_ReadTask_FullMethodName         = "/api.proto.task.v1.TaskService/ReadTask"
-	TaskService_MyTaskList_FullMethodName       = "/api.proto.task.v1.TaskService/MyTaskList"
-	TaskService_TaskSort_FullMethodName         = "/api.proto.task.v1.TaskService/TaskSort"
-	TaskService_TaskStages_FullMethodName       = "/api.proto.task.v1.TaskService/TaskStages"
-	TaskService_SaveTaskStages_FullMethodName   = "/api.proto.task.v1.TaskService/SaveTaskStages"
-	TaskService_TaskList_FullMethodName         = "/api.proto.task.v1.TaskService/TaskList"
-	TaskService_SaveTask_FullMethodName         = "/api.proto.task.v1.TaskService/SaveTask"
+	TaskService_GetLogBySelfProject_FullMethodName = "/api.proto.task.v1.TaskService/GetLogBySelfProject"
+	TaskService_CreateComment_FullMethodName       = "/api.proto.task.v1.TaskService/CreateComment"
+	TaskService_TaskLog_FullMethodName             = "/api.proto.task.v1.TaskService/TaskLog"
+	TaskService_CreateProjectLog_FullMethodName    = "/api.proto.task.v1.TaskService/CreateProjectLog"
+	TaskService_SaveTaskWorkTime_FullMethodName    = "/api.proto.task.v1.TaskService/SaveTaskWorkTime"
+	TaskService_TaskWorkTimeList_FullMethodName    = "/api.proto.task.v1.TaskService/TaskWorkTimeList"
+	TaskService_ListTaskMember_FullMethodName      = "/api.proto.task.v1.TaskService/ListTaskMember"
+	TaskService_ReadTask_FullMethodName            = "/api.proto.task.v1.TaskService/ReadTask"
+	TaskService_MyTaskList_FullMethodName          = "/api.proto.task.v1.TaskService/MyTaskList"
+	TaskService_TaskSort_FullMethodName            = "/api.proto.task.v1.TaskService/TaskSort"
+	TaskService_TaskStages_FullMethodName          = "/api.proto.task.v1.TaskService/TaskStages"
+	TaskService_SaveTaskStages_FullMethodName      = "/api.proto.task.v1.TaskService/SaveTaskStages"
+	TaskService_TaskList_FullMethodName            = "/api.proto.task.v1.TaskService/TaskList"
+	TaskService_SaveTask_FullMethodName            = "/api.proto.task.v1.TaskService/SaveTask"
 )
 
 // TaskServiceClient is the client API for TaskService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TaskServiceClient interface {
+	GetLogBySelfProject(ctx context.Context, in *GetLogBySelfProjectRequest, opts ...grpc.CallOption) (*GetLogBySelfProjectResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error)
 	CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error)
@@ -59,6 +61,16 @@ type taskServiceClient struct {
 
 func NewTaskServiceClient(cc grpc.ClientConnInterface) TaskServiceClient {
 	return &taskServiceClient{cc}
+}
+
+func (c *taskServiceClient) GetLogBySelfProject(ctx context.Context, in *GetLogBySelfProjectRequest, opts ...grpc.CallOption) (*GetLogBySelfProjectResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLogBySelfProjectResponse)
+	err := c.cc.Invoke(ctx, TaskService_GetLogBySelfProject_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *taskServiceClient) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {
@@ -195,6 +207,7 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
 type TaskServiceServer interface {
+	GetLogBySelfProject(context.Context, *GetLogBySelfProjectRequest) (*GetLogBySelfProjectResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
 	TaskLog(context.Context, *TaskLogRequest) (*TaskLogResponse, error)
 	CreateProjectLog(context.Context, *CreateProjectLogRequest) (*CreateProjectLogResponse, error)
@@ -218,6 +231,9 @@ type TaskServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTaskServiceServer struct{}
 
+func (UnimplementedTaskServiceServer) GetLogBySelfProject(context.Context, *GetLogBySelfProjectRequest) (*GetLogBySelfProjectResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogBySelfProject not implemented")
+}
 func (UnimplementedTaskServiceServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
 }
@@ -276,6 +292,24 @@ func RegisterTaskServiceServer(s grpc.ServiceRegistrar, srv TaskServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&TaskService_ServiceDesc, srv)
+}
+
+func _TaskService_GetLogBySelfProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLogBySelfProjectRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).GetLogBySelfProject(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_GetLogBySelfProject_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).GetLogBySelfProject(ctx, req.(*GetLogBySelfProjectRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _TaskService_CreateComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -519,6 +553,10 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.task.v1.TaskService",
 	HandlerType: (*TaskServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetLogBySelfProject",
+			Handler:    _TaskService_GetLogBySelfProject_Handler,
+		},
 		{
 			MethodName: "CreateComment",
 			Handler:    _TaskService_CreateComment_Handler,

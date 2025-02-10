@@ -5,6 +5,8 @@ use (
 	./bff
 	./file
 	./pkg
+	./profile_test/cpu
+	./profile_test/mem
 	./project
 	./task
 	./user

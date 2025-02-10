@@ -14,41 +14,45 @@ import (
 )
 
 type (
-	CreateCommentRequest     = v1.CreateCommentRequest
-	CreateCommentResponse    = v1.CreateCommentResponse
-	CreateProjectLogRequest  = v1.CreateProjectLogRequest
-	CreateProjectLogResponse = v1.CreateProjectLogResponse
-	ExecutorMessage          = v1.ExecutorMessage
-	ListTaskMemberRequest    = v1.ListTaskMemberRequest
-	ListTaskMemberResponse   = v1.ListTaskMemberResponse
-	Member                   = v1.Member
-	MyTaskListRequest        = v1.MyTaskListRequest
-	MyTaskListResponse       = v1.MyTaskListResponse
-	MyTaskMessage            = v1.MyTaskMessage
-	ReadTaskRequest          = v1.ReadTaskRequest
-	SaveTaskRequest          = v1.SaveTaskRequest
-	SaveTaskStagesMessage    = v1.SaveTaskStagesMessage
-	SaveTaskStagesRequest    = v1.SaveTaskStagesRequest
-	SaveTaskStagesResponse   = v1.SaveTaskStagesResponse
-	SaveTaskWorkTimeRequest  = v1.SaveTaskWorkTimeRequest
-	SaveTaskWorkTimeResponse = v1.SaveTaskWorkTimeResponse
-	TaskListRequest          = v1.TaskListRequest
-	TaskListResponse         = v1.TaskListResponse
-	TaskLog                  = v1.TaskLog
-	TaskLogRequest           = v1.TaskLogRequest
-	TaskLogResponse          = v1.TaskLogResponse
-	TaskMemberMessage        = v1.TaskMemberMessage
-	TaskMessage              = v1.TaskMessage
-	TaskSortRequest          = v1.TaskSortRequest
-	TaskSortResponse         = v1.TaskSortResponse
-	TaskStagesMessage        = v1.TaskStagesMessage
-	TaskStagesRequest        = v1.TaskStagesRequest
-	TaskStagesResponse       = v1.TaskStagesResponse
-	TaskWorkTime             = v1.TaskWorkTime
-	TaskWorkTimeRequest      = v1.TaskWorkTimeRequest
-	TaskWorkTimeResponse     = v1.TaskWorkTimeResponse
+	CreateCommentRequest        = v1.CreateCommentRequest
+	CreateCommentResponse       = v1.CreateCommentResponse
+	CreateProjectLogRequest     = v1.CreateProjectLogRequest
+	CreateProjectLogResponse    = v1.CreateProjectLogResponse
+	ExecutorMessage             = v1.ExecutorMessage
+	GetLogBySelfProjectRequest  = v1.GetLogBySelfProjectRequest
+	GetLogBySelfProjectResponse = v1.GetLogBySelfProjectResponse
+	ListTaskMemberRequest       = v1.ListTaskMemberRequest
+	ListTaskMemberResponse      = v1.ListTaskMemberResponse
+	Member                      = v1.Member
+	MyTaskListRequest           = v1.MyTaskListRequest
+	MyTaskListResponse          = v1.MyTaskListResponse
+	MyTaskMessage               = v1.MyTaskMessage
+	ProjectLogMessage           = v1.ProjectLogMessage
+	ReadTaskRequest             = v1.ReadTaskRequest
+	SaveTaskRequest             = v1.SaveTaskRequest
+	SaveTaskStagesMessage       = v1.SaveTaskStagesMessage
+	SaveTaskStagesRequest       = v1.SaveTaskStagesRequest
+	SaveTaskStagesResponse      = v1.SaveTaskStagesResponse
+	SaveTaskWorkTimeRequest     = v1.SaveTaskWorkTimeRequest
+	SaveTaskWorkTimeResponse    = v1.SaveTaskWorkTimeResponse
+	TaskListRequest             = v1.TaskListRequest
+	TaskListResponse            = v1.TaskListResponse
+	TaskLog                     = v1.TaskLog
+	TaskLogRequest              = v1.TaskLogRequest
+	TaskLogResponse             = v1.TaskLogResponse
+	TaskMemberMessage           = v1.TaskMemberMessage
+	TaskMessage                 = v1.TaskMessage
+	TaskSortRequest             = v1.TaskSortRequest
+	TaskSortResponse            = v1.TaskSortResponse
+	TaskStagesMessage           = v1.TaskStagesMessage
+	TaskStagesRequest           = v1.TaskStagesRequest
+	TaskStagesResponse          = v1.TaskStagesResponse
+	TaskWorkTime                = v1.TaskWorkTime
+	TaskWorkTimeRequest         = v1.TaskWorkTimeRequest
+	TaskWorkTimeResponse        = v1.TaskWorkTimeResponse
 
 	TaskService interface {
+		GetLogBySelfProject(ctx context.Context, in *GetLogBySelfProjectRequest, opts ...grpc.CallOption) (*GetLogBySelfProjectResponse, error)
 		CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 		TaskLog(ctx context.Context, in *TaskLogRequest, opts ...grpc.CallOption) (*TaskLogResponse, error)
 		CreateProjectLog(ctx context.Context, in *CreateProjectLogRequest, opts ...grpc.CallOption) (*CreateProjectLogResponse, error)
@@ -73,6 +77,11 @@ func NewTaskService(cli zrpc.Client) TaskService {
 	return &defaultTaskService{
 		cli: cli,
 	}
+}
+
+func (m *defaultTaskService) GetLogBySelfProject(ctx context.Context, in *GetLogBySelfProjectRequest, opts ...grpc.CallOption) (*GetLogBySelfProjectResponse, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.GetLogBySelfProject(ctx, in, opts...)
 }
 
 func (m *defaultTaskService) CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error) {

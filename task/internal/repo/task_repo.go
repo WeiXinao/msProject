@@ -8,6 +8,38 @@ import (
 	"github.com/jinzhu/copier"
 )
 
+type taskRepo struct {
+	dao dao.TaskDao
+}
+
+// FindTaskByIds implements TaskRepo.
+func (p *taskRepo) FindTaskByIds(ctx context.Context, taskIds []int64) ([]*domain.Task, error) {
+	taskDmns := make([]*domain.Task, 0)
+	tasks, err := p.dao.FindTaskByIds(ctx, taskIds)
+	if err != nil {
+		return nil, err
+	}
+	err = copier.CopyWithOption(&taskDmns, tasks, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, err
+	}
+	return taskDmns, nil
+}
+
+// FindLogByMemberCode implements TaskRepo.
+func (p *taskRepo) FindLogByMemberCode(ctx context.Context, memberId int64, page int64, pageSize int64) ([]*domain.ProjectLog, int64, error) {
+	pls, total, err := p.dao.FindLogByMemberCode(ctx, memberId, page, pageSize)
+	if err != nil {
+		return nil, total, err
+	}
+	projectLogs := make([]*domain.ProjectLog, 0)
+	err = copier.CopyWithOption(&projectLogs, pls, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, total, err
+	}
+	return projectLogs, total, nil
+}
+
 // SaveComment implements TaskRepo.
 func (p *taskRepo) SaveComment(ctx context.Context, comment domain.ProjectLog) error {
 	commentEty := dao.ProjectLog{}
@@ -265,11 +297,6 @@ func (t *taskRepo) FindStagesByProjectIdPagination(ctx context.Context, projectC
 	}
 	return taskStagesDmns, total, nil
 }
-
-type taskRepo struct {
-	dao dao.TaskDao
-}
-
 
 func NewTaskRepo(dao dao.TaskDao) TaskRepo {
 	return &taskRepo{

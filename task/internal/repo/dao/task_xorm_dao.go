@@ -11,13 +11,41 @@ type taskXormDao struct {
 	db *xorm.Engine
 }
 
+// FindTaskByIds implements TaskDao.
+func (p *taskXormDao) FindTaskByIds(ctx context.Context, taskIds []int64) ([]*Task, error) {
+	tasks := make([]*Task, 0)
+	err := p.db.In("id", taskIds).Find(&tasks)
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
+// FindLogByMemberCode implements TaskDao.
+func (p *taskXormDao) FindLogByMemberCode(ctx context.Context, memberId int64, page int64, pageSize int64) ([]*ProjectLog, int64, error) {
+	pls := make([]*ProjectLog, 0)
+	start := (page - 1) * pageSize
+	err := p.db.Where("member_code = ?", memberId).
+		Limit(int(pageSize), int(start)).
+		OrderBy("create_time DESC").
+		Find(&pls)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := p.db.Where("member_code = ?", memberId).Count(new(ProjectLog))
+	if err != nil {
+		return nil, 0, err
+	}
+	return pls, total, nil
+}
+
 // SaveComment implements TaskDao.
 func (p *taskXormDao) SaveComment(ctx context.Context, comment ProjectLog) error {
 	return ormx.NewTxSession(p.db.Context(ctx)).EngineTx(func(engine *xorm.Engine) error {
 		projectCode := int64(0)
 		_, err := engine.
-		SQL("SELECT project_code FROM ms_task WHERE id = ? FOR UPDATE", comment.SourceCode).
-		Get(&projectCode)
+			SQL("SELECT project_code FROM ms_task WHERE id = ? FOR UPDATE", comment.SourceCode).
+			Get(&projectCode)
 		if err != nil {
 			return err
 		}

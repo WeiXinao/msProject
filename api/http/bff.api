@@ -684,12 +684,38 @@ type CreateCommentRsp {
 	Success bool `json:"success"`
 }
 
+type GetLogBySelfProjectReq {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+}
+
+type ProjectLog {
+	Content      string `json:"content"`
+	Remark       string `json:"remark"`
+	CreateTime   string `json:"create_time"`
+	SourceCode   string `json:"source_code"`
+	IsComment    int    `json:"is_comment"`
+	ProjectCode  string `json:"project_code"`
+	ProjectName  string `json:"project_name"`
+	MemberAvatar string `json:"member_avatar"`
+	MemberName   string `json:"member_name"`
+	TaskName     string `json:"task_name"`
+}
+
+type GetLogBySelfProjectRsp {
+	List  []*ProjectLog `json:"list"`
+	Total int64         `json:"total"`
+}
+
 @server (
 	prefix:     /project
 	group:      task
 	middleware: AuthMiddleware
 )
 service bff {
+	@handler GetLogBySelfProject
+	post /project/getLogBySelfProject (GetLogBySelfProjectReq) returns (GetLogBySelfProjectRsp)
+
 	@handler CreateComment
 	post /task/createComment (CreateCommentReq) returns (CreateCommentRsp)
 

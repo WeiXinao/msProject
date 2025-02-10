@@ -54,6 +54,16 @@ type GetCaptchaResp struct {
 	Captcha string `json:"captcha"`
 }
 
+type GetLogBySelfProjectReq struct {
+	Page     int64 `form:"page,default=1"`
+	PageSize int64 `form:"pageSize,default=10"`
+}
+
+type GetLogBySelfProjectRsp struct {
+	List  []*ProjectLog `json:"list"`
+	Total int64         `json:"total"`
+}
+
 type GetOrgListReq struct {
 }
 
@@ -259,6 +269,19 @@ type ProjectListMember struct {
 	Avatar  string `json:"avatar"`
 	Code    string `json:"code"`
 	IsOwner int    `json:"IsOwner"`
+}
+
+type ProjectLog struct {
+	Content      string `json:"content"`
+	Remark       string `json:"remark"`
+	CreateTime   string `json:"create_time"`
+	SourceCode   string `json:"source_code"`
+	IsComment    int    `json:"is_comment"`
+	ProjectCode  string `json:"project_code"`
+	ProjectName  string `json:"project_name"`
+	MemberAvatar string `json:"member_avatar"`
+	MemberName   string `json:"member_name"`
+	TaskName     string `json:"task_name"`
 }
 
 type ProjectMember struct {

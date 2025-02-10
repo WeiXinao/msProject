@@ -29,6 +29,8 @@ type TaskRepo interface {
 		page int64, pageSize int64) ([]*domain.Task, int64, error)
 	FindTaskMemberByTaskIdPagination(ctx context.Context, taskId int64,
 		page int64, pageSize int64) ([]*domain.TaskMember, int64, error)
+	FindTaskByIds(ctx context.Context, taskIds []int64) ([]*domain.Task, error)
+
 	SaveTaskWorkTime(ctx context.Context, taskWorkTime domain.TaskWorkTime) error
 	FindWorkTimeListByTaskId(ctx context.Context, taskId int64) ([]*domain.TaskWorkTime, int64, error)
 
@@ -39,4 +41,6 @@ type TaskRepo interface {
 		page int64, pageSize int64) ([]*domain.ProjectLog, int64, error)
 
 	SaveComment(ctx context.Context, comment domain.ProjectLog) error
+	FindLogByMemberCode(ctx context.Context, memberId int64, page int64, 
+		pageSize int64) ([]*domain.ProjectLog, int64, error)
 }
