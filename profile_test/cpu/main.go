@@ -21,6 +21,10 @@ func logicCode() {
     }
 }
 
+type Person struct {
+	Name string
+}
+
 func main() {
     // 两个标志位: 是否开启CPU和内存的标志位
     var isCPUPprof bool
