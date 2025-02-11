@@ -1,8 +1,10 @@
 go 1.23.0
 
 use (
+	./account
 	./api
 	./bff
+	./department
 	./file
 	./pkg
 	./profile_test/cpu
