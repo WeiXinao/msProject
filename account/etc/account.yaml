@@ -1,6 +1,36 @@
 Name: account.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 127.0.0.1:8084
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - 192.168.5.8:12379
   Key: account.rpc
+RedisConfig:
+  Host: "127.0.0.1:6379"
+  Type: "node"
+  Tls: false
+  NonBlock: false
+  PingTimeout: 1s
+MySQLConfig:
+  DriverName: mysql
+  Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8
+logConfig:
+  debugFileName: "../../logs/debug/project-debug.log"
+  infoFileName:  "../../logs/info/project-info.log"
+  warnFileName:  "../../logs/error/project-error.log"
+  maxSize:       500
+  maxAge:        28
+  maxBackups:    3
+Jwt:
+  # 7天
+  AccessExp:  "168h"
+  # 14天
+  RefreshExp: "336h"
+  AtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvf0"
+  RtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvfx"
+#  AES 加密 24 byte
+AESKey: "123jldjalsdjalkajlds1234"
+UserRpcClient:
+  Etcd:
+    Hosts:
+    - 192.168.5.8:12379
+    Key: user.rpc

@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: account.proto
+// source: api/proto/account/v1/account.proto
 
-package account
+package v1
 
 import (
 	context "context"
@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Account_Ping_FullMethodName = "/account.Account/Ping"
+	Account_Account_FullMethodName         = "/api.proto.account.v1.Account/Account"
+	Account_ListDepartments_FullMethodName = "/api.proto.account.v1.Account/ListDepartments"
 )
 
 // AccountClient is the client API for Account service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountClient interface {
-	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
+	ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
 }
 
 type accountClient struct {
@@ -37,10 +39,20 @@ func NewAccountClient(cc grpc.ClientConnInterface) AccountClient {
 	return &accountClient{cc}
 }
 
-func (c *accountClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (c *accountClient) Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Response)
-	err := c.cc.Invoke(ctx, Account_Ping_FullMethodName, in, out, cOpts...)
+	out := new(AccountResponse)
+	err := c.cc.Invoke(ctx, Account_Account_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountClient) ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListDepartmentsResponse)
+	err := c.cc.Invoke(ctx, Account_ListDepartments_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *accountClient) Ping(ctx context.Context, in *Request, opts ...grpc.Call
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
 type AccountServer interface {
-	Ping(context.Context, *Request) (*Response, error)
+	Account(context.Context, *AccountRequest) (*AccountResponse, error)
+	ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -62,8 +75,11 @@ type AccountServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountServer struct{}
 
-func (UnimplementedAccountServer) Ping(context.Context, *Request) (*Response, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+func (UnimplementedAccountServer) Account(context.Context, *AccountRequest) (*AccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
+}
+func (UnimplementedAccountServer) ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDepartments not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}
 func (UnimplementedAccountServer) testEmbeddedByValue()                 {}
@@ -86,20 +102,38 @@ func RegisterAccountServer(s grpc.ServiceRegistrar, srv AccountServer) {
 	s.RegisterService(&Account_ServiceDesc, srv)
 }
 
-func _Account_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Request)
+func _Account_Account_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AccountServer).Ping(ctx, in)
+		return srv.(AccountServer).Account(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Account_Ping_FullMethodName,
+		FullMethod: Account_Account_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountServer).Ping(ctx, req.(*Request))
+		return srv.(AccountServer).Account(ctx, req.(*AccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Account_ListDepartments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDepartmentsReqeust)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).ListDepartments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_ListDepartments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).ListDepartments(ctx, req.(*ListDepartmentsReqeust))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -108,14 +142,18 @@ func _Account_Ping_Handler(srv interface{}, ctx context.Context, dec func(interf
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Account_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "account.Account",
+	ServiceName: "api.proto.account.v1.Account",
 	HandlerType: (*AccountServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Ping",
-			Handler:    _Account_Ping_Handler,
+			MethodName: "Account",
+			Handler:    _Account_Account_Handler,
+		},
+		{
+			MethodName: "ListDepartments",
+			Handler:    _Account_ListDepartments_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "account.proto",
+	Metadata: "api/proto/account/v1/account.proto",
 }

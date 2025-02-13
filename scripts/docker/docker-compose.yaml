@@ -23,13 +23,13 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
   etcd:
     image: "bitnami/etcd:3.5.9"
-    container_name: etcd-local
+    container_name: etcd3
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:2379
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:12379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.5.8:12379
     ports:
-      - "12379:2379"
+      - "12379:12379"
       - "12380:2380"
     volumes:
       - "/root/etcd/data:/etcd-data"

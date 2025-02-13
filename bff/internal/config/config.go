@@ -15,6 +15,7 @@ type Config struct {
 	ProjectRpcClient zrpc.RpcClientConf
 	TaskRpcClient    zrpc.RpcClientConf
 	FileRpcClient    zrpc.RpcClientConf
+	AccountRpcClient zrpc.RpcClientConf
 }
 
 type Jwt struct {

@@ -4,12 +4,14 @@ import (
 	"flag"
 	"fmt"
 
-	"account/account"
-	"account/internal/config"
-	"account/internal/server"
-	"account/internal/svc"
+	"github.com/WeiXinao/msProject/account/internal/config"
+	"github.com/WeiXinao/msProject/account/internal/server"
+	"github.com/WeiXinao/msProject/account/internal/svc"
+	v1 "github.com/WeiXinao/msProject/api/proto/gen/account/v1"
+	lx "github.com/WeiXinao/msProject/pkg/logx"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -26,13 +28,19 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		account.RegisterAccountServer(grpcServer, server.NewAccountServer(ctx))
+		v1.RegisterAccountServer(grpcServer, server.NewAccountServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}
 	})
 	defer s.Stop()
+
+	// 设置 log 的 writer
+	//从配置中读取日志配置，初始化日志
+	writer, err := lx.NewZapWriter(&c.LogConfig)
+	logx.Must(err)
+	logx.SetWriter(writer)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()

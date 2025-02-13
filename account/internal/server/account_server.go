@@ -7,14 +7,14 @@ package server
 import (
 	"context"
 
-	"account/account"
-	"account/internal/logic"
-	"account/internal/svc"
+	"github.com/WeiXinao/msProject/account/internal/logic"
+	"github.com/WeiXinao/msProject/account/internal/svc"
+	"github.com/WeiXinao/msProject/api/proto/gen/account/v1"
 )
 
 type AccountServer struct {
 	svcCtx *svc.ServiceContext
-	account.UnimplementedAccountServer
+	v1.UnimplementedAccountServer
 }
 
 func NewAccountServer(svcCtx *svc.ServiceContext) *AccountServer {
@@ -23,7 +23,12 @@ func NewAccountServer(svcCtx *svc.ServiceContext) *AccountServer {
 	}
 }
 
-func (s *AccountServer) Ping(ctx context.Context, in *account.Request) (*account.Response, error) {
-	l := logic.NewPingLogic(ctx, s.svcCtx)
-	return l.Ping(in)
+func (s *AccountServer) Account(ctx context.Context, in *v1.AccountRequest) (*v1.AccountResponse, error) {
+	l := logic.NewAccountLogic(ctx, s.svcCtx)
+	return l.Account(in)
+}
+
+func (s *AccountServer) ListDepartments(ctx context.Context, in *v1.ListDepartmentsReqeust) (*v1.ListDepartmentsResponse, error) {
+	l := logic.NewListDepartmentsLogic(ctx, s.svcCtx)
+	return l.ListDepartments(in)
 }

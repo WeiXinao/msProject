@@ -3,6 +3,20 @@
 
 package types
 
+type AccountReq struct {
+	Page           int    `form:"page"`
+	PageSize       int    `form:"pageSize"`
+	SearchType     int    `form:"searchType,optional"`
+	DepartmentCode string `form:"departmentCode,optional"`
+}
+
+type AccountRsp struct {
+	Total       int64            `json:"total"`
+	Page        int64            `json:"page"`
+	AccountList []*MemberAccount `json:"list"`
+	AuthList    []*ProjectAuth   `json:"authList"`
+}
+
 type CollectProjectReq struct {
 	ProjectCode string `form:"projectCode"`
 	Type        string `form:"type"`
@@ -20,6 +34,31 @@ type CreateCommentReq struct {
 
 type CreateCommentRsp struct {
 	Success bool `json:"success"`
+}
+
+type Department struct {
+	Id               int64  `json:"id"`
+	Code             string `json:"code"`
+	OrganizationCode string `json:"organization_code"`
+	Name             string `json:"name"`
+	Pcode            string `json:"pcode"`
+	Path             string `json:"path"`
+	CreateTime       string `json:"create_time"`
+}
+
+type DepartmentReq struct {
+	DepartmentCode       string `form:"departmentCode"`
+	ParentDepartmentCode string `form:"parentDepartmentCode"`
+	Name                 string `form:"name"`
+	Page                 int64  `form:"page"`
+	PageSize             int64  `form:"pageSize"`
+	Pcode                string `form:"pcode"`
+}
+
+type DepartmentRsp struct {
+	List  []*Department `json:"list"`
+	Total int64         `json:"total"`
+	Page  int64         `json:"page"`
 }
 
 type EditProjectReq struct {
@@ -110,6 +149,30 @@ type Member struct {
 	CreateTime       string `json:"create_time"`
 	LastLoginTime    string `json:"last_login_time"`
 	OrganizationCode string `json:"organization_code"`
+}
+
+type MemberAccount struct {
+	Id                int64    `json:"id"`
+	Code              string   `json:"code"`
+	MemberCode        string   `json:"member_code"`
+	OrganizationCode  string   `json:"organization_code"`
+	DepartmentCode    string   `json:"department_code"`
+	Authorize         string   `json:"authorize"`
+	IsOwner           int      `json:"is_owner"`
+	Name              string   `json:"name"`
+	Mobile            string   `json:"mobile"`
+	Email             string   `json:"email"`
+	CreateTime        string   `json:"create_time"`
+	LastLoginTime     string   `json:"last_login_time"`
+	Status            int      `json:"status"`
+	Description       string   `json:"description"`
+	Avatar            string   `json:"avatar"`
+	Position          string   `json:"position"`
+	Department        string   `json:"department"`
+	MembarAccountCode string   `json:"membar_account_code"`
+	Departments       string   `json:"departments"`
+	StatusText        string   `json:"statusText"`
+	AuthorizeArr      []string `json:"authorizeArr"`
 }
 
 type MemberInfo struct {
@@ -256,6 +319,20 @@ type ProjectAndMember struct {
 	Authorize   string `json:"authorize"`
 	OwnerName   string `json:"owner_name"`
 	Collected   int    `json:"collected"`
+}
+
+type ProjectAuth struct {
+	Id               int64  `json:"id"`
+	OrganizationCode string `json:"organization_code"`
+	Title            string `json:"title"`
+	CreateAt         string `json:"create_at"`
+	Sort             int    `json:"sort"`
+	Status           int    `json:"status"`
+	Desc             string `json:"desc"`
+	CreateBy         int64  `json:"create_by"`
+	IsDefault        int    `json:"is_default"`
+	Type             string `json:"type"`
+	CanDelete        int    `json:"canDelete"`
 }
 
 type ProjectInfo struct {

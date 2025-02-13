@@ -6,6 +6,8 @@ package handler
 import (
 	"net/http"
 
+	account "github.com/WeiXinao/msProject/bff/internal/handler/account"
+	department "github.com/WeiXinao/msProject/bff/internal/handler/department"
 	file "github.com/WeiXinao/msProject/bff/internal/handler/file"
 	organization "github.com/WeiXinao/msProject/bff/internal/handler/organization"
 	project "github.com/WeiXinao/msProject/bff/internal/handler/project"
@@ -17,6 +19,34 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/account",
+					Handler: account.AccountHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/project"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/department",
+					Handler: department.DepartmentHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/project"),
+	)
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.AuthMiddleware},

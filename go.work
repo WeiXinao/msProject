@@ -4,7 +4,6 @@ use (
 	./account
 	./api
 	./bff
-	./department
 	./file
 	./pkg
 	./profile_test/cpu
