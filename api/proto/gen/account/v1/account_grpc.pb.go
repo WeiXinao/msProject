@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	Account_Account_FullMethodName         = "/api.proto.account.v1.Account/Account"
 	Account_ListDepartments_FullMethodName = "/api.proto.account.v1.Account/ListDepartments"
+	Account_SaveDepartment_FullMethodName  = "/api.proto.account.v1.Account/SaveDepartment"
 )
 
 // AccountClient is the client API for Account service.
@@ -29,6 +30,7 @@ const (
 type AccountClient interface {
 	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 	ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
+	SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 }
 
 type accountClient struct {
@@ -59,12 +61,23 @@ func (c *accountClient) ListDepartments(ctx context.Context, in *ListDepartments
 	return out, nil
 }
 
+func (c *accountClient) SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DepartmentMessage)
+	err := c.cc.Invoke(ctx, Account_SaveDepartment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
 type AccountServer interface {
 	Account(context.Context, *AccountRequest) (*AccountResponse, error)
 	ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error)
+	SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -80,6 +93,9 @@ func (UnimplementedAccountServer) Account(context.Context, *AccountRequest) (*Ac
 }
 func (UnimplementedAccountServer) ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListDepartments not implemented")
+}
+func (UnimplementedAccountServer) SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveDepartment not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}
 func (UnimplementedAccountServer) testEmbeddedByValue()                 {}
@@ -138,6 +154,24 @@ func _Account_ListDepartments_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_SaveDepartment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveDepartmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).SaveDepartment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_SaveDepartment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).SaveDepartment(ctx, req.(*SaveDepartmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Account_ServiceDesc is the grpc.ServiceDesc for Account service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +186,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListDepartments",
 			Handler:    _Account_ListDepartments_Handler,
+		},
+		{
+			MethodName: "SaveDepartment",
+			Handler:    _Account_SaveDepartment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

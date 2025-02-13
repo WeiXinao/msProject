@@ -11,11 +11,27 @@ import (
 type AccountRepo interface {
 	FindAuthListByOrganizaitonCode(ctx context.Context, orgCode int64) ([]*domain.ProjectAuth, error)
 	FindMemberAccountList(ctx context.Context, searchType int32, organizationCode int64, departmentCode int64, page int64, pageSize int64) ([]*domain.MemberAccount, int64, error)
+
 	FindDepartmentById(ctx context.Context, departmentId int64) (domain.Department, error)
+	ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*domain.Department, int64, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// ListDepartments implements AccountRepo.
+func (a *accountRepo) ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*domain.Department, int64, error) {
+	d, total, err := a.dao.ListDepartments(ctx, orgCode, parentDeptCode, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	depts := make([]*domain.Department, 0)
+	err = copier.CopyWithOption(&depts, d, copier.Option{DeepCopy: true})
+	if err != nil {
+		return nil, 0, err
+	}
+	return depts, total, nil
 }
 
 // FindDepartmentById implements AccountRepo.

@@ -61,9 +61,7 @@ message ListDepartmentsReqeust {
   string organizationCode = 2;
   int64 page = 3;
   int64 pageSize = 4;
-  string departmentCode = 5;
   string parentDepartmentCode = 6;
-  string name = 7;
 }
 
 message DepartmentMessage{
@@ -81,7 +79,15 @@ message ListDepartmentsResponse {
   int64  total = 2;
 }
 
+message SaveDepartmentRequest {
+  string name = 1;
+  string departmentCode = 2;
+  string parentDepartmentCode = 3;
+  string organizationCode = 4;
+}
+
 service Account {
   rpc Account(AccountRequest) returns(AccountResponse);
   rpc ListDepartments(ListDepartmentsReqeust) returns(ListDepartmentsResponse);
+  rpc SaveDepartment(SaveDepartmentRequest) returns (DepartmentMessage);
 }

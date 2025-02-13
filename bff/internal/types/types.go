@@ -47,12 +47,12 @@ type Department struct {
 }
 
 type DepartmentReq struct {
-	DepartmentCode       string `form:"departmentCode"`
-	ParentDepartmentCode string `form:"parentDepartmentCode"`
-	Name                 string `form:"name"`
+	DepartmentCode       string `form:"departmentCode,optional"`
+	ParentDepartmentCode string `form:"parentDepartmentCode,optional"`
+	Name                 string `form:"name,optional"`
 	Page                 int64  `form:"page"`
 	PageSize             int64  `form:"pageSize"`
-	Pcode                string `form:"pcode"`
+	Pcode                string `form:"pcode,optional"`
 }
 
 type DepartmentRsp struct {

@@ -21,10 +21,12 @@ type (
 	ListDepartmentsResponse = v1.ListDepartmentsResponse
 	MemberAccount           = v1.MemberAccount
 	ProjectAuth             = v1.ProjectAuth
+	SaveDepartmentRequest   = v1.SaveDepartmentRequest
 
 	Account interface {
 		Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 		ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
+		SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 	}
 
 	defaultAccount struct {
@@ -46,4 +48,9 @@ func (m *defaultAccount) Account(ctx context.Context, in *AccountRequest, opts .
 func (m *defaultAccount) ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error) {
 	client := v1.NewAccountClient(m.cli.Conn())
 	return client.ListDepartments(ctx, in, opts...)
+}
+
+func (m *defaultAccount) SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.SaveDepartment(ctx, in, opts...)
 }

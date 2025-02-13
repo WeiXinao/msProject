@@ -32,3 +32,8 @@ func (s *AccountServer) ListDepartments(ctx context.Context, in *v1.ListDepartme
 	l := logic.NewListDepartmentsLogic(ctx, s.svcCtx)
 	return l.ListDepartments(in)
 }
+
+func (s *AccountServer) SaveDepartment(ctx context.Context, in *v1.SaveDepartmentRequest) (*v1.DepartmentMessage, error) {
+	l := logic.NewSaveDepartmentLogic(ctx, s.svcCtx)
+	return l.SaveDepartment(in)
+}

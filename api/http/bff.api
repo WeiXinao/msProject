@@ -848,12 +848,10 @@ service bff {
 }
 
 type DepartmentReq {
-	DepartmentCode       string `form:"departmentCode"`
-	ParentDepartmentCode string `form:"parentDepartmentCode"`
-	Name                 string `form:"name"`
+	ParentDepartmentCode string `form:"parentDepartmentCode,optional"`
 	Page                 int64  `form:"page"`
 	PageSize             int64  `form:"pageSize"`
-	Pcode                string `form:"pcode"`
+	Pcode                string `form:"pcode,optional"`
 }
 
 type Department {
@@ -872,6 +870,12 @@ type DepartmentRsp {
 	Page  int64         `json:"page"`
 }
 
+type SaveDepartmentReq {
+	Name                 string `form:"name,optional"`
+	DepartmentCode       string `form:"departmentCode"`
+	ParentDepartmentCode string `form:"parentDepartmentCode"`
+}
+
 @server (
 	prefix:     /project
 	group:      department
@@ -880,5 +884,7 @@ type DepartmentRsp {
 service bff {
 	@handler department
 	post /department (DepartmentReq) returns (DepartmentRsp)
+	@handler save
+	post /department/save(SaveDepartmentReq) returns(Department)
 }
 

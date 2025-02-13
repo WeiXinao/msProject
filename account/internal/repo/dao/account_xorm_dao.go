@@ -11,6 +11,24 @@ type accountXormDao struct {
 	db *xorm.Engine
 }
 
+// ListDepartments implements AccountDao.
+func (a *accountXormDao) ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*Department, int64, error) {
+	whereCond, args := "organization_code = ?", []any{orgCode}
+	if parentDeptCode > 0 {
+		whereCond, args = "organization_code = ? AND pcode = ?", []any{orgCode, parentDeptCode}
+	}
+	total, err := a.db.Context(ctx).Where(whereCond, args...).Count(new(Department))
+	if err != nil {
+		return nil, 0, err
+	}
+	depts := make([]*Department, 0)
+	err = a.db.Context(ctx).
+	Where(whereCond, args...).
+	Limit(int(pageSize), int((page - 1) * pageSize)).
+	Find(&depts)
+	return depts, total, err
+}
+
 // FindDepartmentById implements AccountDao.
 func (a *accountXormDao) FindDepartmentById(ctx context.Context, departmentId int64) (Department, error) {
 	d := Department{}
