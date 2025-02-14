@@ -19,6 +19,7 @@ type Department struct {
 
 type DepartmentDisplay struct {
 	Id               int64
+	Code             string
 	OrganizationCode string
 	Name             string
 	Sort             int
@@ -31,6 +32,7 @@ type DepartmentDisplay struct {
 func (d *Department) ToDisplay(encrypter encrypts.Encrypter) *DepartmentDisplay {
 	dp := &DepartmentDisplay{}
 	copier.Copy(dp, d)
+	dp.Code, _ = encrypter.EncryptInt64(dp.Id)
 	dp.CreateTime = formatx.ToDateTimeString(d.CreateTime)
 	dp.OrganizationCode, _ = encrypter.EncryptInt64(d.OrganizationCode)
 	if d.Pcode > 0 {

@@ -3,12 +3,34 @@ package dao
 import (
 	"context"
 	"fmt"
-
 	"xorm.io/xorm"
 )
 
 type accountXormDao struct {
 	db *xorm.Engine
+}
+
+// SaveDepartment implements AccountDao.
+func (a *accountXormDao) SaveDepartment(ctx context.Context, dept Department) (Department, error) {
+	d := Department{}
+	whereCond, args := "organization_code = ? AND pcode = ? AND name = ?", []any{dept.OrganizationCode, dept.Pcode, dept.Name}
+	if dept.Pcode == 0 {
+		whereCond, args = "organization_code = ? AND name = ?", []any{dept.OrganizationCode, dept.Name}
+	}
+	has, err := a.db.Context(ctx).
+	Where(whereCond, args...).
+	Get(&d)
+	if err != nil {
+		return Department{}, err
+	}
+	if has {
+		return d, nil
+	}	
+	_, err = a.db.InsertOne(&dept)
+	if err != nil {
+		return Department{}, err
+	}
+	return dept, nil
 }
 
 // ListDepartments implements AccountDao.
@@ -23,9 +45,9 @@ func (a *accountXormDao) ListDepartments(ctx context.Context, orgCode int64, par
 	}
 	depts := make([]*Department, 0)
 	err = a.db.Context(ctx).
-	Where(whereCond, args...).
-	Limit(int(pageSize), int((page - 1) * pageSize)).
-	Find(&depts)
+		Where(whereCond, args...).
+		Limit(int(pageSize), int((page-1)*pageSize)).
+		Find(&depts)
 	return depts, total, err
 }
 

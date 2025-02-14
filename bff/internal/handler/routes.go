@@ -42,6 +42,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/department",
 					Handler: department.DepartmentHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/read",
+					Handler: department.ReadDepartmentHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/department/save",
+					Handler: department.SaveDepartmentHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/project"),

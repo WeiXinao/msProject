@@ -876,6 +876,10 @@ type SaveDepartmentReq {
 	ParentDepartmentCode string `form:"parentDepartmentCode"`
 }
 
+type ReadDepartment {
+	DepartmentCode string `form:"departmentCode"`
+}
+
 @server (
 	prefix:     /project
 	group:      department
@@ -884,7 +888,11 @@ type SaveDepartmentReq {
 service bff {
 	@handler department
 	post /department (DepartmentReq) returns (DepartmentRsp)
-	@handler save
-	post /department/save(SaveDepartmentReq) returns(Department)
+
+	@handler SaveDepartment
+	post /department/save (SaveDepartmentReq) returns (Department)
+
+	@handler ReadDepartment
+	post /department/read (ReadDepartment) returns (Department)
 }
 

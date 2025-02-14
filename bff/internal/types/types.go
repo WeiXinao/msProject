@@ -47,9 +47,7 @@ type Department struct {
 }
 
 type DepartmentReq struct {
-	DepartmentCode       string `form:"departmentCode,optional"`
 	ParentDepartmentCode string `form:"parentDepartmentCode,optional"`
-	Name                 string `form:"name,optional"`
 	Page                 int64  `form:"page"`
 	PageSize             int64  `form:"pageSize"`
 	Pcode                string `form:"pcode,optional"`
@@ -425,6 +423,10 @@ type ProjectTemplateRsp struct {
 	Total int64              `json:"total"`
 }
 
+type ReadDepartment struct {
+	DepartmentCode string `form:"departmentCode"`
+}
+
 type ReadProjectReq struct {
 	ProjectCode string `form:"projectCode"`
 }
@@ -481,6 +483,12 @@ type RegisterReq struct {
 }
 
 type RegisterResp struct {
+}
+
+type SaveDepartmentReq struct {
+	Name                 string `form:"name,optional"`
+	DepartmentCode       string `form:"departmentCode"`
+	ParentDepartmentCode string `form:"parentDepartmentCode"`
 }
 
 type SaveTaskWorkTimeReq struct {

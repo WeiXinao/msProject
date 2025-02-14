@@ -14,10 +14,30 @@ type AccountRepo interface {
 
 	FindDepartmentById(ctx context.Context, departmentId int64) (domain.Department, error)
 	ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*domain.Department, int64, error)
+	SaveDepartment(ctx context.Context, dept domain.Department) (domain.Department, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// SaveDepartment implements AccountRepo.
+func (a *accountRepo) SaveDepartment(ctx context.Context, dept domain.Department) (domain.Department, error) {
+	deptEty := dao.Department{}
+	err := copier.Copy(&deptEty, dept)
+	if err != nil {
+		return domain.Department{}, err
+	}
+	d, err := a.dao.SaveDepartment(ctx, deptEty)
+	if err != nil {
+		return domain.Department{}, err
+	}
+	deptDmn := domain.Department{}
+	err = copier.Copy(&deptDmn, d)
+	if err != nil {
+		return domain.Department{}, err
+	}
+	return deptDmn, nil
 }
 
 // ListDepartments implements AccountRepo.
