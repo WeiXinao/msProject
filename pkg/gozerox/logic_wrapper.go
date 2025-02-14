@@ -33,3 +33,18 @@ func HttpLogicWrapper[LogicType any, ReqType any, RespType any](ctx context.Cont
 	}
 	return resp, nil
 }
+
+func HttpLogicWrapperWithoutReq[LogicType any, RespType any](ctx context.Context, logic LogicType, serviceFunc func (methodName string, logic LogicType) (RespType, error)) (RespType, error) {
+	methodName := reflect.TypeOf(logic).Method(0).Name
+	resp, err := serviceFunc(methodName, logic)
+	if err != nil {
+		actualErr, ok := status.FromError(err)
+		if !ok {
+			logx.Errorf("[logic %s] %#v", methodName, err)
+		} else {
+			logx.Errorf("[logic %s] %#v", methodName, actualErr)
+		}
+		return resp, respx.ErrInternalServer
+	}
+	return resp, nil
+}

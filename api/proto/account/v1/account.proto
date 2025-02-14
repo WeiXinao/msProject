@@ -86,8 +86,27 @@ message SaveDepartmentRequest {
   string organizationCode = 4;
 }
 
+message ReadDepartmentRequest {
+  string departmentCode = 1;
+  string organizationCode = 2;
+}
+
+message AuthListRequest {
+  int64 memberId = 1;
+  string organizationCode = 2;
+  int64 page = 3;
+  int64 pageSize = 4;
+}
+
+message AuthListResponse {
+  repeated ProjectAuth list = 1;
+  int64 total = 2;
+}
+
 service Account {
   rpc Account(AccountRequest) returns(AccountResponse);
   rpc ListDepartments(ListDepartmentsReqeust) returns(ListDepartmentsResponse);
   rpc SaveDepartment(SaveDepartmentRequest) returns (DepartmentMessage);
+  rpc ReadDepartment(ReadDepartmentRequest) returns (DepartmentMessage);
+  rpc AuthList(AuthListRequest) returns (AuthListResponse);
 }

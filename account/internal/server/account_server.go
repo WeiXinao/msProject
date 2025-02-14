@@ -37,3 +37,13 @@ func (s *AccountServer) SaveDepartment(ctx context.Context, in *v1.SaveDepartmen
 	l := logic.NewSaveDepartmentLogic(ctx, s.svcCtx)
 	return l.SaveDepartment(in)
 }
+
+func (s *AccountServer) ReadDepartment(ctx context.Context, in *v1.ReadDepartmentRequest) (*v1.DepartmentMessage, error) {
+	l := logic.NewReadDepartmentLogic(ctx, s.svcCtx)
+	return l.ReadDepartment(in)
+}
+
+func (s *AccountServer) AuthList(ctx context.Context, in *v1.AuthListRequest) (*v1.AuthListResponse, error) {
+	l := logic.NewAuthListLogic(ctx, s.svcCtx)
+	return l.AuthList(in)
+}

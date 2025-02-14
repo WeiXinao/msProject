@@ -16,17 +16,22 @@ import (
 type (
 	AccountRequest          = v1.AccountRequest
 	AccountResponse         = v1.AccountResponse
+	AuthListRequest         = v1.AuthListRequest
+	AuthListResponse        = v1.AuthListResponse
 	DepartmentMessage       = v1.DepartmentMessage
 	ListDepartmentsReqeust  = v1.ListDepartmentsReqeust
 	ListDepartmentsResponse = v1.ListDepartmentsResponse
 	MemberAccount           = v1.MemberAccount
 	ProjectAuth             = v1.ProjectAuth
+	ReadDepartmentRequest   = v1.ReadDepartmentRequest
 	SaveDepartmentRequest   = v1.SaveDepartmentRequest
 
 	Account interface {
 		Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 		ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
 		SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
+		ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
+		AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
 	}
 
 	defaultAccount struct {
@@ -53,4 +58,14 @@ func (m *defaultAccount) ListDepartments(ctx context.Context, in *ListDepartment
 func (m *defaultAccount) SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error) {
 	client := v1.NewAccountClient(m.cli.Conn())
 	return client.SaveDepartment(ctx, in, opts...)
+}
+
+func (m *defaultAccount) ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.ReadDepartment(ctx, in, opts...)
+}
+
+func (m *defaultAccount) AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.AuthList(ctx, in, opts...)
 }

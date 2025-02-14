@@ -22,6 +22,8 @@ const (
 	Account_Account_FullMethodName         = "/api.proto.account.v1.Account/Account"
 	Account_ListDepartments_FullMethodName = "/api.proto.account.v1.Account/ListDepartments"
 	Account_SaveDepartment_FullMethodName  = "/api.proto.account.v1.Account/SaveDepartment"
+	Account_ReadDepartment_FullMethodName  = "/api.proto.account.v1.Account/ReadDepartment"
+	Account_AuthList_FullMethodName        = "/api.proto.account.v1.Account/AuthList"
 )
 
 // AccountClient is the client API for Account service.
@@ -31,6 +33,8 @@ type AccountClient interface {
 	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 	ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
 	SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
+	ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
+	AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
 }
 
 type accountClient struct {
@@ -71,6 +75,26 @@ func (c *accountClient) SaveDepartment(ctx context.Context, in *SaveDepartmentRe
 	return out, nil
 }
 
+func (c *accountClient) ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DepartmentMessage)
+	err := c.cc.Invoke(ctx, Account_ReadDepartment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountClient) AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AuthListResponse)
+	err := c.cc.Invoke(ctx, Account_AuthList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type AccountServer interface {
 	Account(context.Context, *AccountRequest) (*AccountResponse, error)
 	ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error)
 	SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error)
+	ReadDepartment(context.Context, *ReadDepartmentRequest) (*DepartmentMessage, error)
+	AuthList(context.Context, *AuthListRequest) (*AuthListResponse, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedAccountServer) ListDepartments(context.Context, *ListDepartme
 }
 func (UnimplementedAccountServer) SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveDepartment not implemented")
+}
+func (UnimplementedAccountServer) ReadDepartment(context.Context, *ReadDepartmentRequest) (*DepartmentMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadDepartment not implemented")
+}
+func (UnimplementedAccountServer) AuthList(context.Context, *AuthListRequest) (*AuthListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthList not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}
 func (UnimplementedAccountServer) testEmbeddedByValue()                 {}
@@ -172,6 +204,42 @@ func _Account_SaveDepartment_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_ReadDepartment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadDepartmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).ReadDepartment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_ReadDepartment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).ReadDepartment(ctx, req.(*ReadDepartmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Account_AuthList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).AuthList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_AuthList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).AuthList(ctx, req.(*AuthListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Account_ServiceDesc is the grpc.ServiceDesc for Account service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +258,14 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SaveDepartment",
 			Handler:    _Account_SaveDepartment_Handler,
+		},
+		{
+			MethodName: "ReadDepartment",
+			Handler:    _Account_ReadDepartment_Handler,
+		},
+		{
+			MethodName: "AuthList",
+			Handler:    _Account_AuthList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

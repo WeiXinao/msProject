@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	account "github.com/WeiXinao/msProject/bff/internal/handler/account"
+	auth "github.com/WeiXinao/msProject/bff/internal/handler/auth"
 	department "github.com/WeiXinao/msProject/bff/internal/handler/department"
 	file "github.com/WeiXinao/msProject/bff/internal/handler/file"
 	organization "github.com/WeiXinao/msProject/bff/internal/handler/organization"
@@ -27,6 +28,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/account",
 					Handler: account.AccountHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/project"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.AuthMiddleware},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/auth",
+					Handler: auth.AuthListHandler(serverCtx),
 				},
 			}...,
 		),
