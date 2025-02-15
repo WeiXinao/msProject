@@ -27,12 +27,14 @@ services:
     environment:
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:12379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://192.168.5.8:12379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://127.0.0.1:12379
     ports:
       - "12379:12379"
       - "12380:2380"
     volumes:
       - "/root/etcd/data:/etcd-data"
+    extra_hosts:	# 增加此行与如下一行
+      - "host.docker.internal:host-gateway"
   nginx:
     image: nginx:latest
     container_name: nginx

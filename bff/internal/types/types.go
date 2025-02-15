@@ -17,6 +17,11 @@ type AccountRsp struct {
 	AuthList    []*ProjectAuth   `json:"authList"`
 }
 
+type AuthListReq struct {
+	Page     int64 `form:"page"`
+	PageSize int64 `form:"pageSize"`
+}
+
 type AuthListRsp struct {
 	List  []*ProjectAuth `json:"list"`
 	Total int64          `json:"total"`

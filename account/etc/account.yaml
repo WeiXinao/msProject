@@ -2,7 +2,7 @@ Name: account.rpc
 ListenOn: 127.0.0.1:8084
 Etcd:
   Hosts:
-  - 192.168.5.8:12379
+  - 127.0.0.1:12379
   Key: account.rpc
 RedisConfig:
   Host: "127.0.0.1:6379"
@@ -32,5 +32,5 @@ AESKey: "123jldjalsdjalkajlds1234"
 UserRpcClient:
   Etcd:
     Hosts:
-    - 192.168.5.8:12379
+    - 127.0.0.1:12379
     Key: user.rpc

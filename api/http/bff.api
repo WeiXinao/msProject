@@ -896,6 +896,11 @@ service bff {
 	post /department/read (ReadDepartment) returns (Department)
 }
 
+type AuthListReq {
+	Page     int64 `form:"page"`
+	PageSize int64 `form:"pageSize"`
+}
+
 type AuthListRsp {
 	List  []*ProjectAuth `json:"list"`
 	Total int64          `json:"total"`
@@ -909,6 +914,6 @@ type AuthListRsp {
 )
 service bff {
 	@handler AuthList
-	post /auth returns (AuthListRsp)
+	post /auth (AuthListReq) returns (AuthListRsp)
 }
 

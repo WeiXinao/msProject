@@ -4,8 +4,9 @@ import "context"
 
 type AccountDao interface {
     FindAuthListByOrganizaitonCode(ctx context.Context, orgCode int64) ([]*ProjectAuth, error)
-	FindMemberAccountList(ctx context.Context, searchType int32, organizationCode int64, departmentCode int64, page int64, pageSize int64) ([]*MemberAccount, int64, error)
+	FindAuthListByOrganizaitonCodePagination(ctx context.Context, orgCode int64, page int64, pageSize int64) ([]*ProjectAuth, int64, error)
 
+	FindMemberAccountList(ctx context.Context, searchType int32, organizationCode int64, departmentCode int64, page int64, pageSize int64) ([]*MemberAccount, int64, error)
 	FindDepartmentById(ctx context.Context, departmentId int64) (Department, error)
 	ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*Department, int64, error)
 	SaveDepartment(ctx context.Context, dept Department) (Department, error)

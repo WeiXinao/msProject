@@ -10,6 +10,21 @@ type accountXormDao struct {
 	db *xorm.Engine
 }
 
+// FindAuthListByOrganizaitonCodePagination implements AccountDao.
+func (a *accountXormDao) FindAuthListByOrganizaitonCodePagination(ctx context.Context, orgCode int64, page int64, pageSize int64) ([]*ProjectAuth, int64, error) {
+	projectAuths := make([]*ProjectAuth, 0)
+	whereCond, args := "organization_code = ?", []any{orgCode}
+	err := a.db.Context(ctx).
+	Where(whereCond, args...).
+	Limit(int(pageSize), int((page - 1) * pageSize)).
+	Find(&projectAuths)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := a.db.Context(ctx).Where(whereCond, args...).Count(new(ProjectAuth)) 
+	return projectAuths, total, err
+}
+
 // SaveDepartment implements AccountDao.
 func (a *accountXormDao) SaveDepartment(ctx context.Context, dept Department) (Department, error) {
 	d := Department{}
@@ -18,14 +33,14 @@ func (a *accountXormDao) SaveDepartment(ctx context.Context, dept Department) (D
 		whereCond, args = "organization_code = ? AND name = ?", []any{dept.OrganizationCode, dept.Name}
 	}
 	has, err := a.db.Context(ctx).
-	Where(whereCond, args...).
-	Get(&d)
+		Where(whereCond, args...).
+		Get(&d)
 	if err != nil {
 		return Department{}, err
 	}
 	if has {
 		return d, nil
-	}	
+	}
 	_, err = a.db.InsertOne(&dept)
 	if err != nil {
 		return Department{}, err

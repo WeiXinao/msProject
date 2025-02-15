@@ -10,6 +10,7 @@ import (
 
 type AccountRepo interface {
 	FindAuthListByOrganizaitonCode(ctx context.Context, orgCode int64) ([]*domain.ProjectAuth, error)
+	FindAuthListByOrganizaitonCodePagination(ctx context.Context, orgCode int64, page int64, pageSize int64) ([]*domain.ProjectAuth, int64, error)
 	FindMemberAccountList(ctx context.Context, searchType int32, organizationCode int64, departmentCode int64, page int64, pageSize int64) ([]*domain.MemberAccount, int64, error)
 
 	FindDepartmentById(ctx context.Context, departmentId int64) (domain.Department, error)
@@ -19,6 +20,17 @@ type AccountRepo interface {
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// FindAuthListByOrganizaitonCodePagination implements AccountRepo.
+func (a *accountRepo) FindAuthListByOrganizaitonCodePagination(ctx context.Context, orgCode int64, page int64, pageSize int64) ([]*domain.ProjectAuth, int64, error) {
+	pa, total, err := a.dao.FindAuthListByOrganizaitonCodePagination(ctx, orgCode, page, pageSize)
+	if err != nil {
+		return nil, 0, err
+	}
+	pas := make([]*domain.ProjectAuth, 0)
+	err = copier.CopyWithOption(&pas, pa, copier.Option{DeepCopy: true})
+	return pas, total, err
 }
 
 // SaveDepartment implements AccountRepo.
