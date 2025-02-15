@@ -47,3 +47,8 @@ func (s *AccountServer) AuthList(ctx context.Context, in *v1.AuthListRequest) (*
 	l := logic.NewAuthListLogic(ctx, s.svcCtx)
 	return l.AuthList(in)
 }
+
+func (s *AccountServer) MenuList(ctx context.Context, in *v1.MenuRequest) (*v1.MenuResponse, error) {
+	l := logic.NewMenuListLogic(ctx, s.svcCtx)
+	return l.MenuList(in)
+}

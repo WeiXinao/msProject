@@ -22,6 +22,9 @@ type (
 	ListDepartmentsReqeust  = v1.ListDepartmentsReqeust
 	ListDepartmentsResponse = v1.ListDepartmentsResponse
 	MemberAccount           = v1.MemberAccount
+	MenuMessage             = v1.MenuMessage
+	MenuRequest             = v1.MenuRequest
+	MenuResponse            = v1.MenuResponse
 	ProjectAuth             = v1.ProjectAuth
 	ReadDepartmentRequest   = v1.ReadDepartmentRequest
 	SaveDepartmentRequest   = v1.SaveDepartmentRequest
@@ -32,6 +35,7 @@ type (
 		SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 		ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 		AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
+		MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error)
 	}
 
 	defaultAccount struct {
@@ -68,4 +72,9 @@ func (m *defaultAccount) ReadDepartment(ctx context.Context, in *ReadDepartmentR
 func (m *defaultAccount) AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error) {
 	client := v1.NewAccountClient(m.cli.Conn())
 	return client.AuthList(ctx, in, opts...)
+}
+
+func (m *defaultAccount) MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.MenuList(ctx, in, opts...)
 }

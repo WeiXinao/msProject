@@ -24,6 +24,7 @@ const (
 	Account_SaveDepartment_FullMethodName  = "/api.proto.account.v1.Account/SaveDepartment"
 	Account_ReadDepartment_FullMethodName  = "/api.proto.account.v1.Account/ReadDepartment"
 	Account_AuthList_FullMethodName        = "/api.proto.account.v1.Account/AuthList"
+	Account_MenuList_FullMethodName        = "/api.proto.account.v1.Account/MenuList"
 )
 
 // AccountClient is the client API for Account service.
@@ -35,6 +36,7 @@ type AccountClient interface {
 	SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 	ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 	AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
+	MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error)
 }
 
 type accountClient struct {
@@ -95,6 +97,16 @@ func (c *accountClient) AuthList(ctx context.Context, in *AuthListRequest, opts 
 	return out, nil
 }
 
+func (c *accountClient) MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MenuResponse)
+	err := c.cc.Invoke(ctx, Account_MenuList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type AccountServer interface {
 	SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error)
 	ReadDepartment(context.Context, *ReadDepartmentRequest) (*DepartmentMessage, error)
 	AuthList(context.Context, *AuthListRequest) (*AuthListResponse, error)
+	MenuList(context.Context, *MenuRequest) (*MenuResponse, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedAccountServer) ReadDepartment(context.Context, *ReadDepartmen
 }
 func (UnimplementedAccountServer) AuthList(context.Context, *AuthListRequest) (*AuthListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthList not implemented")
+}
+func (UnimplementedAccountServer) MenuList(context.Context, *MenuRequest) (*MenuResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MenuList not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}
 func (UnimplementedAccountServer) testEmbeddedByValue()                 {}
@@ -240,6 +256,24 @@ func _Account_AuthList_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_MenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MenuRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).MenuList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_MenuList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).MenuList(ctx, req.(*MenuRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Account_ServiceDesc is the grpc.ServiceDesc for Account service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthList",
 			Handler:    _Account_AuthList_Handler,
+		},
+		{
+			MethodName: "MenuList",
+			Handler:    _Account_MenuList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

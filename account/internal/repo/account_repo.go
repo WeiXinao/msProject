@@ -16,10 +16,22 @@ type AccountRepo interface {
 	FindDepartmentById(ctx context.Context, departmentId int64) (domain.Department, error)
 	ListDepartments(ctx context.Context, orgCode int64, parentDeptCode int64, page int64, pageSize int64) ([]*domain.Department, int64, error)
 	SaveDepartment(ctx context.Context, dept domain.Department) (domain.Department, error)
+
+	GetMenus(ctx context.Context) ([]*domain.ProjectMenu, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+func (a *accountRepo) GetMenus(ctx context.Context) ([]*domain.ProjectMenu, error) {
+	menus, err := a.dao.GetMenus(ctx)
+	if err != nil {
+		return nil, err
+	}
+	menuDos := []*domain.ProjectMenu{}
+	err = copier.Copy(&menuDos, &menus)
+	return menuDos, err
 }
 
 // FindAuthListByOrganizaitonCodePagination implements AccountRepo.

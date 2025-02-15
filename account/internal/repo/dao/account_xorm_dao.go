@@ -10,6 +10,12 @@ type accountXormDao struct {
 	db *xorm.Engine
 }
 
+func (a *accountXormDao) GetMenus(ctx context.Context) ([]*ProjectMenu, error) {
+	meuns := []*ProjectMenu{}
+	err := a.db.Context(ctx).OrderBy("pid, sort ASC, id ASC").Find(&meuns)
+	return meuns, err
+}
+
 // FindAuthListByOrganizaitonCodePagination implements AccountDao.
 func (a *accountXormDao) FindAuthListByOrganizaitonCodePagination(ctx context.Context, orgCode int64, page int64, pageSize int64) ([]*ProjectAuth, int64, error) {
 	projectAuths := make([]*ProjectAuth, 0)

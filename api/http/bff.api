@@ -907,6 +907,25 @@ type AuthListRsp {
 	Page  int64          `json:"page"`
 }
 
+type MenuListRsp {
+	List []*MenuMessage `json:"list"`
+}
+
+type ProjectNodeTree {
+	Id       int64              `json:"id"`
+	Node     string             `json:"node"`
+	Title    string             `json:"title"`
+	IsMenu   int                `json:"is_menu"`
+	IsLogin  int                `json:"is_login"`
+	IsAuth   int                `json:"is_auth"`
+	Pnode    string             `json:"pnode"`
+	Children []*ProjectNodeTree `json:"children"`
+}
+
+type NodeListRsp {
+	Nodes []*ProjectNodeTree `json:"nodes"`
+}
+
 @server (
 	prefix:     /project
 	group:      auth
@@ -915,5 +934,11 @@ type AuthListRsp {
 service bff {
 	@handler AuthList
 	post /auth (AuthListReq) returns (AuthListRsp)
+
+	@handler MenuList
+	post /menu/menu returns (MenuListRsp)
+
+	@handler NodeList
+	post /node returns (NodeListRsp)
 }
 

@@ -43,6 +43,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Path:    "/auth",
 					Handler: auth.AuthListHandler(serverCtx),
 				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/menu",
+					Handler: auth.MenuListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/node",
+					Handler: auth.NodeListHandler(serverCtx),
+				},
 			}...,
 		),
 		rest.WithPrefix("/project"),
