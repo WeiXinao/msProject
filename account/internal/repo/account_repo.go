@@ -20,10 +20,16 @@ type AccountRepo interface {
 	GetMenus(ctx context.Context) ([]*domain.ProjectMenu, error)
 
 	FindAllProjectNodes(ctx context.Context) ([]*domain.ProjectNode, error)
+	FindAuthNodeStringList(ctx context.Context, authId int64) ([]string, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// FindAuthNodeStringList implements AccountRepo.
+func (a *accountRepo) FindAuthNodeStringList(ctx context.Context, authId int64) ([]string, error) {
+	return a.dao.FindAuthNodeStringList(ctx, authId)
 }
 
 // FindAllProjectNodes implements AccountRepo.
@@ -32,11 +38,11 @@ func (a *accountRepo) FindAllProjectNodes(ctx context.Context) ([]*domain.Projec
 	if err != nil {
 		return nil, err
 	}
-	pnds := make([]*domain.ProjectNode, 0)		
+	pnds := make([]*domain.ProjectNode, 0)
 	err = copier.Copy(&pnds, pns)
 	if err != nil {
 		return nil, err
-	}	
+	}
 	return pnds, nil
 }
 

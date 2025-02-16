@@ -23,8 +23,8 @@ type AuthApplyReq struct {
 }
 
 type AuthApplyRsp struct {
-	List        []*ProjectNodeAuthTree
-	CheckedList []string
+	List        []*ProjectNodeAuthTree `json:"list"`
+	CheckedList []string               `json:"checkedList"`
 }
 
 type AuthListReq struct {

@@ -13,6 +13,7 @@ type AccountDao interface {
 
 	GetMenus(ctx context.Context) ([]*ProjectMenu, error)
 	FindAllProjectNodes(ctx context.Context) ([]*ProjectNode, error)
+    FindAuthNodeStringList(ctx context.Context, authId int64) ([]string, error)
 }
 
 type ProjectMenu struct {

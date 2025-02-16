@@ -3,8 +3,11 @@ package auth
 import (
 	"context"
 
+	v1 "github.com/WeiXinao/msProject/api/proto/gen/account/v1"
 	"github.com/WeiXinao/msProject/bff/internal/svc"
 	"github.com/WeiXinao/msProject/bff/internal/types"
+	"github.com/WeiXinao/msProject/pkg/gozerox"
+	"github.com/jinzhu/copier"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +27,19 @@ func NewApplyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApplyLogic 
 }
 
 func (l *ApplyLogic) Apply(req *types.AuthApplyReq) (resp *types.AuthApplyRsp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	return gozerox.HttpLogicWrapper(l.ctx, l, req, func(methodName string, logic *ApplyLogic, req *types.AuthApplyReq) (*types.AuthApplyRsp, error) {
+		applyRep, err := logic.svcCtx.AccountClient.Apply(logic.ctx, &v1.AuthReqMessage{
+			Action: req.Action,
+			AuthId: req.Id,
+		})
+		if err != nil {
+			return nil, err
+		}
+		rsp := &types.AuthApplyRsp{}
+		err = copier.CopyWithOption(rsp, applyRep, copier.Option{DeepCopy: true})
+		if err != nil {
+			return nil, err
+		}
+		return rsp, nil
+	})
 }

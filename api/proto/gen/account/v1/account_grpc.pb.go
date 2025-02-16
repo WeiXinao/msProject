@@ -26,6 +26,7 @@ const (
 	Account_AuthList_FullMethodName        = "/api.proto.account.v1.Account/AuthList"
 	Account_MenuList_FullMethodName        = "/api.proto.account.v1.Account/MenuList"
 	Account_NodeList_FullMethodName        = "/api.proto.account.v1.Account/NodeList"
+	Account_Apply_FullMethodName           = "/api.proto.account.v1.Account/Apply"
 )
 
 // AccountClient is the client API for Account service.
@@ -39,6 +40,7 @@ type AccountClient interface {
 	AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
 	MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error)
 	NodeList(ctx context.Context, in *NodeListRequest, opts ...grpc.CallOption) (*ProjectNodeResponse, error)
+	Apply(ctx context.Context, in *AuthReqMessage, opts ...grpc.CallOption) (*ApplyResponse, error)
 }
 
 type accountClient struct {
@@ -119,6 +121,16 @@ func (c *accountClient) NodeList(ctx context.Context, in *NodeListRequest, opts 
 	return out, nil
 }
 
+func (c *accountClient) Apply(ctx context.Context, in *AuthReqMessage, opts ...grpc.CallOption) (*ApplyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ApplyResponse)
+	err := c.cc.Invoke(ctx, Account_Apply_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServer is the server API for Account service.
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
@@ -130,6 +142,7 @@ type AccountServer interface {
 	AuthList(context.Context, *AuthListRequest) (*AuthListResponse, error)
 	MenuList(context.Context, *MenuRequest) (*MenuResponse, error)
 	NodeList(context.Context, *NodeListRequest) (*ProjectNodeResponse, error)
+	Apply(context.Context, *AuthReqMessage) (*ApplyResponse, error)
 	mustEmbedUnimplementedAccountServer()
 }
 
@@ -160,6 +173,9 @@ func (UnimplementedAccountServer) MenuList(context.Context, *MenuRequest) (*Menu
 }
 func (UnimplementedAccountServer) NodeList(context.Context, *NodeListRequest) (*ProjectNodeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NodeList not implemented")
+}
+func (UnimplementedAccountServer) Apply(context.Context, *AuthReqMessage) (*ApplyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Apply not implemented")
 }
 func (UnimplementedAccountServer) mustEmbedUnimplementedAccountServer() {}
 func (UnimplementedAccountServer) testEmbeddedByValue()                 {}
@@ -308,6 +324,24 @@ func _Account_NodeList_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Account_Apply_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthReqMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).Apply(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_Apply_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).Apply(ctx, req.(*AuthReqMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Account_ServiceDesc is the grpc.ServiceDesc for Account service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -342,6 +376,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NodeList",
 			Handler:    _Account_NodeList_Handler,
+		},
+		{
+			MethodName: "Apply",
+			Handler:    _Account_Apply_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

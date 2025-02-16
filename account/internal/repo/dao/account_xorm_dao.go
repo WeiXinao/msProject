@@ -10,6 +10,13 @@ type accountXormDao struct {
 	db *xorm.Engine
 }
 
+// FindAuthNodeStringList implements AccountDao.
+func (a *accountXormDao) FindAuthNodeStringList(ctx context.Context, authId int64) ([]string, error) {
+	nodes := make([]string, 0)
+	err := a.db.Context(ctx).Table("ms_project_auth_node").Where("auth = ?", authId).Cols("node").Find(&nodes)
+	return nodes, err
+}
+
 // FindAllProjectNodes implements AccountDao.
 func (a *accountXormDao) FindAllProjectNodes(ctx context.Context) ([]*ProjectNode, error) {
 	pns := make([]*ProjectNode, 0)

@@ -144,11 +144,23 @@ message ProjectNodeMessage {
   int32 isLogin = 5;
   int32 isMenu = 6;
   int32 isAuth = 7;
-  repeated ProjectNodeMessage children = 8;
+  bool checked = 8;
+  string key = 9;
+  repeated ProjectNodeMessage children = 10;
 }
 
 message ProjectNodeResponse {
   repeated ProjectNodeMessage nodes = 1;
+}
+
+message AuthReqMessage {
+  string action = 1;
+  int64 authId = 2;
+}
+
+message ApplyResponse {
+  repeated ProjectNodeMessage list = 1;
+  repeated string checkedList = 2;
 }
 
 service Account {
@@ -159,4 +171,5 @@ service Account {
   rpc AuthList(AuthListRequest) returns (AuthListResponse);
   rpc MenuList(MenuRequest) returns(MenuResponse);
   rpc NodeList(NodeListRequest) returns (ProjectNodeResponse);
+  rpc Apply(AuthReqMessage) returns(ApplyResponse);
 }

@@ -57,3 +57,8 @@ func (s *AccountServer) NodeList(ctx context.Context, in *v1.NodeListRequest) (*
 	l := logic.NewNodeListLogic(ctx, s.svcCtx)
 	return l.NodeList(in)
 }
+
+func (s *AccountServer) Apply(ctx context.Context, in *v1.AuthReqMessage) (*v1.ApplyResponse, error) {
+	l := logic.NewApplyLogic(ctx, s.svcCtx)
+	return l.Apply(in)
+}

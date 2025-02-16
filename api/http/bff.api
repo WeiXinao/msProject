@@ -945,8 +945,8 @@ type ProjectNodeAuthTree {
 }
 
 type AuthApplyRsp {
-	List        []*ProjectNodeAuthTree
-	CheckedList []string
+	List        []*ProjectNodeAuthTree `json:"list"`
+	CheckedList []string               `json:"checkedList"`
 }
 
 @server (

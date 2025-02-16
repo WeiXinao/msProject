@@ -16,8 +16,10 @@ import (
 type (
 	AccountRequest          = v1.AccountRequest
 	AccountResponse         = v1.AccountResponse
+	ApplyResponse           = v1.ApplyResponse
 	AuthListRequest         = v1.AuthListRequest
 	AuthListResponse        = v1.AuthListResponse
+	AuthReqMessage          = v1.AuthReqMessage
 	DepartmentMessage       = v1.DepartmentMessage
 	ListDepartmentsReqeust  = v1.ListDepartmentsReqeust
 	ListDepartmentsResponse = v1.ListDepartmentsResponse
@@ -40,6 +42,7 @@ type (
 		AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
 		MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error)
 		NodeList(ctx context.Context, in *NodeListRequest, opts ...grpc.CallOption) (*ProjectNodeResponse, error)
+		Apply(ctx context.Context, in *AuthReqMessage, opts ...grpc.CallOption) (*ApplyResponse, error)
 	}
 
 	defaultAccount struct {
@@ -86,4 +89,9 @@ func (m *defaultAccount) MenuList(ctx context.Context, in *MenuRequest, opts ...
 func (m *defaultAccount) NodeList(ctx context.Context, in *NodeListRequest, opts ...grpc.CallOption) (*ProjectNodeResponse, error) {
 	client := v1.NewAccountClient(m.cli.Conn())
 	return client.NodeList(ctx, in, opts...)
+}
+
+func (m *defaultAccount) Apply(ctx context.Context, in *AuthReqMessage, opts ...grpc.CallOption) (*ApplyResponse, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.Apply(ctx, in, opts...)
 }
