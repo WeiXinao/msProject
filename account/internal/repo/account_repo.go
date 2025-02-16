@@ -18,10 +18,26 @@ type AccountRepo interface {
 	SaveDepartment(ctx context.Context, dept domain.Department) (domain.Department, error)
 
 	GetMenus(ctx context.Context) ([]*domain.ProjectMenu, error)
+
+	FindAllProjectNodes(ctx context.Context) ([]*domain.ProjectNode, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// FindAllProjectNodes implements AccountRepo.
+func (a *accountRepo) FindAllProjectNodes(ctx context.Context) ([]*domain.ProjectNode, error) {
+	pns, err := a.dao.FindAllProjectNodes(ctx)
+	if err != nil {
+		return nil, err
+	}
+	pnds := make([]*domain.ProjectNode, 0)		
+	err = copier.Copy(&pnds, pns)
+	if err != nil {
+		return nil, err
+	}	
+	return pnds, nil
 }
 
 func (a *accountRepo) GetMenus(ctx context.Context) ([]*domain.ProjectMenu, error) {

@@ -25,7 +25,10 @@ type (
 	MenuMessage             = v1.MenuMessage
 	MenuRequest             = v1.MenuRequest
 	MenuResponse            = v1.MenuResponse
+	NodeListRequest         = v1.NodeListRequest
 	ProjectAuth             = v1.ProjectAuth
+	ProjectNodeMessage      = v1.ProjectNodeMessage
+	ProjectNodeResponse     = v1.ProjectNodeResponse
 	ReadDepartmentRequest   = v1.ReadDepartmentRequest
 	SaveDepartmentRequest   = v1.SaveDepartmentRequest
 
@@ -36,6 +39,7 @@ type (
 		ReadDepartment(ctx context.Context, in *ReadDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
 		AuthList(ctx context.Context, in *AuthListRequest, opts ...grpc.CallOption) (*AuthListResponse, error)
 		MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error)
+		NodeList(ctx context.Context, in *NodeListRequest, opts ...grpc.CallOption) (*ProjectNodeResponse, error)
 	}
 
 	defaultAccount struct {
@@ -77,4 +81,9 @@ func (m *defaultAccount) AuthList(ctx context.Context, in *AuthListRequest, opts
 func (m *defaultAccount) MenuList(ctx context.Context, in *MenuRequest, opts ...grpc.CallOption) (*MenuResponse, error) {
 	client := v1.NewAccountClient(m.cli.Conn())
 	return client.MenuList(ctx, in, opts...)
+}
+
+func (m *defaultAccount) NodeList(ctx context.Context, in *NodeListRequest, opts ...grpc.CallOption) (*ProjectNodeResponse, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.NodeList(ctx, in, opts...)
 }

@@ -10,6 +10,16 @@ type accountXormDao struct {
 	db *xorm.Engine
 }
 
+// FindAllProjectNodes implements AccountDao.
+func (a *accountXormDao) FindAllProjectNodes(ctx context.Context) ([]*ProjectNode, error) {
+	pns := make([]*ProjectNode, 0)
+	err := a.db.Find(&pns)
+	if err != nil {
+		return nil, err
+	}
+	return pns, nil
+}
+
 func (a *accountXormDao) GetMenus(ctx context.Context) ([]*ProjectMenu, error) {
 	meuns := []*ProjectMenu{}
 	err := a.db.Context(ctx).OrderBy("pid, sort ASC, id ASC").Find(&meuns)
@@ -21,13 +31,13 @@ func (a *accountXormDao) FindAuthListByOrganizaitonCodePagination(ctx context.Co
 	projectAuths := make([]*ProjectAuth, 0)
 	whereCond, args := "organization_code = ?", []any{orgCode}
 	err := a.db.Context(ctx).
-	Where(whereCond, args...).
-	Limit(int(pageSize), int((page - 1) * pageSize)).
-	Find(&projectAuths)
+		Where(whereCond, args...).
+		Limit(int(pageSize), int((page-1)*pageSize)).
+		Find(&projectAuths)
 	if err != nil {
 		return nil, 0, err
 	}
-	total, err := a.db.Context(ctx).Where(whereCond, args...).Count(new(ProjectAuth)) 
+	total, err := a.db.Context(ctx).Where(whereCond, args...).Count(new(ProjectAuth))
 	return projectAuths, total, err
 }
 

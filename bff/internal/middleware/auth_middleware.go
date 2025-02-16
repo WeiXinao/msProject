@@ -54,6 +54,8 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		// 先去查询 node 表，确认不适用登录控制的接口，不做登录认证了
+
 		// 认证 IP
 		host, _, err := net.SplitHostPort(r.RemoteAddr)
 		if err != nil {

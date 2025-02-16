@@ -12,6 +12,7 @@ type AccountDao interface {
 	SaveDepartment(ctx context.Context, dept Department) (Department, error)
 
 	GetMenus(ctx context.Context) ([]*ProjectMenu, error)
+	FindAllProjectNodes(ctx context.Context) ([]*ProjectNode, error)
 }
 
 type ProjectMenu struct {

@@ -133,6 +133,24 @@ message MenuResponse {
   repeated MenuMessage list = 1;
 }
 
+message NodeListRequest {
+}
+
+message ProjectNodeMessage {
+  int64 id = 1;
+  string node = 2;
+  string title = 3;
+  string pnode = 4;
+  int32 isLogin = 5;
+  int32 isMenu = 6;
+  int32 isAuth = 7;
+  repeated ProjectNodeMessage children = 8;
+}
+
+message ProjectNodeResponse {
+  repeated ProjectNodeMessage nodes = 1;
+}
+
 service Account {
   rpc Account(AccountRequest) returns(AccountResponse);
   rpc ListDepartments(ListDepartmentsReqeust) returns(ListDepartmentsResponse);
@@ -140,4 +158,5 @@ service Account {
   rpc ReadDepartment(ReadDepartmentRequest) returns (DepartmentMessage);
   rpc AuthList(AuthListRequest) returns (AuthListResponse);
   rpc MenuList(MenuRequest) returns(MenuResponse);
+  rpc NodeList(NodeListRequest) returns (ProjectNodeResponse);
 }

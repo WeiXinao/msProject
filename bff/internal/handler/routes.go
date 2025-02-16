@@ -45,6 +45,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/auth/apply",
+					Handler: auth.ApplyHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/menu/menu",
 					Handler: auth.MenuListHandler(serverCtx),
 				},

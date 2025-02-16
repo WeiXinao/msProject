@@ -17,6 +17,16 @@ type AccountRsp struct {
 	AuthList    []*ProjectAuth   `json:"authList"`
 }
 
+type AuthApplyReq struct {
+	Action string `form:"action"`
+	Id     int64  `form:"id"`
+}
+
+type AuthApplyRsp struct {
+	List        []*ProjectNodeAuthTree
+	CheckedList []string
+}
+
 type AuthListReq struct {
 	Page     int64 `form:"page"`
 	PageSize int64 `form:"pageSize"`
@@ -397,6 +407,19 @@ type ProjectMemberListRsp struct {
 	List  []*ProjectListMember `json:"list"`
 	Total int64                `json:"total"`
 	Page  int64                `json:"page"`
+}
+
+type ProjectNodeAuthTree struct {
+	Id       int64                  `json:"id"`
+	Node     string                 `json:"node"`
+	Title    string                 `json:"title"`
+	IsMenu   int                    `json:"is_menu"`
+	IsLogin  int                    `json:"is_login"`
+	IsAuth   int                    `json:"is_auth"`
+	Pnode    string                 `json:"pnode"`
+	Key      string                 `json:"key"`
+	Checked  bool                   `json:"checked"`
+	Children []*ProjectNodeAuthTree `json:"children"`
 }
 
 type ProjectNodeTree struct {

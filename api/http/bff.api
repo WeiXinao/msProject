@@ -926,6 +926,29 @@ type NodeListRsp {
 	Nodes []*ProjectNodeTree `json:"nodes"`
 }
 
+type AuthApplyReq {
+	Action string `form:"action"`
+	Id     int64  `form:"id"`
+}
+
+type ProjectNodeAuthTree {
+	Id       int64                  `json:"id"`
+	Node     string                 `json:"node"`
+	Title    string                 `json:"title"`
+	IsMenu   int                    `json:"is_menu"`
+	IsLogin  int                    `json:"is_login"`
+	IsAuth   int                    `json:"is_auth"`
+	Pnode    string                 `json:"pnode"`
+	Key      string                 `json:"key"`
+	Checked  bool                   `json:"checked"`
+	Children []*ProjectNodeAuthTree `json:"children"`
+}
+
+type AuthApplyRsp {
+	List        []*ProjectNodeAuthTree
+	CheckedList []string
+}
+
 @server (
 	prefix:     /project
 	group:      auth
@@ -940,5 +963,8 @@ service bff {
 
 	@handler NodeList
 	post /node returns (NodeListRsp)
+
+	@handler Apply
+	post /auth/apply (AuthApplyReq) returns (AuthApplyRsp)
 }
 

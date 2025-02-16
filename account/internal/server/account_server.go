@@ -52,3 +52,8 @@ func (s *AccountServer) MenuList(ctx context.Context, in *v1.MenuRequest) (*v1.M
 	l := logic.NewMenuListLogic(ctx, s.svcCtx)
 	return l.MenuList(in)
 }
+
+func (s *AccountServer) NodeList(ctx context.Context, in *v1.NodeListRequest) (*v1.ProjectNodeResponse, error) {
+	l := logic.NewNodeListLogic(ctx, s.svcCtx)
+	return l.NodeList(in)
+}
