@@ -18,6 +18,7 @@ import (
 type ServiceContext struct {
 	Config         config.Config
 	AuthMiddleware rest.Middleware
+	ProjectAuthMiddleware rest.Middleware
 	StaticPath     string
 	UserClient     loginservice.LoginService
 	ProjectClient  projectservice.ProjectService
@@ -30,11 +31,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	jwter := InitJwter(c)
 	StaticPath := c.StaticPath
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
-	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient)
+	accountClient := account.NewAccount(zrpc.MustNewClient(c.AccountRpcClient))
+	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient, accountClient).
+		AddIngoreURLs(c.AuthorityIgnoreUrls...)
+	projectAuthMiddleware := middleware.NewProjectAuthMiddleware()
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
 	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
 	fileClient := file.NewFile(zrpc.MustNewClient(c.FileRpcClient))
-	accountClient := account.NewAccount(zrpc.MustNewClient(c.AccountRpcClient))
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,
@@ -43,6 +46,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		FileClient:     fileClient,
 		AccountClient: accountClient,
 		AuthMiddleware: authMiddleware.Build,
+		ProjectAuthMiddleware: projectAuthMiddleware.Handle,
 		StaticPath:     StaticPath,
 	}
 }

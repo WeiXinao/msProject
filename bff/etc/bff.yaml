@@ -17,6 +17,13 @@ Jwt:
   AtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvf0"
   RtKey: "95osj3fUD7fo0mlYdDbncXz4VD2igvfx"
 StaticPath: upload
+AuthorityIgnoreUrls:
+  - "project/login/register"
+  - "project/login"
+  - "project/login/getCaptcha"
+  - "project/organization"
+  - "project/auth/apply"
+  - "project/project/getLogBySelfProject"
 UserRpcClient:
   Etcd:
     Hosts:

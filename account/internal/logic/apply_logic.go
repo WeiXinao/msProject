@@ -48,6 +48,12 @@ func (l *ApplyLogic) Apply(in *v1.AuthReqMessage) (*v1.ApplyResponse, error) {
 				List: pnms,
 				CheckedList: authNodes,
 			}
+		} else if in.Action == "save" {
+			// 先删除 project_auth_node 表，再新增, 加事务
+			err := l.svcCtx.AccoutRepo.UpdateAuthNodes(logic.ctx, in.AuthId, in.Nodes)
+			if err != nil {
+				return nil, err
+			}
 		}
 		return res, nil
 	})

@@ -20,6 +20,7 @@ type AccountRsp struct {
 type AuthApplyReq struct {
 	Action string `form:"action"`
 	Id     int64  `form:"id"`
+	Nodes  string `form:"nodes,optional"`
 }
 
 type AuthApplyRsp struct {

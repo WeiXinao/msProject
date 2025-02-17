@@ -93,5 +93,7 @@ func (l *RegisterLogic) Register(in *userv1.RegisterRequest) (*userv1.RegisterRe
 		l.Error("[CreateMember] db create user error:", err)
 		return nil, err
 	}
+
+	// 生成一个账户，账户的授权角色是成员，新生成一个角色（如果没有），同时将此角色的授权 node 生成
 	return &userv1.RegisterResponse{}, nil
 }

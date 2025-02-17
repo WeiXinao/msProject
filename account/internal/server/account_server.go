@@ -23,6 +23,11 @@ func NewAccountServer(svcCtx *svc.ServiceContext) *AccountServer {
 	}
 }
 
+func (s *AccountServer) AuthNodesByMemberId(ctx context.Context, in *v1.AuthNodesByMemberIdRequest) (*v1.AuthNodesResponse, error) {
+	l := logic.NewAuthNodesByMemberIdLogic(ctx, s.svcCtx)
+	return l.AuthNodesByMemberId(in)
+}
+
 func (s *AccountServer) Account(ctx context.Context, in *v1.AccountRequest) (*v1.AccountResponse, error) {
 	l := logic.NewAccountLogic(ctx, s.svcCtx)
 	return l.Account(in)

@@ -8,14 +8,15 @@ import (
 
 type Config struct {
 	rest.RestConf
-	LogConfig        lx.LogConfig
-	Jwt              Jwt
-	StaticPath       string
-	UserRpcClient    zrpc.RpcClientConf
-	ProjectRpcClient zrpc.RpcClientConf
-	TaskRpcClient    zrpc.RpcClientConf
-	FileRpcClient    zrpc.RpcClientConf
-	AccountRpcClient zrpc.RpcClientConf
+	LogConfig           lx.LogConfig
+	Jwt                 Jwt
+	StaticPath          string
+	AuthorityIgnoreUrls []string
+	UserRpcClient       zrpc.RpcClientConf
+	ProjectRpcClient    zrpc.RpcClientConf
+	TaskRpcClient       zrpc.RpcClientConf
+	FileRpcClient       zrpc.RpcClientConf
+	AccountRpcClient    zrpc.RpcClientConf
 }
 
 type Jwt struct {

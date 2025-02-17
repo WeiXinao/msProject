@@ -156,6 +156,7 @@ message ProjectNodeResponse {
 message AuthReqMessage {
   string action = 1;
   int64 authId = 2;
+  repeated string nodes = 3;
 }
 
 message ApplyResponse {
@@ -163,7 +164,16 @@ message ApplyResponse {
   repeated string checkedList = 2;
 }
 
+message AuthNodesByMemberIdRequest {
+  int64 memberId = 1;
+}
+
+message AuthNodesResponse {
+  repeated string list = 1;
+}
+
 service Account {
+  rpc AuthNodesByMemberId(AuthNodesByMemberIdRequest) returns(AuthNodesResponse);
   rpc Account(AccountRequest) returns(AccountResponse);
   rpc ListDepartments(ListDepartmentsReqeust) returns(ListDepartmentsResponse);
   rpc SaveDepartment(SaveDepartmentRequest) returns (DepartmentMessage);

@@ -19,20 +19,22 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Account_Account_FullMethodName         = "/api.proto.account.v1.Account/Account"
-	Account_ListDepartments_FullMethodName = "/api.proto.account.v1.Account/ListDepartments"
-	Account_SaveDepartment_FullMethodName  = "/api.proto.account.v1.Account/SaveDepartment"
-	Account_ReadDepartment_FullMethodName  = "/api.proto.account.v1.Account/ReadDepartment"
-	Account_AuthList_FullMethodName        = "/api.proto.account.v1.Account/AuthList"
-	Account_MenuList_FullMethodName        = "/api.proto.account.v1.Account/MenuList"
-	Account_NodeList_FullMethodName        = "/api.proto.account.v1.Account/NodeList"
-	Account_Apply_FullMethodName           = "/api.proto.account.v1.Account/Apply"
+	Account_AuthNodesByMemberId_FullMethodName = "/api.proto.account.v1.Account/AuthNodesByMemberId"
+	Account_Account_FullMethodName             = "/api.proto.account.v1.Account/Account"
+	Account_ListDepartments_FullMethodName     = "/api.proto.account.v1.Account/ListDepartments"
+	Account_SaveDepartment_FullMethodName      = "/api.proto.account.v1.Account/SaveDepartment"
+	Account_ReadDepartment_FullMethodName      = "/api.proto.account.v1.Account/ReadDepartment"
+	Account_AuthList_FullMethodName            = "/api.proto.account.v1.Account/AuthList"
+	Account_MenuList_FullMethodName            = "/api.proto.account.v1.Account/MenuList"
+	Account_NodeList_FullMethodName            = "/api.proto.account.v1.Account/NodeList"
+	Account_Apply_FullMethodName               = "/api.proto.account.v1.Account/Apply"
 )
 
 // AccountClient is the client API for Account service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountClient interface {
+	AuthNodesByMemberId(ctx context.Context, in *AuthNodesByMemberIdRequest, opts ...grpc.CallOption) (*AuthNodesResponse, error)
 	Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 	ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
 	SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
@@ -49,6 +51,16 @@ type accountClient struct {
 
 func NewAccountClient(cc grpc.ClientConnInterface) AccountClient {
 	return &accountClient{cc}
+}
+
+func (c *accountClient) AuthNodesByMemberId(ctx context.Context, in *AuthNodesByMemberIdRequest, opts ...grpc.CallOption) (*AuthNodesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AuthNodesResponse)
+	err := c.cc.Invoke(ctx, Account_AuthNodesByMemberId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *accountClient) Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error) {
@@ -135,6 +147,7 @@ func (c *accountClient) Apply(ctx context.Context, in *AuthReqMessage, opts ...g
 // All implementations must embed UnimplementedAccountServer
 // for forward compatibility.
 type AccountServer interface {
+	AuthNodesByMemberId(context.Context, *AuthNodesByMemberIdRequest) (*AuthNodesResponse, error)
 	Account(context.Context, *AccountRequest) (*AccountResponse, error)
 	ListDepartments(context.Context, *ListDepartmentsReqeust) (*ListDepartmentsResponse, error)
 	SaveDepartment(context.Context, *SaveDepartmentRequest) (*DepartmentMessage, error)
@@ -153,6 +166,9 @@ type AccountServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAccountServer struct{}
 
+func (UnimplementedAccountServer) AuthNodesByMemberId(context.Context, *AuthNodesByMemberIdRequest) (*AuthNodesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthNodesByMemberId not implemented")
+}
 func (UnimplementedAccountServer) Account(context.Context, *AccountRequest) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
 }
@@ -196,6 +212,24 @@ func RegisterAccountServer(s grpc.ServiceRegistrar, srv AccountServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&Account_ServiceDesc, srv)
+}
+
+func _Account_AuthNodesByMemberId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthNodesByMemberIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServer).AuthNodesByMemberId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Account_AuthNodesByMemberId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServer).AuthNodesByMemberId(ctx, req.(*AuthNodesByMemberIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Account_Account_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -349,6 +383,10 @@ var Account_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.account.v1.Account",
 	HandlerType: (*AccountServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "AuthNodesByMemberId",
+			Handler:    _Account_AuthNodesByMemberId_Handler,
+		},
 		{
 			MethodName: "Account",
 			Handler:    _Account_Account_Handler,

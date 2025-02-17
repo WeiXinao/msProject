@@ -14,27 +14,30 @@ import (
 )
 
 type (
-	AccountRequest          = v1.AccountRequest
-	AccountResponse         = v1.AccountResponse
-	ApplyResponse           = v1.ApplyResponse
-	AuthListRequest         = v1.AuthListRequest
-	AuthListResponse        = v1.AuthListResponse
-	AuthReqMessage          = v1.AuthReqMessage
-	DepartmentMessage       = v1.DepartmentMessage
-	ListDepartmentsReqeust  = v1.ListDepartmentsReqeust
-	ListDepartmentsResponse = v1.ListDepartmentsResponse
-	MemberAccount           = v1.MemberAccount
-	MenuMessage             = v1.MenuMessage
-	MenuRequest             = v1.MenuRequest
-	MenuResponse            = v1.MenuResponse
-	NodeListRequest         = v1.NodeListRequest
-	ProjectAuth             = v1.ProjectAuth
-	ProjectNodeMessage      = v1.ProjectNodeMessage
-	ProjectNodeResponse     = v1.ProjectNodeResponse
-	ReadDepartmentRequest   = v1.ReadDepartmentRequest
-	SaveDepartmentRequest   = v1.SaveDepartmentRequest
+	AccountRequest             = v1.AccountRequest
+	AccountResponse            = v1.AccountResponse
+	ApplyResponse              = v1.ApplyResponse
+	AuthListRequest            = v1.AuthListRequest
+	AuthListResponse           = v1.AuthListResponse
+	AuthNodesByMemberIdRequest = v1.AuthNodesByMemberIdRequest
+	AuthNodesResponse          = v1.AuthNodesResponse
+	AuthReqMessage             = v1.AuthReqMessage
+	DepartmentMessage          = v1.DepartmentMessage
+	ListDepartmentsReqeust     = v1.ListDepartmentsReqeust
+	ListDepartmentsResponse    = v1.ListDepartmentsResponse
+	MemberAccount              = v1.MemberAccount
+	MenuMessage                = v1.MenuMessage
+	MenuRequest                = v1.MenuRequest
+	MenuResponse               = v1.MenuResponse
+	NodeListRequest            = v1.NodeListRequest
+	ProjectAuth                = v1.ProjectAuth
+	ProjectNodeMessage         = v1.ProjectNodeMessage
+	ProjectNodeResponse        = v1.ProjectNodeResponse
+	ReadDepartmentRequest      = v1.ReadDepartmentRequest
+	SaveDepartmentRequest      = v1.SaveDepartmentRequest
 
 	Account interface {
+		AuthNodesByMemberId(ctx context.Context, in *AuthNodesByMemberIdRequest, opts ...grpc.CallOption) (*AuthNodesResponse, error)
 		Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
 		ListDepartments(ctx context.Context, in *ListDepartmentsReqeust, opts ...grpc.CallOption) (*ListDepartmentsResponse, error)
 		SaveDepartment(ctx context.Context, in *SaveDepartmentRequest, opts ...grpc.CallOption) (*DepartmentMessage, error)
@@ -54,6 +57,11 @@ func NewAccount(cli zrpc.Client) Account {
 	return &defaultAccount{
 		cli: cli,
 	}
+}
+
+func (m *defaultAccount) AuthNodesByMemberId(ctx context.Context, in *AuthNodesByMemberIdRequest, opts ...grpc.CallOption) (*AuthNodesResponse, error) {
+	client := v1.NewAccountClient(m.cli.Conn())
+	return client.AuthNodesByMemberId(ctx, in, opts...)
 }
 
 func (m *defaultAccount) Account(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error) {

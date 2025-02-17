@@ -8,9 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/WeiXinao/msProject/account/account"
 	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
+	"github.com/WeiXinao/msProject/pkg/respx"
 	"github.com/WeiXinao/msProject/user/loginservice"
+	"github.com/WeiXinao/xkit/slice"
+	"github.com/bytedance/sonic"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,14 +28,26 @@ var (
 
 type AuthMiddlewareBuilder struct {
 	jwtx.Jwter
+	IngoreURLs []string
 	UserClient loginservice.LoginService
+	AccountClient account.Account
 }
 
-func NewAuthMiddlewareBuilder(jwter jwtx.Jwter, userClient loginservice.LoginService) *AuthMiddlewareBuilder {
+func NewAuthMiddlewareBuilder(
+	jwter jwtx.Jwter,
+	userClient loginservice.LoginService,
+	accountClient account.Account,
+	) *AuthMiddlewareBuilder {
 	return &AuthMiddlewareBuilder{
 		Jwter:      jwter,
 		UserClient: userClient,
+		AccountClient: accountClient,
 	}
+}
+
+func (a *AuthMiddlewareBuilder) AddIngoreURLs(urls ...string) *AuthMiddlewareBuilder {
+	a.IngoreURLs = append(a.IngoreURLs, urls...)
+	return a
 }
 
 func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
@@ -85,6 +101,32 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 		ctx := context.WithValue(r.Context(), KeyMemberId, userClaims.UserId)
 		ctx = context.WithValue(ctx, KeyMemberName, rsp.Member.Name)
 		ctx = context.WithValue(ctx, KeyOrganizationCode, rsp.Member.OrganizationCode)
+
+		uri := strings.TrimPrefix(r.RequestURI, `/`) 
+
+		if slice.Contains[string](a.IngoreURLs, uri) {
+			next(w, r.WithContext(ctx))
+			return
+		}
+
+		authNodesRsp, err := a.AccountClient.AuthNodesByMemberId(ctx, &account.AuthNodesByMemberIdRequest{
+			MemberId: rsp.GetMember().GetId(),
+		})
+		if err != nil {
+			err = respx.FromStatusErr(err)
+			logx.Error("[Auth]", err)
+			resp := respx.Fail(err.(*respx.Error))
+			encoder := sonic.ConfigDefault.NewEncoder(w)
+			encoder.Encode(resp)
+			return 
+		}
+		
+		if !slice.Contains(authNodesRsp.List, uri) {
+			encoder := sonic.ConfigDefault.NewEncoder(w)
+			encoder.Encode(respx.Fail(respx.ErrNotHasAuthority))
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		next(w, r.WithContext(ctx))
 	}
 }

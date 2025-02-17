@@ -4,6 +4,7 @@ var (
 	OK                            = NewError(200, "success")
 	ErrIllegalInput               = NewError(400, "非法输入")
 	ErrInternalServer             = NewError(500, "系统内部错误")
+	ErrNotHasAuthority = NewError(401000, "没有权限，请联系管理员")
 	IllegalMobile                 = NewError(401001, "手机号不合法")
 	IllegalEmail                  = NewError(401002, "邮箱不合法")
 	InconsistentPwdAndConfirm     = NewError(401003, "两次输入密码不一致")
@@ -21,4 +22,7 @@ var (
 var (
 	ErrEmptyTaskName = NewError(403001, "任务标题不能为空")
 	ErrTaskStageNotExists = NewError(403002, "任务步骤不存在")
+)
+
+var (
 )

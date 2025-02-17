@@ -303,7 +303,7 @@ type ProjectMemberListRsp {
 @server (
 	prefix:     /project
 	group:      project
-	middleware: AuthMiddleware
+	middleware: AuthMiddleware,ProjectAuthMiddleware
 )
 service bff {
 	@handler ProjectMember
@@ -710,7 +710,7 @@ type GetLogBySelfProjectRsp {
 @server (
 	prefix:     /project
 	group:      task
-	middleware: AuthMiddleware
+	middleware: AuthMiddleware,ProjectAuthMiddleware
 )
 service bff {
 	@handler GetLogBySelfProject
@@ -929,6 +929,7 @@ type NodeListRsp {
 type AuthApplyReq {
 	Action string `form:"action"`
 	Id     int64  `form:"id"`
+	Nodes  string `form:"nodes,optional"`
 }
 
 type ProjectNodeAuthTree {

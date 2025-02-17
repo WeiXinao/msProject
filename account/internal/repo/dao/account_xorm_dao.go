@@ -3,11 +3,40 @@ package dao
 import (
 	"context"
 	"fmt"
+
+	"github.com/WeiXinao/msProject/pkg/ormx"
+	"github.com/WeiXinao/xkit/slice"
 	"xorm.io/xorm"
 )
 
 type accountXormDao struct {
 	db *xorm.Engine
+}
+
+// FindAuthNodeStringListByMemberId implements AccountDao.
+func (a *accountXormDao) FindAuthNodeStringListByMemberId(ctx context.Context, memberId int64) ([]string, error) {
+	nodes := make([]string, 0)
+	err := a.db.Context(ctx).Table("ms_member_account").
+		Join("inner", "ms_project_auth_node", "ms_member_account.authorize = ms_project_auth_node.auth").
+		Where("ms_member_account.member_code = ?", memberId).Cols("node").Find(&nodes)
+	return nodes, err
+}
+
+// UpdateAuthNodes implements AccountDao.
+func (a *accountXormDao) UpdateAuthNodes(ctx context.Context, authId int64, nodes []string) error {
+	return ormx.NewTxSession(a.db.Context(ctx)).EngineTx(func(engine *xorm.Engine) error {
+		_, err := engine.Where("auth = ?", authId).Delete(new(ProjectAuthNode))
+		if err != nil {
+			return err
+		}
+		_, err = engine.Insert(slice.Map(nodes, func(idx int, src string) any {
+			return ProjectAuthNode{
+				Auth: authId,
+				Node: src,
+			}
+		})...)
+		return err
+	})
 }
 
 // FindAuthNodeStringList implements AccountDao.

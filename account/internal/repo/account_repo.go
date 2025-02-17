@@ -21,10 +21,22 @@ type AccountRepo interface {
 
 	FindAllProjectNodes(ctx context.Context) ([]*domain.ProjectNode, error)
 	FindAuthNodeStringList(ctx context.Context, authId int64) ([]string, error)
+	UpdateAuthNodes(ctx context.Context, authId int64, nodes []string) error
+	FindAuthNodeStringListByMemberId(ctx context.Context, memberId int64) ([]string, error)
 }
 
 type accountRepo struct {
 	dao dao.AccountDao
+}
+
+// FindAuthNodeStringListByMemberId implements AccountRepo.
+func (a *accountRepo) FindAuthNodeStringListByMemberId(ctx context.Context, memberId int64) ([]string, error) {
+	return a.dao.FindAuthNodeStringListByMemberId(ctx, memberId)
+}
+
+// UpdateAuthNodes implements AccountRepo.
+func (a *accountRepo) UpdateAuthNodes(ctx context.Context, authId int64, nodes []string) error {
+	return a.dao.UpdateAuthNodes(ctx, authId, nodes)
 }
 
 // FindAuthNodeStringList implements AccountRepo.
