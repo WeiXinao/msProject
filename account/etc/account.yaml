@@ -13,6 +13,17 @@ RedisConfig:
 MySQLConfig:
   DriverName: mysql
   Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8
+  Name: "master"
+DB:
+  Separation: true
+  Master:
+    DriverName: mysql
+    Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project?charset=utf8
+  Slaves: 
+    - DriverName: mysql
+      Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project_slave?charset=utf8
+    - DriverName: mysql
+      Dsn: root:123456@tcp(127.0.0.1:3307)/ms_project_slave?charset=utf8
 logConfig:
   debugFileName: "../../logs/debug/project-debug.log"
   infoFileName:  "../../logs/info/project-info.log"

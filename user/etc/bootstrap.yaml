@@ -1,0 +1,13 @@
+nacos:
+  namespaceId: 01126e8f-3401-4274-8e2d-2fbab6479ad6
+  group: dev
+  ipAddr: 127.0.0.1
+  port: 8848
+  scheme: http
+  contextPath: "/nacos"
+  timeoutMs: 5000
+  notLoadCacheAtStart: true
+  logDir: "/tmp/nacos/log"
+  cacheDir: "/tmp/nacos/cache"
+  logLevel: "debug"
+  dataId: "user.yaml"

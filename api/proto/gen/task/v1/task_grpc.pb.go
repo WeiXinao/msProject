@@ -33,6 +33,7 @@ const (
 	TaskService_SaveTaskStages_FullMethodName      = "/api.proto.task.v1.TaskService/SaveTaskStages"
 	TaskService_TaskList_FullMethodName            = "/api.proto.task.v1.TaskService/TaskList"
 	TaskService_SaveTask_FullMethodName            = "/api.proto.task.v1.TaskService/SaveTask"
+	TaskService_FindTaskById_FullMethodName        = "/api.proto.task.v1.TaskService/FindTaskById"
 )
 
 // TaskServiceClient is the client API for TaskService service.
@@ -53,6 +54,7 @@ type TaskServiceClient interface {
 	SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
 	TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
 	SaveTask(ctx context.Context, in *SaveTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
+	FindTaskById(ctx context.Context, in *FindTaskByIdRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 }
 
 type taskServiceClient struct {
@@ -203,6 +205,16 @@ func (c *taskServiceClient) SaveTask(ctx context.Context, in *SaveTaskRequest, o
 	return out, nil
 }
 
+func (c *taskServiceClient) FindTaskById(ctx context.Context, in *FindTaskByIdRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TaskMessage)
+	err := c.cc.Invoke(ctx, TaskService_FindTaskById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TaskServiceServer is the server API for TaskService service.
 // All implementations must embed UnimplementedTaskServiceServer
 // for forward compatibility.
@@ -221,6 +233,7 @@ type TaskServiceServer interface {
 	SaveTaskStages(context.Context, *SaveTaskStagesRequest) (*SaveTaskStagesResponse, error)
 	TaskList(context.Context, *TaskListRequest) (*TaskListResponse, error)
 	SaveTask(context.Context, *SaveTaskRequest) (*TaskMessage, error)
+	FindTaskById(context.Context, *FindTaskByIdRequest) (*TaskMessage, error)
 	mustEmbedUnimplementedTaskServiceServer()
 }
 
@@ -272,6 +285,9 @@ func (UnimplementedTaskServiceServer) TaskList(context.Context, *TaskListRequest
 }
 func (UnimplementedTaskServiceServer) SaveTask(context.Context, *SaveTaskRequest) (*TaskMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SaveTask not implemented")
+}
+func (UnimplementedTaskServiceServer) FindTaskById(context.Context, *FindTaskByIdRequest) (*TaskMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindTaskById not implemented")
 }
 func (UnimplementedTaskServiceServer) mustEmbedUnimplementedTaskServiceServer() {}
 func (UnimplementedTaskServiceServer) testEmbeddedByValue()                     {}
@@ -546,6 +562,24 @@ func _TaskService_SaveTask_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TaskService_FindTaskById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindTaskByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TaskServiceServer).FindTaskById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TaskService_FindTaskById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TaskServiceServer).FindTaskById(ctx, req.(*FindTaskByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TaskService_ServiceDesc is the grpc.ServiceDesc for TaskService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -608,6 +642,10 @@ var TaskService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SaveTask",
 			Handler:    _TaskService_SaveTask_Handler,
+		},
+		{
+			MethodName: "FindTaskById",
+			Handler:    _TaskService_FindTaskById_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

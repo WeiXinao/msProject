@@ -9,6 +9,7 @@ logConfig:
   maxSize:       500
   maxAge:        28
   maxBackups:    3
+AESKey: "123jldjalsdjalkajlds1234"
 Jwt:
   # 7天
   AccessExp:  "168h"

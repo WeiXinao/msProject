@@ -13,6 +13,8 @@ var (
 	ErrMobileDuplicated           = NewError(401006, "手机号已存在")
 	ErrVerifyCaptchaFail          = NewError(401007, "验证码错误")
 	ErrAccountOrPasswordIncorrect = NewError(401008, "用户名或密码错误")
+	ErrNotMember = NewError(401009, "不是项目成员，无操作权限")
+	ErrNotOwner = NewError(401009, "不是项目所有者，无操作权限")
 )
 
 var (

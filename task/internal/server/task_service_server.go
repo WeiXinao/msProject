@@ -92,3 +92,8 @@ func (s *TaskServiceServer) SaveTask(ctx context.Context, in *v1.SaveTaskRequest
 	l := logic.NewSaveTaskLogic(ctx, s.svcCtx)
 	return l.SaveTask(in)
 }
+
+func (s *TaskServiceServer) FindTaskById(ctx context.Context, in *v1.FindTaskByIdRequest) (*v1.TaskMessage, error) {
+	l := logic.NewFindTaskByIdLogic(ctx, s.svcCtx)
+	return l.FindTaskById(in)
+}

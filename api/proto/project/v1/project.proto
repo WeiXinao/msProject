@@ -237,8 +237,19 @@ message FindProjectByIdsResponse {
   repeated ProjectMessage projects = 1;
 }
 
+message FindProjectByMemberIdRequest {
+  int64 memberId = 1;
+  int64 ProjectId = 2;
+}
+
+message FindProjectByMemberIdResponse{
+  ProjectMessage project = 1;
+  bool isMember = 2;
+  bool isOwner = 3;
+}
 
 service ProjectService {
+  rpc FindProjectByMemberId(FindProjectByMemberIdRequest) returns (FindProjectByMemberIdResponse);
   rpc Index(IndexRequest) returns (IndexResponse);
   rpc FindProjectByMemId(ProjectRequest) returns (ProjectResponse);
   rpc FindProjectTemplate(FindProjectTemplateRequest) returns (FindProjectTemplateResponse);

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	userv1 "github.com/WeiXinao/msProject/api/proto/gen/user/v1"
+	"github.com/WeiXinao/msProject/pkg/gozerox"
 	lx "github.com/WeiXinao/msProject/pkg/logx"
 	"github.com/WeiXinao/msProject/user/internal/config"
 	"github.com/WeiXinao/msProject/user/internal/server"
@@ -19,13 +20,26 @@ import (
 )
 
 var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var distributedCentorConfigFile = flag.String("d", "etc/bootstrap.yaml", "the config file of distributed config centor")
 
 func main() {
 	flag.Parse()
 
-	var c config.Config
-	conf.MustLoad(*configFile, &c)
+	// conf.MustLoad(*configFile, &c)
+	var (
+		c config.Config
+		nacosCfg gozerox.Cfg
+	)
+	conf.MustLoad(*distributedCentorConfigFile, &nacosCfg)
+	cfgCentor := gozerox.MustInitNacosDistributedConfigCentor[*config.Config](nacosCfg.Nacos)
+	cfgCentor.SetLocalPath(*configFile)
+	cfgCentor.MustReadInConfig(&c)
+
 	ctx := svc.NewServiceContext(c)
+	cfgCentor.ListenOnConfig(func(data *config.Config) {
+		ctx = svc.NewServiceContext(c)
+		logx.Info("reload config...")
+	})
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		userv1.RegisterLoginServiceServer(grpcServer, server.NewLoginServiceServer(ctx))

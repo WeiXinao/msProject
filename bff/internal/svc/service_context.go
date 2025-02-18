@@ -7,6 +7,7 @@ import (
 	"github.com/WeiXinao/msProject/bff/internal/config"
 	"github.com/WeiXinao/msProject/bff/internal/middleware"
 	"github.com/WeiXinao/msProject/file/file"
+	"github.com/WeiXinao/msProject/pkg/encrypts"
 	"github.com/WeiXinao/msProject/pkg/jwtx"
 	"github.com/WeiXinao/msProject/project/projectservice"
 	"github.com/WeiXinao/msProject/task/taskservice"
@@ -29,15 +30,16 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	jwter := InitJwter(c)
+	encrypter := encrypts.NewEncrypter(c.AESKey)
 	StaticPath := c.StaticPath
 	userClient := loginservice.NewLoginService(zrpc.MustNewClient(c.UserRpcClient))
 	accountClient := account.NewAccount(zrpc.MustNewClient(c.AccountRpcClient))
-	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient, accountClient).
-		AddIngoreURLs(c.AuthorityIgnoreUrls...)
-	projectAuthMiddleware := middleware.NewProjectAuthMiddleware()
 	projectClient := projectservice.NewProjectService(zrpc.MustNewClient(c.ProjectRpcClient))
 	taskClient := taskservice.NewTaskService(zrpc.MustNewClient(c.TaskRpcClient))
 	fileClient := file.NewFile(zrpc.MustNewClient(c.FileRpcClient))
+	authMiddleware := middleware.NewAuthMiddlewareBuilder(jwter, userClient, accountClient).
+		AddIngoreURLs(c.AuthorityIgnoreUrls...)
+	projectAuthMiddleware := middleware.NewProjectAuthMiddleware(encrypter, projectClient, taskClient)
 	return &ServiceContext{
 		Config:         c,
 		UserClient:     userClient,

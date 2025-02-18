@@ -53,6 +53,21 @@ func InitJwter(c config.Config) jwtx.Jwter {
 }
 
 func InitDB(c config.Config) *xorm.Engine {
+	DB := c.DB
+	if DB.Separation {
+		conns := []string{}	
+		conns = append(conns, DB.Master.Dsn)
+		for _, db := range DB.Slaves {
+			conns = append(conns, db.Dsn)	
+		}
+
+		eg, err := xorm.NewEngineGroup(DB.Master.DriverName, conns)
+		if err != nil {
+			panic(err)
+		}
+		return eg.NewSession().Engine()
+	}
+
 	mySQLConfig := c.MySQLConfig
 	engine, err := xorm.NewEngine(mySQLConfig.DriverName, mySQLConfig.Dsn)
 	if err != nil {

@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	ProjectService_FindProjectByMemberId_FullMethodName   = "/api.proto.project.v1.ProjectService/FindProjectByMemberId"
 	ProjectService_Index_FullMethodName                   = "/api.proto.project.v1.ProjectService/Index"
 	ProjectService_FindProjectByMemId_FullMethodName      = "/api.proto.project.v1.ProjectService/FindProjectByMemId"
 	ProjectService_FindProjectTemplate_FullMethodName     = "/api.proto.project.v1.ProjectService/FindProjectTemplate"
@@ -36,6 +37,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectServiceClient interface {
+	FindProjectByMemberId(ctx context.Context, in *FindProjectByMemberIdRequest, opts ...grpc.CallOption) (*FindProjectByMemberIdResponse, error)
 	Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
 	FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
 	FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
@@ -55,6 +57,16 @@ type projectServiceClient struct {
 
 func NewProjectServiceClient(cc grpc.ClientConnInterface) ProjectServiceClient {
 	return &projectServiceClient{cc}
+}
+
+func (c *projectServiceClient) FindProjectByMemberId(ctx context.Context, in *FindProjectByMemberIdRequest, opts ...grpc.CallOption) (*FindProjectByMemberIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FindProjectByMemberIdResponse)
+	err := c.cc.Invoke(ctx, ProjectService_FindProjectByMemberId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *projectServiceClient) Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error) {
@@ -171,6 +183,7 @@ func (c *projectServiceClient) FindProjectByIds(ctx context.Context, in *FindPro
 // All implementations must embed UnimplementedProjectServiceServer
 // for forward compatibility.
 type ProjectServiceServer interface {
+	FindProjectByMemberId(context.Context, *FindProjectByMemberIdRequest) (*FindProjectByMemberIdResponse, error)
 	Index(context.Context, *IndexRequest) (*IndexResponse, error)
 	FindProjectByMemId(context.Context, *ProjectRequest) (*ProjectResponse, error)
 	FindProjectTemplate(context.Context, *FindProjectTemplateRequest) (*FindProjectTemplateResponse, error)
@@ -192,6 +205,9 @@ type ProjectServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedProjectServiceServer struct{}
 
+func (UnimplementedProjectServiceServer) FindProjectByMemberId(context.Context, *FindProjectByMemberIdRequest) (*FindProjectByMemberIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindProjectByMemberId not implemented")
+}
 func (UnimplementedProjectServiceServer) Index(context.Context, *IndexRequest) (*IndexResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Index not implemented")
 }
@@ -244,6 +260,24 @@ func RegisterProjectServiceServer(s grpc.ServiceRegistrar, srv ProjectServiceSer
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ProjectService_ServiceDesc, srv)
+}
+
+func _ProjectService_FindProjectByMemberId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindProjectByMemberIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).FindProjectByMemberId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProjectService_FindProjectByMemberId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).FindProjectByMemberId(ctx, req.(*FindProjectByMemberIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ProjectService_Index_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -451,6 +485,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "api.proto.project.v1.ProjectService",
 	HandlerType: (*ProjectServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FindProjectByMemberId",
+			Handler:    _ProjectService_FindProjectByMemberId_Handler,
+		},
 		{
 			MethodName: "Index",
 			Handler:    _ProjectService_Index_Handler,

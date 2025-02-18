@@ -103,6 +103,7 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 		ctx = context.WithValue(ctx, KeyOrganizationCode, rsp.Member.OrganizationCode)
 
 		uri := strings.TrimPrefix(r.RequestURI, `/`) 
+		encoder := sonic.ConfigDefault.NewEncoder(w)
 
 		if slice.Contains[string](a.IngoreURLs, uri) {
 			next(w, r.WithContext(ctx))
@@ -116,13 +117,11 @@ func (a *AuthMiddlewareBuilder) Build(next http.HandlerFunc) http.HandlerFunc {
 			err = respx.FromStatusErr(err)
 			logx.Error("[Auth]", err)
 			resp := respx.Fail(err.(*respx.Error))
-			encoder := sonic.ConfigDefault.NewEncoder(w)
 			encoder.Encode(resp)
 			return 
 		}
 		
 		if !slice.Contains(authNodesRsp.List, uri) {
-			encoder := sonic.ConfigDefault.NewEncoder(w)
 			encoder.Encode(respx.Fail(respx.ErrNotHasAuthority))
 			w.WriteHeader(http.StatusUnauthorized)
 			return

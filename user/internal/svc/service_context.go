@@ -13,6 +13,7 @@ import (
 	"github.com/WeiXinao/msProject/user/internal/repo/cache"
 	"github.com/WeiXinao/msProject/user/internal/repo/dao"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"google.golang.org/grpc"
 	"xorm.io/xorm"
@@ -36,6 +37,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	rExp, err := time.ParseDuration(c.Jwt.AccessExp)
 	if err != nil {
+		logx.Error(err)
 		panic(err)
 	}
 	userCache := &cache.UserCache{}
@@ -65,11 +67,13 @@ func InitInterceptors(cache cachex.Cache) []grpc.UnaryServerInterceptor {
 func InitJwter(c config.Config) jwtx.Jwter {
 	aExp, err := time.ParseDuration(c.Jwt.AccessExp)
 	if err != nil {
-		panic(err)
+		logx.Error(err)
+		return nil
 	}
 	rExp, err := time.ParseDuration(c.Jwt.AccessExp)
 	if err != nil {
-		panic(err)
+		logx.Error(err)
+		return nil
 	}
 	return jwtx.NewJwtToken(c.Jwt.AtKey, c.Jwt.RtKey, aExp, rExp)
 }
@@ -78,14 +82,16 @@ func InitDB(c config.Config) *xorm.Engine {
 	mySQLConfig := c.MySQLConfig
 	engine, err := xorm.NewEngine(mySQLConfig.DriverName, mySQLConfig.Dsn)
 	if err != nil {
-		panic(err)
+		logx.Error(err)
+		return nil
 	}
 	err = engine.Sync(
 		new(dao.Member),
 		new(dao.Organization),
 	)
 	if err != nil {
-		panic(err)
+		logx.Error(err)
+		return nil
 	}
 	return engine
 }

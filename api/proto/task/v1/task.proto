@@ -334,6 +334,10 @@ message GetLogBySelfProjectResponse{
   int64 total = 2;
 }
 
+message FindTaskByIdRequest {
+  int64 taskId = 1;
+}
+
 service TaskService {
   rpc GetLogBySelfProject(GetLogBySelfProjectRequest) returns (GetLogBySelfProjectResponse);
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
@@ -349,4 +353,5 @@ service TaskService {
   rpc SaveTaskStages(SaveTaskStagesRequest) returns (SaveTaskStagesResponse);
   rpc TaskList(TaskListRequest) returns (TaskListResponse);
   rpc SaveTask(SaveTaskRequest) returns (TaskMessage);
+  rpc FindTaskById(FindTaskByIdRequest) returns (TaskMessage);
 }

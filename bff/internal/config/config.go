@@ -10,6 +10,7 @@ type Config struct {
 	rest.RestConf
 	LogConfig           lx.LogConfig
 	Jwt                 Jwt
+	AESKey              string
 	StaticPath          string
 	AuthorityIgnoreUrls []string
 	UserRpcClient       zrpc.RpcClientConf

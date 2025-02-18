@@ -19,6 +19,7 @@ type (
 	CreateProjectLogRequest     = v1.CreateProjectLogRequest
 	CreateProjectLogResponse    = v1.CreateProjectLogResponse
 	ExecutorMessage             = v1.ExecutorMessage
+	FindTaskByIdRequest         = v1.FindTaskByIdRequest
 	GetLogBySelfProjectRequest  = v1.GetLogBySelfProjectRequest
 	GetLogBySelfProjectResponse = v1.GetLogBySelfProjectResponse
 	ListTaskMemberRequest       = v1.ListTaskMemberRequest
@@ -66,6 +67,7 @@ type (
 		SaveTaskStages(ctx context.Context, in *SaveTaskStagesRequest, opts ...grpc.CallOption) (*SaveTaskStagesResponse, error)
 		TaskList(ctx context.Context, in *TaskListRequest, opts ...grpc.CallOption) (*TaskListResponse, error)
 		SaveTask(ctx context.Context, in *SaveTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error)
+		FindTaskById(ctx context.Context, in *FindTaskByIdRequest, opts ...grpc.CallOption) (*TaskMessage, error)
 	}
 
 	defaultTaskService struct {
@@ -147,4 +149,9 @@ func (m *defaultTaskService) TaskList(ctx context.Context, in *TaskListRequest, 
 func (m *defaultTaskService) SaveTask(ctx context.Context, in *SaveTaskRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
 	client := v1.NewTaskServiceClient(m.cli.Conn())
 	return client.SaveTask(ctx, in, opts...)
+}
+
+func (m *defaultTaskService) FindTaskById(ctx context.Context, in *FindTaskByIdRequest, opts ...grpc.CallOption) (*TaskMessage, error) {
+	client := v1.NewTaskServiceClient(m.cli.Conn())
+	return client.FindTaskById(ctx, in, opts...)
 }

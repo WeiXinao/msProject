@@ -10,6 +10,7 @@ type Config struct {
 	zrpc.RpcServerConf
 	RedisConfig redis.RedisConf
 	LogConfig   lx.LogConfig
+	DB DB
 	MySQLConfig MySQLConfig
 	Jwt         Jwt
 	AESKey      string
@@ -26,4 +27,10 @@ type Jwt struct {
 type MySQLConfig struct {
 	DriverName string
 	Dsn        string
+}
+
+type DB struct {
+	Separation bool
+	Master MySQLConfig
+	Slaves []MySQLConfig
 }

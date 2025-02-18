@@ -23,6 +23,11 @@ func NewProjectServiceServer(svcCtx *svc.ServiceContext) *ProjectServiceServer {
 	}
 }
 
+func (s *ProjectServiceServer) FindProjectByMemberId(ctx context.Context, in *v1.FindProjectByMemberIdRequest) (*v1.FindProjectByMemberIdResponse, error) {
+	l := logic.NewFindProjectByMemberIdLogic(ctx, s.svcCtx)
+	return l.FindProjectByMemberId(in)
+}
+
 func (s *ProjectServiceServer) Index(ctx context.Context, in *v1.IndexRequest) (*v1.IndexResponse, error) {
 	l := logic.NewIndexLogic(ctx, s.svcCtx)
 	return l.Index(in)

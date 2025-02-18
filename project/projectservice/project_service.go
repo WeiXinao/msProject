@@ -14,34 +14,37 @@ import (
 )
 
 type (
-	FindProjectByIdRequest       = v1.FindProjectByIdRequest
-	FindProjectByIdsRequest      = v1.FindProjectByIdsRequest
-	FindProjectByIdsResponse     = v1.FindProjectByIdsResponse
-	FindProjectTemplateRequest   = v1.FindProjectTemplateRequest
-	FindProjectTemplateResponse  = v1.FindProjectTemplateResponse
-	IndexRequest                 = v1.IndexRequest
-	IndexResponse                = v1.IndexResponse
-	MenuMessage                  = v1.MenuMessage
-	ProjectDetailRequest         = v1.ProjectDetailRequest
-	ProjectDetailResponse        = v1.ProjectDetailResponse
-	ProjectMemberListRequest     = v1.ProjectMemberListRequest
-	ProjectMemberListResponse    = v1.ProjectMemberListResponse
-	ProjectMemberMessage         = v1.ProjectMemberMessage
-	ProjectMessage               = v1.ProjectMessage
-	ProjectRequest               = v1.ProjectRequest
-	ProjectResponse              = v1.ProjectResponse
-	ProjectTemplateMessage       = v1.ProjectTemplateMessage
-	RecycleProjectRequest        = v1.RecycleProjectRequest
-	RecycleProjectResponse       = v1.RecycleProjectResponse
-	SaveProjectReq               = v1.SaveProjectReq
-	SaveProjectRsp               = v1.SaveProjectRsp
-	TaskStages                   = v1.TaskStages
-	UpdateCollectProjectRequest  = v1.UpdateCollectProjectRequest
-	UpdateCollectProjectResponse = v1.UpdateCollectProjectResponse
-	UpdateProjectRequest         = v1.UpdateProjectRequest
-	UpdateProjectResponse        = v1.UpdateProjectResponse
+	FindProjectByIdRequest        = v1.FindProjectByIdRequest
+	FindProjectByIdsRequest       = v1.FindProjectByIdsRequest
+	FindProjectByIdsResponse      = v1.FindProjectByIdsResponse
+	FindProjectByMemberIdRequest  = v1.FindProjectByMemberIdRequest
+	FindProjectByMemberIdResponse = v1.FindProjectByMemberIdResponse
+	FindProjectTemplateRequest    = v1.FindProjectTemplateRequest
+	FindProjectTemplateResponse   = v1.FindProjectTemplateResponse
+	IndexRequest                  = v1.IndexRequest
+	IndexResponse                 = v1.IndexResponse
+	MenuMessage                   = v1.MenuMessage
+	ProjectDetailRequest          = v1.ProjectDetailRequest
+	ProjectDetailResponse         = v1.ProjectDetailResponse
+	ProjectMemberListRequest      = v1.ProjectMemberListRequest
+	ProjectMemberListResponse     = v1.ProjectMemberListResponse
+	ProjectMemberMessage          = v1.ProjectMemberMessage
+	ProjectMessage                = v1.ProjectMessage
+	ProjectRequest                = v1.ProjectRequest
+	ProjectResponse               = v1.ProjectResponse
+	ProjectTemplateMessage        = v1.ProjectTemplateMessage
+	RecycleProjectRequest         = v1.RecycleProjectRequest
+	RecycleProjectResponse        = v1.RecycleProjectResponse
+	SaveProjectReq                = v1.SaveProjectReq
+	SaveProjectRsp                = v1.SaveProjectRsp
+	TaskStages                    = v1.TaskStages
+	UpdateCollectProjectRequest   = v1.UpdateCollectProjectRequest
+	UpdateCollectProjectResponse  = v1.UpdateCollectProjectResponse
+	UpdateProjectRequest          = v1.UpdateProjectRequest
+	UpdateProjectResponse         = v1.UpdateProjectResponse
 
 	ProjectService interface {
+		FindProjectByMemberId(ctx context.Context, in *FindProjectByMemberIdRequest, opts ...grpc.CallOption) (*FindProjectByMemberIdResponse, error)
 		Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error)
 		FindProjectByMemId(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectResponse, error)
 		FindProjectTemplate(ctx context.Context, in *FindProjectTemplateRequest, opts ...grpc.CallOption) (*FindProjectTemplateResponse, error)
@@ -64,6 +67,11 @@ func NewProjectService(cli zrpc.Client) ProjectService {
 	return &defaultProjectService{
 		cli: cli,
 	}
+}
+
+func (m *defaultProjectService) FindProjectByMemberId(ctx context.Context, in *FindProjectByMemberIdRequest, opts ...grpc.CallOption) (*FindProjectByMemberIdResponse, error) {
+	client := v1.NewProjectServiceClient(m.cli.Conn())
+	return client.FindProjectByMemberId(ctx, in, opts...)
 }
 
 func (m *defaultProjectService) Index(ctx context.Context, in *IndexRequest, opts ...grpc.CallOption) (*IndexResponse, error) {
