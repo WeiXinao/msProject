@@ -4,6 +4,11 @@ Etcd:
   Hosts:
   - 127.0.0.1:12379
   Key: file.rpc
+Telemetry:
+  Name: file.rpc
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Batcher: jaeger
+  Sampler: 1.0
 RedisConfig:
   Host: "127.0.0.1:6379"
   Type: "node"
